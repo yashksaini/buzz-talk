@@ -1,0 +1,39 @@
+# Ignore node_modules in both client and server folders
+client/node_modules/
+server/node_modules/
+
+# Ignore build artifacts for Vite/React
+client/dist/
+
+# Ignore build artifacts for Node.js
+server/build/
+server/dist/
+
+# Ignore logs
+client/logs/
+server/logs/
+
+# Ignore environment-specific files
+client/.env
+server/.env
+
+# Ignore MongoDB data directory
+server/data/
+
+# Ignore editor-specific files and folders
+.vscode/
+.idea/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore npm debugging logs
+npm-debug.log*
+
+# Ignore yarn errors file
+yarn-error.log
+
+# Ignore environment-specific files
+client/.env
+server/.env
