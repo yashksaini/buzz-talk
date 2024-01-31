@@ -1,16 +1,30 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
-// Login.jsx
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { BASE_URL } from "../main";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import HomeBanner from "../components/HomeBanner";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (username.length < 6) {
+      toast.info("Username requires a minimum of 6 characters.", {
+        autoClose: 1000,
+      });
+      return;
+    }
+    if (password.length < 6) {
+      toast.info("Password must be a minimum of 6 characters", {
+        autoClose: 1000,
+      });
+      return;
+    }
     if (username.length > 0 && password.length > 0) {
       try {
         const response = await axios.post(
@@ -19,12 +33,19 @@ const Login = () => {
             username,
             password,
           },
-          { withCredentials: true }
+          { withCredentials: true, credentials: "include" }
         );
         if (response.data === true) {
-          window.location.reload();
+          toast.success("Logging In", {
+            autoClose: 1000,
+          });
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 1000);
         } else {
-          setShowModal(true);
+          toast.error("Username or Password is incorrect", {
+            autoClose: 1000,
+          });
         }
       } catch (error) {
         console.error("Error:", error);
@@ -33,72 +54,68 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-md w-96">
-        <h2 className="text-2xl text-center mb-4 font-semibold text-blue-500">
-          Buzz Talk
-        </h2>
-        <form onSubmit={handleSubmit} autoComplete="on">
-          <div className="mb-4">
-            <label htmlFor="username" className="block mb-1 text-gray-600">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              className="w-full border rounded-md px-3 py-2"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="johndoe..."
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="password" className="block mb-1 text-gray-600">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full border rounded-md px-3 py-2"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="johndoe123..."
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white rounded-md py-2"
-          >
-            Login
-          </button>
-        </form>
-
-        <Link
-          to={"/signup"}
-          className="text-center text-gray-500 text-xs mt-4 w-full block"
-        >
-          Don&apos;t have account? Sign Up
-        </Link>
-      </div>
-      {showModal && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-8 rounded shadow-md text-center">
-            <p className="text-red-600 text-lg mb-6">
-              Username or password is incorrect
-            </p>
-            <button
-              onClick={() => {
-                setShowModal(false);
-                setPassword("");
-                setUsername("");
-              }}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Close
-            </button>
-          </div>
+    <div className="w-full bg-background min-h-screen flex justify-center">
+      <HomeBanner />
+      <div className="max-w-full w-[420px] lg:w-[520px] p-8">
+        <div className="w-full flex flex-1 gap-1 justify-start items-center">
+          <img src={"./logo1.png"} alt="Logo" className="h-10 " />
+          <span className=" text-gray-700 text-xl font-bold tracking-tighter mt-[4px]">
+            TALK
+          </span>
         </div>
-      )}
+        <div className="w-full my-8">
+          <h1 className="text-3xl font-bold text-secondary mb-2">Log In</h1>
+          <p className="text-sm text-gray-500">
+            Enter your username and password to login
+          </p>
+
+          <form onSubmit={handleSubmit} autoComplete="off" className="mt-12">
+            <div className="mb-4">
+              <label
+                htmlFor="username"
+                className="block mb-[2px] text-black tracking-[-0.02em] font-medium"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                className="w-full border rounded-md px-4 h-10 bg-white border-gray-300 text-[15px] font-medium text-black tracking-wider placeholder:font-light focus:outline-none focus:border-primary focus:border-2 md:h-12"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="password"
+                className="block mb-[2px] text-black tracking-[-0.02em] font-medium "
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="w-full border rounded-md px-4 h-10 bg-white border-gray-300 text-[15px] font-medium text-black tracking-wider placeholder:font-light focus:outline-none focus:border-primary focus:border-2 md:h-12"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-primary text-white rounded-md h-12 hover:bg-primaryHover focus:outline-none font-semibold md:h-14"
+            >
+              Log In
+            </button>
+          </form>
+
+          <Link to="/signup" className="text-gray-500 text-sm mt-4 block">
+            Don't have an account?{" "}
+            <span className="text-primary text-semibold">Sign Up</span>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
