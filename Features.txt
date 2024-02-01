@@ -1,0 +1,52 @@
+Buzz Talk Features: 
+
+- List all the server users on a page
+	+ A button on each user profile to visit there profile
+	+ A button to send friend request if the user is not friend of user
+	+ A search bar to search the user from the list (username,fullName)
+
+- A profile page of the user
+	+ Date Joined 
+	+ Profile Image (Editable)
+	+ DOB (Editable)
+	+ Name  (Editable)
+	+ Username
+	+ About (Editable)
+	+ Status (A one line day description) (Editable)
+	+ Last Online 
+
+- A friends page
+	+ List all the friends of the currently logged in user
+	+ A requests section 
+		# List all the requests sent by the user
+			- User can withdraw the request
+		# List all the requests send by other users
+			- Two options for the user (Accept or Decline)
+
+- A Chat Page (Dashboard Page)
+	+ Here all the friends are listed on the left side.
+		- Display the Profile Pic of the user
+		- Display the full Name of the user
+		- Display the last message sent by the user (if any)
+	+ When user click on the user chat the user chat open in the right side.
+		- This section display all the chats.
+		- Categorize chat with dates.
+		- Show last 20 messages.
+		- Add a button on top to load more messages. (20 messages load at a time)
+		- Friend chat is on left.
+		- User chat is on right side.
+		- Add a time of chat below the chat message.
+		- A top bar is displayed with the friend name (Show the status on top ) (Online/Offline)
+		- Show the status of (Typing...) when friend start typing.
+		- Add three dot of top right so when user click on them a right pannel open
+			# Show the friend name 
+			# Status of friend (Last Online)
+			# Show the about of friend.
+			# Show the status of friend.
+			# Show a button to remove the friend. (Show a popup before removing)
+
+
+
+
+
+

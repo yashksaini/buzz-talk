@@ -1,6 +1,7 @@
 import express from "express";
 import { User } from "../schemas/schemas.js";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 
@@ -27,54 +28,54 @@ router.post("/signup", async (req, res) => {
     if (existingUser) {
       return res.status(409).json({ message: "Username already exists" });
     }
-
+    const hashedPassword = await bcrypt.hash(password, 10);
     // If the username is unique, proceed with user creation
     const newUser = new User({
       fullName,
       username,
-      password,
+      password: hashedPassword,
     });
 
     await newUser.save();
-    const data = {
-      isAuth: true,
-      fullName,
-    };
-    // Store data in session so user directly logged in after signup
-    // req.session.userData = data;
-    // req.session.save();
-
     res.send(true);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({
-      username: username,
-      password: password,
-    }).lean();
-    if (user) {
-      // Setting session data upon successful login
+    // Find the user by username
+    const user = await User.findOne({ username }).lean();
 
-      const data = {
-        isAuth: true,
-        fullName: user.fullName,
-        id: user._id,
-      };
-      req.session.userData = data;
-      req.session.save();
-      res.send(true);
+    if (user) {
+      // Compare the provided password with the hashed password in the database
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (passwordMatch) {
+        // Setting session data upon successful login
+        const data = {
+          isAuth: true,
+          fullName: user.fullName,
+          id: user._id,
+        };
+        req.session.userData = data;
+        req.session.save();
+        res.send(true);
+      } else {
+        // Password does not match
+        res.send(false);
+      }
     } else {
+      // User not found
       res.send(false);
     }
   } catch (error) {
     console.error(error);
-    res.status(409).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
