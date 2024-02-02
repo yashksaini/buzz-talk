@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import { useEffect } from "react";
 import axios from "axios";
@@ -18,6 +18,7 @@ import { BASE_URL } from "./main";
 function App({ socket }) {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.userAuth);
+
   axios.defaults.withCredentials = true;
   const getAuth = async () => {
     try {
@@ -43,37 +44,26 @@ function App({ socket }) {
 
   return (
     <>
-      <BrowserRouter>
-        {isAuth && <AdminNav />}
-        <Routes>
-          {/* For Unauthenticated Users */}
-          {!isAuth && (
-            <>
-              <Route element={<Login />} path="/" />
-              <Route element={<Signup />} path="/signup" />
-            </>
-          )}
+      {isAuth && <AdminNav />}
+      <Routes>
+        {/* For Unauthenticated Users */}
+        {!isAuth && (
+          <>
+            <Route element={<Login />} path="/" />
+            <Route element={<Signup />} path="/signup" />
+          </>
+        )}
 
-          {/* If user is admin */}
-          {isAuth && (
-            <>
-              <Route
-                element={<Dashboard socket={socket} />}
-                path="/dashboard"
-              />
-              <Route
-                element={<Profile socket={socket} />}
-                path="/profile/:id"
-              />
-            </>
-          )}
-
-          {/* Redirect unauthenticated users to Login for undefined routes */}
-          {!isAuth && <Route element={<Navigate to="/" />} />}
-          {isAuth && <Route element={<Navigate to="/dashboard" />} />}
-        </Routes>
-        <ToastContainer position="top-center" autoClose={2000} />
-      </BrowserRouter>
+        {/* If user is admin */}
+        {isAuth && (
+          <>
+            <Route element={<Dashboard socket={socket} />} path="/" />
+            <Route element={<Profile socket={socket} />} path="/profile/:id" />
+            <Route element={<Navigate to="/" />} path="*" />
+          </>
+        )}
+      </Routes>
+      <ToastContainer position="top-center" autoClose={2000} />
     </>
   );
 }

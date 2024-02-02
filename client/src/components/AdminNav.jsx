@@ -8,7 +8,7 @@ const AdminNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { fullName, userId } = useSelector((state) => state.userAuth);
   const adminNavs = [
-    { text: "Dashboard", link: "/dashboard" },
+    { text: "Dashboard", link: "/" },
     { text: "Profile", link: `/profile/${userId}` },
   ];
 
