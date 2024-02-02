@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HomeBanner from "../components/HomeBanner";
-// import logo from "@assets/logo.png";
+import { sharedStyles } from "../sharedStyles/utils";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -84,57 +84,45 @@ const Signup = () => {
 
           <form onSubmit={handleSubmit} autoComplete="off" className="mt-12">
             <div className="mb-4">
-              <label
-                htmlFor="fullName"
-                className="block mb-[2px] text-black tracking-[-0.02em] font-medium"
-              >
+              <label htmlFor="fullName" className={sharedStyles.label}>
                 Full Name
               </label>
               <input
                 type="text"
                 id="fullName"
-                className="w-full border rounded-md px-4 h-10 bg-white border-gray-300 text-[15px] font-medium text-black tracking-wider placeholder:font-light focus:outline-none focus:border-primary focus:border-2 md:h-12"
+                className={sharedStyles.input}
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter your full name"
               />
             </div>
             <div className="mb-4">
-              <label
-                htmlFor="username"
-                className="block mb-[2px] text-black tracking-[-0.02em] font-medium"
-              >
+              <label htmlFor="username" className={sharedStyles.label}>
                 Username
               </label>
               <input
                 type="text"
                 id="username"
-                className="w-full border rounded-md px-4 h-10 bg-white border-gray-300 text-[15px] font-medium text-black tracking-wider placeholder:font-light focus:outline-none focus:border-primary focus:border-2 md:h-12"
+                className={sharedStyles.input}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Choose a username"
               />
             </div>
             <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block mb-[2px] text-black tracking-[-0.02em] font-medium"
-              >
+              <label htmlFor="password" className={sharedStyles.label}>
                 Password
               </label>
               <input
                 type="password"
                 id="password"
-                className="w-full border rounded-md px-4 h-10 bg-white border-gray-300 text-[15px] font-medium text-black tracking-wider placeholder:font-light focus:outline-none focus:border-primary focus:border-2 md:h-12"
+                className={sharedStyles.input}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Choose a password"
               />
             </div>
-            <button
-              type="submit"
-              className="w-full bg-primary text-white rounded-md h-12 hover:bg-primaryHover focus:outline-none font-semibold md:h-14"
-            >
+            <button type="submit" className={sharedStyles.btnFull}>
               Sign Up
             </button>
           </form>
