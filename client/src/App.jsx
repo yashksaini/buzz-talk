@@ -9,9 +9,9 @@ import { changeAuthentication } from "./redux/userAuthentication";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import Dashboard from "./admin/Dashboard";
-import Profile from "./admin/Profile";
-import AdminNav from "./components/AdminNav";
+import Dashboard from "./user/Dashboard";
+import Profile from "./user/Profile";
+import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
 import { BASE_URL } from "./main";
 
@@ -44,7 +44,7 @@ function App({ socket }) {
 
   return (
     <>
-      {isAuth && <AdminNav />}
+      {isAuth && <Navbar />}
       <Routes>
         {/* For Unauthenticated Users */}
         {!isAuth && (

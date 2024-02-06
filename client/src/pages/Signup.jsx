@@ -71,14 +71,14 @@ const Signup = () => {
       <HomeBanner />
       <div className="max-w-full w-[420px] lg:w-[520px] p-8">
         <div className="w-full flex flex-1 gap-1 justify-start items-center">
-          <img src={"./logo1.png"} alt="Logo" className="h-10 " />
-          <span className="text-gray-700 text-xl font-bold tracking-tighter mt-[4px]">
+          <img src={"./logo1.png"} alt="Logo" className="h-8 " />
+          <span className="text-primary text-xl font-bold leading-[32px]">
             TALK
           </span>
         </div>
         <div className="w-full my-8">
           <h1 className="text-3xl font-bold text-secondary mb-2">Sign Up</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-grayText">
             Create a new account to get started
           </p>
 
