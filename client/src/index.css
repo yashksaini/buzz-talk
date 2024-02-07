@@ -21,6 +21,7 @@
   padding: 0;
 }
 .toastContainer .Toastify__toast {
-  padding: 0px 4px;
+  padding: 16px;
   color: var(--mainText);
+  border-radius: 12px;
 }

@@ -56,8 +56,10 @@ const Signup = () => {
         );
         console.log(response);
         if (response.data === true) {
-          toast.success("Signed Up successfully. Please Login.", {
+          toast.success("Sign up successful. Please log in", {
             autoClose: 1000,
+            toastId: "signup-success",
+            hideProgressBar: true,
           });
           setTimeout(() => {
             navigate("/");
@@ -67,6 +69,8 @@ const Signup = () => {
         if (error?.response?.data?.message) {
           toast.error(`${error?.response?.data?.message}`, {
             autoClose: 1000,
+            toastId: "signup-error",
+            hideProgressBar: true,
           });
         }
         console.error("Error:", error);
