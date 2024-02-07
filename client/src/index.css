@@ -2,11 +2,25 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+:root {
+  --backgroundDark: #eff3f4;
+  --background: #fff;
+  --primary: #3781ef;
+  --primaryHover: #1a76ff;
+  --grayText: #787f8a;
+  --mainText: #3b4560;
+  --dark1: #0f1419;
+  --dark2: #3b4560;
+  --borderColor: #c7d0d8;
+}
 * {
-  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-family: "Exo", sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+.toastContainer .Toastify__toast {
+  padding: 0px 4px;
+  color: var(--mainText);
 }

@@ -63,7 +63,13 @@ function App({ socket }) {
           </>
         )}
       </Routes>
-      <ToastContainer position="top-center" autoClose={2000} />
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        limit={3}
+        className="text-sm toastContainer"
+        closeButton={false}
+      />
     </>
   );
 }

@@ -8,21 +8,27 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HomeBanner from "../components/HomeBanner";
 import { sharedStyles } from "../sharedStyles/utils";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username.length < 6) {
-      toast.info("Username requires a minimum of 6 characters.", {
+    if (username.trim().length < 6) {
+      toast.info("Username: Minimum 6 characters", {
         autoClose: 1000,
+        toastId: "username-info",
+        hideProgressBar: true,
       });
       return;
     }
-    if (password.length < 6) {
-      toast.info("Password must be a minimum of 6 characters", {
+    if (password.trim().length < 6) {
+      toast.info("Password: Minimum 6 characters", {
         autoClose: 1000,
+        toastId: "password-info",
+        hideProgressBar: true,
       });
       return;
     }
@@ -37,15 +43,19 @@ const Login = () => {
           { withCredentials: true, credentials: "include" }
         );
         if (response.data === true) {
-          toast.success("Logging In", {
+          toast.success("Logging In...", {
             autoClose: 1000,
+            toastId: "login-success",
+            hideProgressBar: true,
           });
           setTimeout(() => {
             window.location.href = "/";
           }, 1000);
         } else {
-          toast.error("Username or Password is incorrect", {
+          toast.error("Invalid username or password", {
             autoClose: 1000,
+            toastId: "login-error",
+            hideProgressBar: true,
           });
         }
       } catch (error) {
@@ -59,8 +69,8 @@ const Login = () => {
       <HomeBanner />
       <div className="max-w-full w-[420px] lg:w-[520px] p-8">
         <div className="w-full flex flex-1 gap-1 justify-start items-center">
-          <img src={"./logo1.png"} alt="Logo" className="h-8 " />
-          <span className=" text-primary text-xl font-bold leading-[32px]">
+          <img src={"./logo1.png"} alt="Logo" className="h-10" />
+          <span className=" text-primary text-xl font-bold leading-10">
             TALK
           </span>
         </div>
@@ -80,7 +90,13 @@ const Login = () => {
                 id="username"
                 className={sharedStyles.input}
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  const trimmedValue = e.target.value.trim();
+                  // If no space enter by user only then update the value
+                  if (!/\s/.test(trimmedValue)) {
+                    setUsername(trimmedValue);
+                  }
+                }}
                 placeholder="Enter your username"
               />
             </div>
@@ -88,14 +104,30 @@ const Login = () => {
               <label htmlFor="password" className={sharedStyles.label}>
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                className={sharedStyles.input}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-              />
+              <div className="w-full h-full relative">
+                <input
+                  type={isVisible ? "text" : "password"}
+                  id="password"
+                  className={sharedStyles.input}
+                  value={password}
+                  onChange={(e) => {
+                    const trimmedValue = e.target.value.trim();
+                    // If no space enter by user only then update the value
+                    if (!/\s/.test(trimmedValue)) {
+                      setPassword(trimmedValue);
+                    }
+                  }}
+                  placeholder="Enter your password"
+                />
+                <span
+                  className="top-[calc(50%_-_16px)] right-2 absolute w-8 h-8 rounded-full flex justify-center items-center bg-white hover:cursor-pointer text-grayText text-xl"
+                  onClick={() => {
+                    setIsVisible(!isVisible);
+                  }}
+                >
+                  {isVisible ? <FaRegEyeSlash /> : <FaRegEye />}
+                </span>
+              </div>
             </div>
             <button type="submit" className={sharedStyles.btnFull}>
               Log In
