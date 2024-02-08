@@ -11,6 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Dashboard from "./user/Dashboard";
 import Profile from "./user/Profile";
+import Notifications from "./user/Notifications";
+import MyChats from "./user/MyChats";
+import Friends from "./user/Friends";
 import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
 import { BASE_URL } from "./main";
@@ -56,11 +59,17 @@ function App({ socket }) {
 
         {/* If user is admin */}
         {isAuth && (
-          <>
+          <div className="bg-gray-500">
             <Route element={<Dashboard socket={socket} />} path="/" />
+            <Route element={<MyChats socket={socket} />} path="/chats" />
+            <Route element={<Friends socket={socket} />} path="/friends" />
+            <Route
+              element={<Notifications socket={socket} />}
+              path="/notifications"
+            />
             <Route element={<Profile socket={socket} />} path="/profile/:id" />
             <Route element={<Navigate to="/" />} path="*" />
-          </>
+          </div>
         )}
       </Routes>
       <ToastContainer
