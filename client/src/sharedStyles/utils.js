@@ -4,4 +4,5 @@ export const sharedStyles = {
   label: "block mb-[2px] text-dark1 font-semibold",
   btnFull:
     "w-full bg-primary text-white rounded-md h-12 hover:bg-primaryHover focus:outline-none font-semibold md:h-14",
+  container: "",
 };

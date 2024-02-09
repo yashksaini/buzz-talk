@@ -8,15 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeAuthentication } from "./redux/userAuthentication";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import Dashboard from "./user/Dashboard";
 import Profile from "./user/Profile";
 import Notifications from "./user/Notifications";
 import MyChats from "./user/MyChats";
 import Friends from "./user/Friends";
-import Navbar from "./components/Navbar";
 import Signup from "./pages/Signup";
 import { BASE_URL } from "./main";
+import Layout from "./pages/Layout";
 
 function App({ socket }) {
   const dispatch = useDispatch();
@@ -47,7 +46,6 @@ function App({ socket }) {
 
   return (
     <>
-      {isAuth && <Navbar />}
       <Routes>
         {/* For Unauthenticated Users */}
         {!isAuth && (
@@ -59,17 +57,49 @@ function App({ socket }) {
 
         {/* If user is admin */}
         {isAuth && (
-          <div className="bg-gray-500">
-            <Route element={<Dashboard socket={socket} />} path="/" />
-            <Route element={<MyChats socket={socket} />} path="/chats" />
-            <Route element={<Friends socket={socket} />} path="/friends" />
+          <>
             <Route
-              element={<Notifications socket={socket} />}
+              element={
+                <Layout>
+                  <Dashboard socket={socket} />
+                </Layout>
+              }
+              path="/"
+            />
+            <Route
+              element={
+                <Layout>
+                  <MyChats socket={socket} />
+                </Layout>
+              }
+              path="/chats"
+            />
+            <Route
+              element={
+                <Layout>
+                  <Friends socket={socket} />
+                </Layout>
+              }
+              path="/friends"
+            />
+            <Route
+              element={
+                <Layout>
+                  <Notifications socket={socket} />
+                </Layout>
+              }
               path="/notifications"
             />
-            <Route element={<Profile socket={socket} />} path="/profile/:id" />
+            <Route
+              element={
+                <Layout>
+                  <Profile socket={socket} />
+                </Layout>
+              }
+              path="/profile/:id"
+            />
             <Route element={<Navigate to="/" />} path="*" />
-          </div>
+          </>
         )}
       </Routes>
       <ToastContainer
