@@ -13,6 +13,7 @@
   --dark1: #0f1419;
   --dark2: #3b4560;
   --borderColor: #c7d0d8;
+  --line: #eff3f4;
 }
 * {
   font-family: "Exo", sans-serif;
@@ -24,4 +25,25 @@
   padding: 16px;
   color: var(--mainText);
   border-radius: 12px;
+}
+.container {
+  width: 1280px;
+  height: 100dvh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: auto;
+}
+.navbar {
+  width: 275px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid var(--line);
+}
+.content {
+  flex: 1;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

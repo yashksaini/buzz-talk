@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import HomeBanner from "../components/HomeBanner";
 import { sharedStyles } from "../sharedStyles/utils";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-
+import logo from "../assets/logo1.png";
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
@@ -83,7 +83,7 @@ const Signup = () => {
       <HomeBanner />
       <div className="max-w-full w-[420px] lg:w-[520px] p-8">
         <div className="w-full flex flex-1 gap-1 justify-start items-center">
-          <img src={"./logo1.png"} alt="Logo" className="h-10 " />
+          <img src={logo} alt="Logo" className="h-10 " />
           <span className="text-primary text-xl font-bold leading-10">
             TALK
           </span>
