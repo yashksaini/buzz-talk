@@ -47,3 +47,15 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
+.defaultNav > div > span:nth-child(1) {
+  display: none;
+}
+.defaultNav > div > span:nth-child(2) {
+  display: unset;
+}
+.activeNav > div > span:nth-child(1) {
+  display: unset;
+}
+.activeNav > div > span:nth-child(2) {
+  display: none;
+}
