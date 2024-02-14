@@ -6,11 +6,11 @@
 :root {
   --backgroundDark: #eff3f4;
   --background: #fff;
-  --primary: #3781ef;
-  --primaryHover: #1a76ff;
+  --primary: #10100e;
+  --primaryHover: #0d1218;
   --grayText: #787f8a;
   --mainText: #3b4560;
-  --dark1: #0f1419;
+  --dark1: #10100e;
   --dark2: #3b4560;
   --borderColor: #c7d0d8;
   --line: #eff3f4;
@@ -20,6 +20,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #787f8a #eff3f4;
 }
 .toastContainer .Toastify__toast {
   padding: 16px;
@@ -37,8 +39,7 @@
 .navbar {
   width: 275px;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   border-right: 1px solid var(--line);
 }
 .content {
@@ -51,10 +52,10 @@
   display: none;
 }
 .defaultNav > div > span:nth-child(2) {
-  display: unset;
+  display: flex;
 }
 .activeNav > div > span:nth-child(1) {
-  display: unset;
+  display: flex;
 }
 .activeNav > div > span:nth-child(2) {
   display: none;

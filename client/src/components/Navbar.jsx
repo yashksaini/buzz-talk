@@ -4,20 +4,20 @@ import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { BASE_URL } from "../main";
 import logo from "../assets/logo1.png";
-import { MdOutlineDashboard, MdDashboard } from "react-icons/md";
 import { FaRegUser, FaUser } from "react-icons/fa6";
 import { IoChatbubblesOutline, IoChatbubbles } from "react-icons/io5";
 import { HiOutlineUsers, HiMiniUsers } from "react-icons/hi2";
 import { BsBell, BsBellFill } from "react-icons/bs";
+import { GoHome, GoHomeFill } from "react-icons/go";
 const AdminNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { fullName, userId } = useSelector((state) => state.userAuth);
   const adminNavs = [
     {
-      text: "Dashboard",
+      text: "Home",
       link: "/",
-      icon: <MdOutlineDashboard />,
-      activeIcon: <MdDashboard />,
+      icon: <GoHome />,
+      activeIcon: <GoHomeFill />,
     },
     {
       text: "Profile",
@@ -51,14 +51,11 @@ const AdminNav = () => {
   };
 
   return (
-    <nav className=" h-full p-2">
-      <div className="w-full flex flex-1 gap-1 justify-start items-center px-3 py-4">
-        <img src={logo} alt="Logo" className="h-12" />
-        <span className=" text-primary text-2xl font-bold leading-10">
-          TALK
-        </span>
+    <nav className=" h-full p-2 flex flex-col px-3 overflow-y-auto overflow-x-hidden">
+      <div className="w-full flex gap-1 justify-start items-center px-3">
+        <img src={logo} alt="Logo" className="h-6" />
       </div>
-      <div className="mt-4">
+      <div className="w-full mt-4">
         {adminNavs.map((nav, index) => {
           return (
             <NavLink
@@ -71,13 +68,23 @@ const AdminNav = () => {
               }
             >
               <div className="inline-flex group-hover:bg-backgroundDark transition duration-300 ease-in-out justify-center items-center gap-3 px-5 h-12 rounded-full">
-                <span>{nav.activeIcon}</span>
-                <span>{nav.icon}</span>
-                <span>{nav.text}</span>
+                <span className="h-12 flex justify-center items-center pb-[2px]">
+                  {nav.activeIcon}
+                </span>
+                <span className="h-12 flex justify-center items-center pb-[2px]">
+                  {nav.icon}
+                </span>
+                <span className="leading-[48px]">{nav.text}</span>
               </div>
             </NavLink>
           );
         })}
+      </div>
+      <div
+        className="mt-auto w-full rounded-full bg-gray-100 min-h-12 basis-0 flex mb-2 border "
+        onClick={logout}
+      >
+        Logout
       </div>
     </nav>
   );
