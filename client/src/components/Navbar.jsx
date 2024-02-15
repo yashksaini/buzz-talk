@@ -81,7 +81,7 @@ const AdminNav = () => {
         })}
       </div>
       <div
-        className="mt-auto w-full rounded-full bg-gray-100 min-h-12 basis-0 flex mb-2 border "
+        className="mt-auto w-full rounded-full bg-gray-100 min-h-16 basis-0 flex mb-2 border justify-center items-center"
         onClick={logout}
       >
         Logout
