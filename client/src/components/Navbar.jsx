@@ -9,9 +9,10 @@ import { IoChatbubblesOutline, IoChatbubbles } from "react-icons/io5";
 import { HiOutlineUsers, HiMiniUsers } from "react-icons/hi2";
 import { BsBell, BsBellFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
+import ProfileIcon from "./ProfileIcon";
 const AdminNav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { fullName, userId } = useSelector((state) => state.userAuth);
+  const { fullName, userId, username } = useSelector((state) => state.userAuth);
   const adminNavs = [
     {
       text: "Home",
@@ -52,8 +53,8 @@ const AdminNav = () => {
 
   return (
     <nav className=" h-full p-2 flex flex-col px-3 overflow-y-auto overflow-x-hidden">
-      <div className="w-full flex gap-1 justify-start items-center px-3">
-        <img src={logo} alt="Logo" className="h-6" />
+      <div className="w-full flex gap-1 justify-start items-center px-3 mb-4 mt-2 ml-2 hover:cursor-pointer">
+        <img src={logo} alt="Logo" className="h-10" />
       </div>
       <div className="w-full mt-4">
         {adminNavs.map((nav, index) => {
@@ -81,10 +82,18 @@ const AdminNav = () => {
         })}
       </div>
       <div
-        className="mt-auto w-full rounded-full bg-gray-100 min-h-16 basis-0 flex mb-2 border justify-center items-center"
-        onClick={logout}
+        className="mt-auto w-full rounded-full  min-h-16 basis-0 flex mb-2  justify-center items-center px-2 gap-2 hover:bg-backgroundDark cursor-pointer"
+        // onClick={logout}
       >
-        Logout
+        <div className="w-10 h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
+          <ProfileIcon fullName={fullName} />
+        </div>
+        <div className="w-[calc(100%_-_52px)] h-10 flex justify-center items-start flex-col gap-[2px]">
+          <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 font-bold">
+            {fullName}
+          </p>
+          <p className="leading-4  text-mainText">@{username}</p>
+        </div>
       </div>
     </nav>
   );

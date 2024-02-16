@@ -2,26 +2,29 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import url("https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
 :root {
   --backgroundDark: #eff3f4;
   --background: #fff;
-  --primary: #10100e;
-  --primaryHover: #0d1218;
+  --primary: #165ddd;
+  --primaryHover: #1555cc;
   --grayText: #787f8a;
   --mainText: #3b4560;
   --dark1: #10100e;
   --dark2: #3b4560;
   --borderColor: #c7d0d8;
   --line: #eff3f4;
+  --transPrimary: #f2f7ff;
+  --primaryBorder: #a9c8fd;
 }
 * {
-  font-family: "Exo", sans-serif;
+  font-family: "Lato", sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   scrollbar-width: thin;
-  scrollbar-color: #787f8a #eff3f4;
+  scrollbar-color: #c4c9d2 #e3e5ea;
 }
 .toastContainer .Toastify__toast {
   padding: 16px;

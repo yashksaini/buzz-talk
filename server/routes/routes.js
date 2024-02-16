@@ -61,6 +61,8 @@ router.post("/login", async (req, res) => {
           isAuth: true,
           fullName: user.fullName,
           id: user._id,
+          username: user.username,
+          imgUrl: user.imgUrl,
         };
         req.session.userData = data;
         req.session.save();
