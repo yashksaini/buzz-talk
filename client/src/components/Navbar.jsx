@@ -1,17 +1,15 @@
 import axios from "axios";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { BASE_URL } from "../main";
-import logo from "../assets/logo1.png";
 import { FaRegUser, FaUser } from "react-icons/fa6";
 import { IoChatbubblesOutline, IoChatbubbles } from "react-icons/io5";
 import { HiOutlineUsers, HiMiniUsers } from "react-icons/hi2";
 import { BsBell, BsBellFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import ProfileIcon from "./ProfileIcon";
-const AdminNav = () => {
-  const [isOpen, setIsOpen] = useState(false);
+import { Tooltip as ReactTooltip } from "react-tooltip";
+const Navbar = () => {
   const { fullName, userId, username } = useSelector((state) => state.userAuth);
   const adminNavs = [
     {
@@ -53,8 +51,8 @@ const AdminNav = () => {
 
   return (
     <nav className=" h-full p-2 flex flex-col px-3 overflow-y-auto overflow-x-hidden">
-      <div className="w-full flex gap-1 justify-start items-center px-3 mb-4 mt-2 ml-2 hover:cursor-pointer">
-        <img src={logo} alt="Logo" className="h-10" />
+      <div className="w-full flex gap-1 justify-start items-center px-3 mb-4 mt-2 ml-2 hover:cursor-pointer text-2xl font-black">
+        BUZZ <span className="text-primary">TALK</span>
       </div>
       <div className="w-full mt-4">
         {adminNavs.map((nav, index) => {
@@ -81,9 +79,11 @@ const AdminNav = () => {
           );
         })}
       </div>
+
       <div
         className="mt-auto w-full rounded-full  min-h-16 basis-0 flex mb-2  justify-center items-center px-2 gap-2 hover:bg-backgroundDark cursor-pointer"
-        // onClick={logout}
+        data-tooltip-id="logout-tip"
+        onClick={logout}
       >
         <div className="w-10 h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
           <ProfileIcon fullName={fullName} />
@@ -95,8 +95,9 @@ const AdminNav = () => {
           <p className="leading-4  text-mainText">@{username}</p>
         </div>
       </div>
+      <ReactTooltip id="logout-tip" place="top" content="Log Out" />
     </nav>
   );
 };
 
-export default AdminNav;
+export default Navbar;

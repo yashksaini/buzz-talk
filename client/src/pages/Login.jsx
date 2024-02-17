@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 import HomeBanner from "../components/HomeBanner";
 import { sharedStyles } from "../sharedStyles/utils";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
-import logo from "../assets/logo1.png";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -69,8 +68,8 @@ const Login = () => {
     <div className="w-full bg-background min-h-screen flex justify-center">
       <HomeBanner />
       <div className="max-w-full w-[420px] lg:w-[520px] p-8">
-        <div className="w-full flex flex-1 gap-1 justify-start items-center">
-          <img src={logo} alt="Logo" className="h-10" />
+        <div className="w-full flex gap-1 justify-start items-center mb-4 mt-2 hover:cursor-pointer text-2xl font-black">
+          BUZZ <span className="text-primary">TALK</span>
         </div>
         <div className="w-full my-8">
           <h1 className="text-3xl font-bold text-dark1 mb-2">Log In</h1>
