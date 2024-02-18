@@ -99,6 +99,13 @@ router.get("/user/:userId", async (req, res) => {
         fullName: user.fullName,
         username: user.username,
         userId: user._id.toString(),
+        status: user.status,
+        about: user.about,
+        imgUrl: user.imgUrl,
+        banner: user.banner,
+        dateJoined: user.dateJoined,
+        DOB: user.DOB,
+        lastOnline: user.lastOnline,
       };
 
       res.json(userData);

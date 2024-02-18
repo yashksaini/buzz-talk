@@ -14,6 +14,7 @@ export const theme = {
       borderColor: "#c7d0d8",
       transPrimary: "#f2f7ff",
       primaryBorder: "#a9c8fd",
+      line: "#eff3f4",
     },
   },
 };
