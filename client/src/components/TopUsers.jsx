@@ -15,7 +15,6 @@ const TopUsers = () => {
 
       <div className="my-2 w-full bg-backgroundDark rounded-3xl p-4 min-h-80"></div>
       <div className="my-2 w-full bg-backgroundDark rounded-3xl p-4 min-h-40"></div>
-      <div className="my-2 w-full bg-backgroundDark rounded-3xl p-4 min-h-60"></div>
     </div>
   );
 };
