@@ -7,11 +7,13 @@ import { useSelector } from "react-redux";
 import { SiBigbluebutton } from "react-icons/si";
 import { IoCalendarOutline } from "react-icons/io5";
 import TopUsers from "../components/TopUsers";
+import EditProfileModal from "../components/EditProfileModal";
 const Profile = ({ socket }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();
   const { fullName, userId } = useSelector((state) => state.userAuth);
   const [userExists, setUserExists] = useState(true);
+  const [modalType, setModalType] = useState("");
 
   useEffect(() => {
     // Fetch user data based on the userId
@@ -49,7 +51,7 @@ const Profile = ({ socket }) => {
           <h1 className="text-2xl font-bold text-dark1 leading-7">
             {userData?.fullName}
           </h1>
-          <p className="text-mainText leading-4 flex justify-start items-center gap-1">
+          <p className="text-mainText leading-4 flex justify-start items-center gap-1 text-sm">
             <SiBigbluebutton />
             {userData?.status}
           </p>
@@ -58,7 +60,12 @@ const Profile = ({ socket }) => {
           <div className="absolute bottom-[-72px] left-5 w-36 h-36  border-white border-4 rounded-full bg-slate-300"></div>
         </div>
         <div className="flex justify-end items-start h-20">
-          <button className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line">
+          <button
+            className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
+            onClick={() => {
+              setModalType("edit");
+            }}
+          >
             Edit Profile
           </button>
         </div>
@@ -90,6 +97,7 @@ const Profile = ({ socket }) => {
       <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">
         <TopUsers />
       </div>
+      {modalType === "edit" && <EditProfileModal setModalType={setModalType} />}
     </div>
   );
 };
