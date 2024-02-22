@@ -97,7 +97,9 @@ const Profile = ({ socket }) => {
       <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">
         <TopUsers />
       </div>
-      {modalType === "edit" && <EditProfileModal setModalType={setModalType} />}
+      {modalType === "edit" && (
+        <EditProfileModal setModalType={setModalType} user={userData} />
+      )}
     </div>
   );
 };
