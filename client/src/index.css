@@ -63,3 +63,7 @@
 .activeNav > div > span:nth-child(2) {
   display: none;
 }
+.cropper-modal {
+  background-color: rgb(226, 232, 240);
+  opacity: 0.5;
+}
