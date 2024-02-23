@@ -20,7 +20,7 @@ const ImageCropper = ({ title, setIsCropper, image, ratio, updateImage }) => {
     <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-20 p-8 flex justify-center items-center">
       <div className="max-w-full w-[600px] bg-slate-200 rounded-xl h-[650px] max-h-full overflow-hidden ">
         <div className="w-full h-[650px] max-h-full overflow-x-hidden overflow-y-auto flex flex-col">
-          <div className="flex justify-between items-center min-h-14 w-full sticky top-0 left-0 bg-white border-b z-10 px-3 ">
+          <div className="flex justify-between items-center min-h-14 w-full sticky top-0 left-0 bg-white border-b z-50 px-3 ">
             <div className="flex justify-start items-center flex-1 gap-2 text-dark1">
               <button
                 onClick={() => setIsCropper(false)}
