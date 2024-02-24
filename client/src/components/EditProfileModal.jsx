@@ -64,6 +64,30 @@ const EditProfileModal = ({ setModalType, user }) => {
             {/* Modal Body */}
             <div className="w-full">
               <div className="aspect-[3/1] w-full bg-slate-200 relative mb-16">
+                <div>
+                <label
+                    htmlFor="bannerImg"
+                    className="w-12 h-12 bg-[rgba(0,0,0,0.4)] flex justify-center items-center text-white z-30 absolute top-[calc(50%_-_24px)] left-[calc(50%_-_24px)] rounded-full cursor-pointer hover:bg-[rgba(0,0,0,0.6)]"
+                    data-tooltip-id="banner-tip"
+                  >
+                    <TbCameraPlus />
+                  </label>
+                  <input
+                    type="file"
+                    id="bannerImg"
+                    className="hidden"
+                    onChange={profileImgInput}
+                    accept="image/*"
+                  />
+                  <ReactTooltip
+                    id="banner-tip"
+                    place="bottom"
+                    content="Add Banner"
+                    style={{
+                      zIndex: "50",
+                    }}
+                  />
+                </div>
                 <div className="absolute bottom-[-64px] left-8 w-32 h-32  border-white border-2 rounded-full bg-slate-300 ">
                   {form?.profile && (
                     <img
