@@ -43,7 +43,6 @@ router.post("/signup", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -115,6 +114,23 @@ router.get("/user/:userId", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/update-profile", async (req, res) => {
+  try {
+    const { fullName, about, status, profile, banner, userId } = req.body;
+    await User.findByIdAndUpdate(
+      userId,
+      { fullName, about, status, imgUrl: profile, banner },
+      { new: true, upsert: true }
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Profile updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
 

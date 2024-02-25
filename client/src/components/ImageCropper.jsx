@@ -6,14 +6,13 @@ import "cropperjs/dist/cropper.css";
 const ImageCropper = ({ title, setIsCropper, image, ratio, updateImage }) => {
   const cropperRef = createRef();
   const getCropData = () => {
-    if (typeof cropperRef.current?.cropper !== "undefined") {
-      if (ratio === 1) {
-        updateImage(
-          "profile",
-          cropperRef.current?.cropper.getCroppedCanvas().toDataURL()
-        );
-        setIsCropper(false);
-      }
+    const cropper = cropperRef.current?.cropper;
+
+    if (typeof cropper !== "undefined") {
+      const imageType = ratio === 1 ? "profile" : "banner";
+
+      updateImage(imageType, cropper.getCroppedCanvas().toDataURL());
+      setIsCropper(false);
     }
   };
   return (

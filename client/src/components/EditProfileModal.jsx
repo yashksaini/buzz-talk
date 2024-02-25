@@ -5,41 +5,101 @@ import { sharedStyles } from "../sharedStyles/utils";
 import { useState } from "react";
 import ImageCropper from "./ImageCropper";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { GrClose } from "react-icons/gr";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { BASE_URL } from "../main";
 const EditProfileModal = ({ setModalType, user }) => {
+  const { userId } = useSelector((state) => state.userAuth);
   const initialData = {
-    name: user?.fullName,
-    about: user?.about,
-    status: user?.status,
-    dob: user?.dob,
+    fullName: user?.fullName,
+    about: user?.about || "",
+    status: user?.status || "",
     profile: user?.imgUrl,
     banner: user?.banner,
+    userId: userId,
   };
+  console.log(user);
   const [form, setForm] = useState(initialData);
   const [isCropper, setIsCropper] = useState(false);
   const [title, setTitle] = useState("");
-  const [profileImg, setProfileImg] = useState();
+  const [cropImg, setCropImg] = useState();
   const [ratio, setRatio] = useState(1);
-  const profileImgInput = (e) => {
-    console.log("Selecting file...");
+  const handleFileInput = (e, title, ratio) => {
     e.preventDefault();
+
+    // Now user able to select the same image again
+    if (e.target && e.target.type === "file") {
+      e.target.addEventListener("click", () => {
+        e.target.value = null;
+      });
+    }
+
     let files;
     if (e.dataTransfer) {
       files = e.dataTransfer.files;
     } else if (e.target) {
       files = e.target.files;
     }
+
     const reader = new FileReader();
     reader.onload = () => {
-      setProfileImg(reader.result);
+      setCropImg(reader.result);
     };
     reader.readAsDataURL(files[0]);
+    // Open the cropper modal
     setIsCropper(true);
-    setTitle("Profile Picture");
-    setRatio(1);
+    setTitle(title); // Set the title of the modal
+    setRatio(ratio); // Set the ratio for cropping image
   };
+  // For updating profile picture
+  const profileImgInput = (e) => {
+    handleFileInput(e, "Profile Picture", 1);
+  };
+  // For updating banner image
+  const profileBannerInput = (e) => {
+    handleFileInput(e, "Banner", 3);
+  };
+  // For updating data from cropper to form
   const updateImage = (type, image) => {
-    if (type === "profile") {
-      setForm({ ...form, profile: image });
+    setForm({ ...form, [type]: image });
+  };
+  const saveProfie = async () => {
+    if (form.fullName.trim().length < 4) {
+      toast.info("Name: Minimum 4 characters", {
+        autoClose: 1000,
+        toastId: "name-info",
+        hideProgressBar: true,
+      });
+      return;
+    }
+    if (form.status.trim().length < 4) {
+      toast.info("Status: Minimum 4 characters", {
+        autoClose: 1000,
+        toastId: "status-info",
+        hideProgressBar: true,
+      });
+      return;
+    }
+    try {
+      const { data } = await axios.post(`${BASE_URL}/update-profile`, form);
+      if (data.success) {
+        toast.success(data.message, {
+          autoClose: 1000,
+          toastId: "update-success",
+          hideProgressBar: true,
+        });
+        // Close the edit modal
+        setModalType("");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Error updating profile", {
+        autoClose: 1000,
+        toastId: "update-error",
+        hideProgressBar: true,
+      });
     }
   };
   return (
@@ -57,38 +117,67 @@ const EditProfileModal = ({ setModalType, user }) => {
                 </button>
                 <h1 className="font-bold text-[20px] ">Edit Profile</h1>
               </div>
-              <button className="h-9 px-6 flex justify-center items-center bg-dark2 text-white rounded-full font-semibold">
+              <button
+                className="h-9 px-6 flex justify-center items-center bg-dark2 text-white rounded-full font-semibold"
+                onClick={saveProfie}
+              >
                 Save
               </button>
             </div>
             {/* Modal Body */}
             <div className="w-full">
               <div className="aspect-[3/1] w-full bg-slate-200 relative mb-16">
-                <div>
-                <label
+                {form?.banner && (
+                  <img
+                    src={form?.banner}
+                    alt="Banner"
+                    className="absolute z-[5] w-full h-auto top-0 left-0 "
+                  />
+                )}
+                <div className="z-10 absolute top-0 left-0 w-full h-full flex justify-center items-center gap-2">
+                  <label
                     htmlFor="bannerImg"
-                    className="w-12 h-12 bg-[rgba(0,0,0,0.4)] flex justify-center items-center text-white z-30 absolute top-[calc(50%_-_24px)] left-[calc(50%_-_24px)] rounded-full cursor-pointer hover:bg-[rgba(0,0,0,0.6)]"
+                    className="w-12 h-12 bg-[rgba(0,0,0,0.6)] flex justify-center items-center text-white  rounded-full cursor-pointer hover:bg-[rgba(0,0,0,0.8)]"
                     data-tooltip-id="banner-tip"
                   >
                     <TbCameraPlus />
                   </label>
-                  <input
-                    type="file"
-                    id="bannerImg"
-                    className="hidden"
-                    onChange={profileImgInput}
-                    accept="image/*"
-                  />
-                  <ReactTooltip
-                    id="banner-tip"
-                    place="bottom"
-                    content="Add Banner"
-                    style={{
-                      zIndex: "50",
-                    }}
-                  />
+                  {form?.banner && (
+                    <span
+                      className="w-12 h-12 bg-[rgba(0,0,0,0.6)] flex justify-center items-center text-white  rounded-full cursor-pointer hover:bg-[rgba(0,0,0,0.8)]"
+                      data-tooltip-id="remove-tip"
+                      onClick={() => {
+                        setForm({ ...form, banner: "" });
+                      }}
+                    >
+                      <GrClose />
+                    </span>
+                  )}
                 </div>
-                <div className="absolute bottom-[-64px] left-8 w-32 h-32  border-white border-2 rounded-full bg-slate-300 ">
+                <input
+                  type="file"
+                  id="bannerImg"
+                  className="hidden"
+                  onChange={profileBannerInput}
+                  accept="image/*"
+                />
+                <ReactTooltip
+                  id="banner-tip"
+                  place="bottom"
+                  content="Add Banner"
+                  style={{
+                    zIndex: "50",
+                  }}
+                />
+                <ReactTooltip
+                  id="remove-tip"
+                  place="bottom"
+                  content="Remove Banner"
+                  style={{
+                    zIndex: "50",
+                  }}
+                />
+                <div className="z-10 absolute bottom-[-64px] left-8 w-32 h-32  border-white border-2 rounded-full bg-slate-300 ">
                   {form?.profile && (
                     <img
                       src={form?.profile}
@@ -98,7 +187,7 @@ const EditProfileModal = ({ setModalType, user }) => {
                   )}
                   <label
                     htmlFor="profileImg"
-                    className="w-12 h-12 bg-[rgba(0,0,0,0.4)] flex justify-center items-center text-white z-30 absolute top-[calc(50%_-_24px)] left-[calc(50%_-_24px)] rounded-full cursor-pointer hover:bg-[rgba(0,0,0,0.6)]"
+                    className="w-12 h-12 bg-[rgba(0,0,0,0.6)] flex justify-center items-center text-white z-30 absolute top-[calc(50%_-_24px)] left-[calc(50%_-_24px)] rounded-full cursor-pointer hover:bg-[rgba(0,0,0,0.8)]"
                     data-tooltip-id="profile-tip"
                   >
                     <TbCameraPlus />
@@ -129,8 +218,10 @@ const EditProfileModal = ({ setModalType, user }) => {
                     type="text"
                     id="fullName"
                     className={sharedStyles.input}
-                    value={form?.name}
-                    // onChange={(e) => setFullName(e.target.value)}
+                    value={form?.fullName}
+                    onChange={(e) =>
+                      setForm({ ...form, fullName: e.target.value })
+                    }
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -144,6 +235,9 @@ const EditProfileModal = ({ setModalType, user }) => {
                     }
                     placeholder="About .. "
                     value={form?.about}
+                    onChange={(e) =>
+                      setForm({ ...form, about: e.target.value })
+                    }
                   ></textarea>
                 </div>
                 <div className="mb-4">
@@ -155,21 +249,10 @@ const EditProfileModal = ({ setModalType, user }) => {
                     id="status"
                     className={sharedStyles.input}
                     value={form?.status}
-                    // onChange={(e) => setFullName(e.target.value)}
+                    onChange={(e) =>
+                      setForm({ ...form, status: e.target.value })
+                    }
                     placeholder="Enter your status"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="dob" className={sharedStyles.label}>
-                    DOB
-                  </label>
-                  <input
-                    type="date"
-                    id="dob"
-                    className={sharedStyles.input}
-                    value={form?.dob}
-                    // onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Select DOB"
                   />
                 </div>
               </form>
@@ -181,7 +264,7 @@ const EditProfileModal = ({ setModalType, user }) => {
         <ImageCropper
           title={title}
           setIsCropper={setIsCropper}
-          image={profileImg}
+          image={cropImg}
           ratio={ratio}
           updateImage={updateImage}
         />

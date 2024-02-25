@@ -28,8 +28,8 @@ const password = process.env.DB_PASSWORD;
 const URL = `mongodb+srv://${username}:${password}@buzz-talk.cawopel.mongodb.net/?retryWrites=true&w=majority`;
 Connection(username, password);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 
 // Trust the first proxy in the chain

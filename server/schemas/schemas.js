@@ -10,7 +10,6 @@ const userSchema = mongoose.Schema({
   about: { type: String, default: "" },
   status: { type: String, default: "Available" },
   lastOnline: { type: Date, default: null },
-  DOB: { type: Date, default: null },
   dateJoined: { type: Date, default: Date.now },
 });
 export const User = mongoose.model("users", userSchema);

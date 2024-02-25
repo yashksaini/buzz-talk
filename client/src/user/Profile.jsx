@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../main";
@@ -42,7 +42,16 @@ const Profile = ({ socket }) => {
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [userId, modalType]);
+
+  const formatWithLineBreaks = (input) => {
+    return input?.split("\n").map((line, index) => (
+      <Fragment key={index}>
+        {line}
+        <br />
+      </Fragment>
+    ));
+  };
 
   return (
     <div className="flex justify-center items-center h-full">
@@ -56,8 +65,23 @@ const Profile = ({ socket }) => {
             {userData?.status}
           </p>
         </div>
-        <div className="h-[200px] w-full bg-slate-200 relative">
-          <div className="absolute bottom-[-72px] left-5 w-36 h-36  border-white border-4 rounded-full bg-slate-300"></div>
+        <div className="h-[200px] w-full bg-slate-200 relative z-10">
+          {userData?.banner && (
+            <img
+              className="w-full h-full absolute top-0 left-0 z-20"
+              alt="Banner"
+              src={userData?.banner}
+            />
+          )}
+          <div className="absolute bottom-[-72px] left-5 w-36 h-36  border-white border-4 rounded-full bg-slate-300 z-30">
+            {userData?.imgUrl && (
+              <img
+                className="w-full h-full absolute top-0 left-0 z-20 rounded-full"
+                alt="Profile"
+                src={userData?.imgUrl}
+              />
+            )}
+          </div>
         </div>
         <div className="flex justify-end items-start h-20">
           <button
@@ -77,7 +101,9 @@ const Profile = ({ socket }) => {
             <p className="text-mainText">@{userData?.username}</p>
           </div>
           <div className="mb-2 ">
-            <p className="text-mainText">{userData?.about}</p>
+            <p className="text-mainText">
+              {formatWithLineBreaks(userData?.about || "")}
+            </p>
           </div>
           <div className="mb-2 ">
             <p className="text-mainText flex justify-start items-center gap-2">
