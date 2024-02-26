@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema({
   imgUrl: { type: String, default: "" },
   banner: { type: String, default: "" },
   about: { type: String, default: "" },
-  status: { type: String, default: "Available" },
+  status: { type: String, default: "Available for a chat" },
   lastOnline: { type: Date, default: null },
   dateJoined: { type: Date, default: Date.now },
 });

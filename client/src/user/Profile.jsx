@@ -4,7 +4,6 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../main";
 import { useSelector } from "react-redux";
-import { SiBigbluebutton } from "react-icons/si";
 import { IoCalendarOutline } from "react-icons/io5";
 import TopUsers from "../components/TopUsers";
 import EditProfileModal from "../components/EditProfileModal";
@@ -60,8 +59,7 @@ const Profile = ({ socket }) => {
           <h1 className="text-2xl font-bold text-dark1 leading-7">
             {userData?.fullName}
           </h1>
-          <p className="text-mainText leading-4 flex justify-start items-center gap-1 text-sm">
-            <SiBigbluebutton />
+          <p className="text-mainText leading-4 flex justify-start items-center gap-1 text-sm  overflow-hidden text-ellipsis whitespace-nowrap">
             {userData?.status}
           </p>
         </div>
@@ -84,14 +82,16 @@ const Profile = ({ socket }) => {
           </div>
         </div>
         <div className="flex justify-end items-start h-20">
-          <button
-            className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
-            onClick={() => {
-              setModalType("edit");
-            }}
-          >
-            Edit Profile
-          </button>
+          {userId === userData?.userId && (
+            <button
+              className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
+              onClick={() => {
+                setModalType("edit");
+              }}
+            >
+              Edit Profile
+            </button>
+          )}
         </div>
         <div className="px-3 pb-4 border-b border-line">
           <div className="mb-2">

@@ -82,10 +82,24 @@ const EditProfileModal = ({ setModalType, user }) => {
       });
       return;
     }
+    if (form.status.length > 30) {
+      toast.info("Status: Maximum 30 characters", {
+        autoClose: 1000,
+        toastId: "status-info",
+        hideProgressBar: true,
+      });
+      return;
+    }
+    toast.success("Updating Profile...", {
+      autoClose: false,
+      toastId: "update-process",
+      hideProgressBar: true,
+    });
     try {
       const { data } = await axios.post(`${BASE_URL}/update-profile`, form);
       if (data.success) {
-        toast.success(data.message, {
+        toast.update("update-process", {
+          render: data.message,
           autoClose: 1000,
           toastId: "update-success",
           hideProgressBar: true,
@@ -95,10 +109,12 @@ const EditProfileModal = ({ setModalType, user }) => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Error updating profile", {
+      toast.update("update-process", {
         autoClose: 1000,
-        toastId: "update-error",
+        toastId: "update-process",
+        render: "Error updating profile",
         hideProgressBar: true,
+        type: toast.TYPE.ERROR,
       });
     }
   };

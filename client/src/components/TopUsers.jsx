@@ -1,7 +1,7 @@
 import { GoSearch } from "react-icons/go";
 const TopUsers = () => {
   return (
-    <div className="w-full ">
+    <div className="w-full px-4">
       <div className="w-full sticky top-0 left-0 z-10 py-2 bg-white">
         <div className="w-full h-12 bg-backgroundDark rounded-full border border-backgroundDark flex justify-center items-center gap-3 px-3 focus-within:bg-white focus-within:border-primaryBorder ">
           <GoSearch className="text-2xl group:focus-within text-primary " />
