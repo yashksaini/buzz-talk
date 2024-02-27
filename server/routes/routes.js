@@ -117,6 +117,22 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
+router.get("/users/recent-users", async (req, res) => {
+  const { userId } = req.body;
+  try {
+    // Find recent users excluding the specified userId
+    const recentUsers = await User.find({ _id: { $ne: userId } })
+      .sort({ dateJoined: -1 })
+      .limit(5)
+      .select("fullName username _id imgUrl ") // Specify the fields to retrieve
+      .lean();
+    res.status(200).json(recentUsers);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
 router.post("/update-profile", async (req, res) => {
   try {
     const { fullName, about, status, profile, banner, userId } = req.body;

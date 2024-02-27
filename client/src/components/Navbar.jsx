@@ -10,7 +10,9 @@ import { GoHome, GoHomeFill } from "react-icons/go";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const Navbar = () => {
-  const { fullName, userId, username } = useSelector((state) => state.userAuth);
+  const { fullName, userId, username, imgUrl } = useSelector(
+    (state) => state.userAuth
+  );
   const adminNavs = [
     {
       text: "Home",
@@ -86,7 +88,10 @@ const Navbar = () => {
         onClick={logout}
       >
         <div className="w-10 h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
-          <ProfileIcon fullName={fullName} />
+          {imgUrl && (
+            <img src={imgUrl} alt="profile" className="w-9 h-9 rounded-full" />
+          )}
+          {!imgUrl && <ProfileIcon fullName={fullName} />}
         </div>
         <div className="w-[calc(100%_-_52px)] h-10 flex justify-center items-start flex-col gap-[2px]">
           <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 font-bold">

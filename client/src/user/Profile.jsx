@@ -41,7 +41,7 @@ const Profile = ({ socket }) => {
     };
 
     fetchUserData();
-  }, [userId, modalType]);
+  }, [userId, modalType, id, socket, fullName]);
 
   const formatWithLineBreaks = (input) => {
     return input?.split("\n").map((line, index) => (
