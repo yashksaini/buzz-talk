@@ -1,26 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { GoSearch } from "react-icons/go";
-import { useSelector } from "react-redux";
-import { BASE_URL } from "../main";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import ProfileIcon from "./ProfileIcon";
+import { fetchRecentUsers } from "../redux/topUsers";
+import { Link } from "react-router-dom";
 const TopUsers = () => {
+  const dispatch = useDispatch();
   const { userId } = useSelector((state) => state.userAuth);
-  const [recentUsers, setRecentUsers] = useState([]);
+  const { topUsersList } = useSelector((state) => state.topUsers);
   useEffect(() => {
-    const fetchRecentUsers = async () => {
+    const fetchUsersList = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/users/recent-users`, {
-          userId,
-        });
-        console.log(response.data);
-        setRecentUsers(response.data);
+        dispatch(fetchRecentUsers(userId));
       } catch (error) {
         console.error("Error fetching recent users:", error);
       }
     };
-    fetchRecentUsers();
-  }, [userId]);
+    fetchUsersList();
+  }, [dispatch, userId]);
   return (
     <div className="w-full px-4">
       <div className="w-full sticky top-0 left-0 z-10 py-2 bg-white">
@@ -36,7 +33,7 @@ const TopUsers = () => {
 
       <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80">
         <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">New Members</h1>
-        {recentUsers.map((user, index) => (
+        {topUsersList?.map((user, index) => (
           <div
             key={index}
             className="w-full py-3 px-6 flex justify-start items-center gap-2 hover:bg-line cursor-pointer"
@@ -59,12 +56,12 @@ const TopUsers = () => {
                 @{user?.username}
               </p>
             </div>
-            <a
-              href={"/profile/" + user?._id}
+            <Link
+              to={"/profile/" + user?._id}
               className="px-5 py-1 bg-dark2 text-white rounded-full "
             >
               View
-            </a>
+            </Link>
           </div>
         ))}
       </div>

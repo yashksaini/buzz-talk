@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userAuthReducer from "./userAuthentication";
-import socketReducer from "./socketSlice";
+import topUsersReducer from "./topUsers";
 export default configureStore({
   reducer: {
-    socket: socketReducer,
     userAuth: userAuthReducer,
+    topUsers: topUsersReducer,
   },
 });
