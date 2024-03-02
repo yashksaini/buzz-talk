@@ -13,3 +13,28 @@ const userSchema = mongoose.Schema({
   dateJoined: { type: Date, default: Date.now },
 });
 export const User = mongoose.model("users", userSchema);
+
+// Friends Schema
+const friendSchema = new mongoose.Schema({
+  sender: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  receiver: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected", "canceled", "blocked"],
+    default: "pending",
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+export const Friend = mongoose.model("Friend", friendSchema);
