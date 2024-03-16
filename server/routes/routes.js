@@ -150,4 +150,22 @@ router.post("/update-profile", async (req, res) => {
   }
 });
 
+router.get("/search/:query", async (req, res) => {
+  const { query } = req.params;
+
+  try {
+    const users = await User.find({
+      $or: [
+        { username: { $regex: query, $options: "i" } }, // Case-insensitive search for username
+        { fullName: { $regex: query, $options: "i" } }, // Case-insensitive search for fullname
+      ],
+    }).select("_id username fullName imgUrl"); // Adjust the fields you want to return
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 export default router;
