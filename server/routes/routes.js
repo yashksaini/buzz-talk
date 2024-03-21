@@ -116,7 +116,6 @@ router.get("/user/:userId", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-// Add a functionality so that from the more button, the user can see 5 more users 
 router.get("/users/recent-users", async (req, res) => {
   const { userId } = req.body;
   try {
