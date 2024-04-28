@@ -82,16 +82,11 @@ router.post("/login", async (req, res) => {
 
 // After Login Routes
 
-router.get("/user/:userId", async (req, res) => {
-  const { userId } = req.params;
-
-  // Validate if userId is a valid ObjectId
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ message: "Invalid userId" });
-  }
+router.get("/user/:username", async (req, res) => {
+  const { username } = req.params;
 
   try {
-    const user = await User.findOne({ _id: userId }).lean();
+    const user = await User.findOne({ username: username }).lean();
 
     if (user) {
       const userData = {
@@ -118,7 +113,7 @@ router.get("/user/:userId", async (req, res) => {
 });
 
 router.get("/users/recent-users", async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.query;
   try {
     // Find recent users excluding the specified userId
     const recentUsers = await User.find({ _id: { $ne: userId } })

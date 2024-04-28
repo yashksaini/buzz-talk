@@ -10,9 +10,7 @@ import { GoHome, GoHomeFill } from "react-icons/go";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 const Navbar = () => {
-  const { fullName, userId, username, imgUrl } = useSelector(
-    (state) => state.userAuth
-  );
+  const { fullName, username, imgUrl } = useSelector((state) => state.userAuth);
   const adminNavs = [
     {
       text: "Home",
@@ -22,7 +20,7 @@ const Navbar = () => {
     },
     {
       text: "Profile",
-      link: `/profile/${userId}`,
+      link: `/profile/${username}`,
       icon: <FaRegUser />,
       activeIcon: <FaUser />,
     },

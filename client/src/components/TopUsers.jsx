@@ -6,6 +6,8 @@ import { fetchRecentUsers } from "../redux/topUsers";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../main";
+import LineProfileCard from "./UI/LineProfileCard";
+import Loader from "./UI/Loader";
 const TopUsers = () => {
   const dispatch = useDispatch();
   const { userId } = useSelector((state) => state.userAuth);
@@ -35,7 +37,7 @@ const TopUsers = () => {
   return (
     <div className="w-full px-4">
       <div className="w-full sticky top-0 left-0 z-10 py-2 bg-white">
-        <div className="w-full h-12 bg-backgroundDark rounded-full border border-backgroundDark flex justify-center items-center gap-3 px-3 focus-within:bg-white focus-within:border-primaryBorder ">
+        <div className="w-full h-12 bg-backgroundDark rounded-full border border-backgroundDark flex justify-center items-center gap-3 pl-3 pr-2 focus-within:bg-white focus-within:border-primaryBorder ">
           <GoSearch className="text-2xl group:focus-within text-primary " />
           <input
             type="text"
@@ -49,7 +51,12 @@ const TopUsers = () => {
               }
             }}
           />
-          <button onClick={findUser}>Search</button>
+          <button
+            onClick={findUser}
+            className="bg-dark2 text-white h-8 px-4 rounded-full"
+          >
+            Search
+          </button>
         </div>
       </div>
       {search.length > 0 && searchResults.length > 0 && (
@@ -90,39 +97,20 @@ const TopUsers = () => {
           ))}
         </div>
       )}
-      <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80">
-        <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">New Members</h1>
+      <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-[394px]   ">
+        {topUsersList?.length !== 0 && (
+          <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">
+            New Members
+          </h1>
+        )}
         {topUsersList?.map((user, index) => (
-          <div
-            key={index}
-            className="w-full py-3 px-6 flex justify-start items-center gap-2 hover:bg-line cursor-pointer"
-          >
-            <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
-              {!user?.imgUrl && <ProfileIcon fullName={user?.fullName} />}
-              {user?.imgUrl && (
-                <img
-                  src={user?.imgUrl}
-                  alt="profile"
-                  className="w-9 h-9 rounded-full"
-                />
-              )}
-            </div>
-            <div className="w-[calc(100%_-_52px)] h-10 flex justify-center items-start flex-col gap-[2px]">
-              <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 font-bold ">
-                {user?.fullName}
-              </p>
-              <p className="leading-4  text-mainText text-xs">
-                @{user?.username}
-              </p>
-            </div>
-            <Link
-              to={"/profile/" + user?._id}
-              className="px-5 py-1 bg-dark2 text-white rounded-full "
-            >
-              View
-            </Link>
-          </div>
+          <LineProfileCard key={index} user={user} />
         ))}
+        {topUsersList?.length === 0 && (
+          <div className="w-full flex justify-center items-center min-h-[362px]">
+            <Loader />
+          </div>
+        )}
       </div>
     </div>
   );
