@@ -111,7 +111,6 @@ router.get("/user/:username", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 router.get("/users/recent-users", async (req, res) => {
   const { userId } = req.query;
   try {
