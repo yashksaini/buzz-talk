@@ -146,6 +146,8 @@ router.post("/update-profile", async (req, res) => {
 
 router.get("/search/:query", async (req, res) => {
   const { query } = req.params;
+  const { page, resultsPerPage } = req.query;
+  const skip = (parseInt(page) - 1) * resultsPerPage;
 
   try {
     const users = await User.find({
@@ -153,7 +155,10 @@ router.get("/search/:query", async (req, res) => {
         { username: { $regex: query, $options: "i" } }, // Case-insensitive search for username
         { fullName: { $regex: query, $options: "i" } }, // Case-insensitive search for fullname
       ],
-    }).select("_id username fullName imgUrl"); // Adjust the fields you want to return
+    })
+      .select("_id username fullName imgUrl")
+      .skip(skip)
+      .limit(parseInt(resultsPerPage)); // Adjust the fields you want to return
 
     res.status(200).json(users);
   } catch (error) {

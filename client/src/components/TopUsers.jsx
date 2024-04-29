@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { GoSearch } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
-import ProfileIcon from "./ProfileIcon";
 import { fetchRecentUsers } from "../redux/topUsers";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../main";
 import LineProfileCard from "./UI/LineProfileCard";
@@ -14,6 +12,10 @@ const TopUsers = () => {
   const { topUsersList } = useSelector((state) => state.topUsers);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
+  const [page, setPage] = useState(1);
+  const resultsPerPage = 5;
   useEffect(() => {
     const fetchUsersList = async () => {
       try {
@@ -24,15 +26,34 @@ const TopUsers = () => {
     };
     fetchUsersList();
   }, [dispatch, userId]);
-  const findUser = async () => {
+  const findUser = async (pageNo) => {
+    let currPageNo = page;
+    if (pageNo) {
+      currPageNo = pageNo;
+    }
+    setIsSearching(true);
     try {
-      const response = await axios.get(`${BASE_URL}/search/${search.trim()}`);
+      const response = await axios.get(
+        `${BASE_URL}/search/${search.trim()}?page=${currPageNo}&resultsPerPage=${resultsPerPage}`
+      );
       if (response.data) {
-        setSearchResults(response.data);
+        setSearchResults((prevResults) => [...prevResults, ...response.data]);
+        setIsSearching(false);
+        setPage((prevPage) => prevPage + 1);
+        setHasMore(response.data.length === resultsPerPage);
       }
     } catch (error) {
       console.log(error);
+      setIsSearching(false);
     }
+  };
+  const handleSearch = () => {
+    setSearchResults([]);
+    setPage(1);
+    findUser(1);
+  };
+  const loadMore = () => {
+    findUser();
   };
   return (
     <div className="w-full px-4">
@@ -48,53 +69,40 @@ const TopUsers = () => {
               setSearch(e.target.value);
               if (e.target.value.trim().length === 0) {
                 setSearchResults([]);
+                setPage(1);
               }
             }}
           />
           <button
-            onClick={findUser}
+            onClick={handleSearch}
             className="bg-dark2 text-white h-8 px-4 rounded-full"
           >
             Search
           </button>
         </div>
       </div>
-      {search.length > 0 && searchResults.length > 0 && (
+      {!isSearching && search.length > 0 && searchResults.length > 0 && (
         <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80">
           <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">
-            {searchResults.length} results found
+            {searchResults.length} result{searchResults.length > 1 ? "s" : ""}{" "}
+            found {hasMore && "& more"}
           </h1>
           {searchResults?.map((user, index) => (
-            <div
-              key={index}
-              className="w-full py-3 px-6 flex justify-start items-center gap-2 hover:bg-line cursor-pointer"
-            >
-              <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
-                {!user?.imgUrl && <ProfileIcon fullName={user?.fullName} />}
-                {user?.imgUrl && (
-                  <img
-                    src={user?.imgUrl}
-                    alt="profile"
-                    className="w-9 h-9 rounded-full"
-                  />
-                )}
-              </div>
-              <div className="w-[calc(100%_-_52px)] h-10 flex justify-center items-start flex-col gap-[2px]">
-                <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 font-bold ">
-                  {user?.fullName}
-                </p>
-                <p className="leading-4  text-mainText text-xs">
-                  @{user?.username}
-                </p>
-              </div>
-              <Link
-                to={"/profile/" + user?._id}
-                className="px-5 py-1 bg-dark2 text-white rounded-full "
-              >
-                View
-              </Link>
-            </div>
+            <LineProfileCard key={index} user={user} />
           ))}
+          {hasMore && (
+            <button
+              onClick={loadMore}
+              className="ml-6 my-2 flex justify-center items-center text-dark2 font-semibold "
+            >
+              Load More...
+            </button>
+          )}
+        </div>
+      )}
+      {isSearching && search.length > 0 && (
+        <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80 flex justify-center items-center">
+          <Loader />
         </div>
       )}
       <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-[394px]   ">
