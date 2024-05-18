@@ -15,6 +15,7 @@ const TopUsers = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [page, setPage] = useState(1);
+  const [isLoadingMore, setIsLoadingMore] = useState(false); // Used for adding loader for loading more results
   const resultsPerPage = 5;
   useEffect(() => {
     const fetchUsersList = async () => {
@@ -30,8 +31,10 @@ const TopUsers = () => {
     let currPageNo = page;
     if (pageNo) {
       currPageNo = pageNo;
+      setIsSearching(true);
+    } else {
+      setIsLoadingMore(true);
     }
-    setIsSearching(true);
     try {
       const response = await axios.get(
         `${BASE_URL}/search/${search.trim()}?page=${currPageNo}&resultsPerPage=${resultsPerPage}`
@@ -39,12 +42,14 @@ const TopUsers = () => {
       if (response.data) {
         setSearchResults((prevResults) => [...prevResults, ...response.data]);
         setIsSearching(false);
+        setIsLoadingMore(false);
         setPage((prevPage) => prevPage + 1);
         setHasMore(response.data.length === resultsPerPage);
       }
     } catch (error) {
       console.log(error);
       setIsSearching(false);
+      setIsLoadingMore(false);
     }
   };
   const handleSearch = () => {
@@ -90,13 +95,18 @@ const TopUsers = () => {
           {searchResults?.map((user, index) => (
             <LineProfileCard key={index} user={user} />
           ))}
-          {hasMore && (
+          {hasMore && !isLoadingMore && (
             <button
               onClick={loadMore}
               className="ml-6 my-2 flex justify-center items-center text-dark2 font-semibold "
             >
               Load More...
             </button>
+          )}
+          {isLoadingMore && (
+            <div className="w-full flex justify-center items-center my-2">
+              <Loader />
+            </div>
           )}
         </div>
       )}
