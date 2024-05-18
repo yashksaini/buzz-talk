@@ -16,6 +16,7 @@ const TopUsers = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [page, setPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false); // Used for adding loader for loading more results
+  const [isSearched, setIsSearched] = useState(false);
   const resultsPerPage = 5;
   useEffect(() => {
     const fetchUsersList = async () => {
@@ -43,6 +44,7 @@ const TopUsers = () => {
         setSearchResults((prevResults) => [...prevResults, ...response.data]);
         setIsSearching(false);
         setIsLoadingMore(false);
+        setIsSearched(true);
         setPage((prevPage) => prevPage + 1);
         setHasMore(response.data.length === resultsPerPage);
       }
@@ -50,6 +52,7 @@ const TopUsers = () => {
       console.log(error);
       setIsSearching(false);
       setIsLoadingMore(false);
+      setIsSearched(true);
     }
   };
   const handleSearch = () => {
@@ -72,6 +75,7 @@ const TopUsers = () => {
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
+              setIsSearched(false);
               if (e.target.value.trim().length === 0) {
                 setSearchResults([]);
                 setPage(1);
@@ -110,6 +114,17 @@ const TopUsers = () => {
           )}
         </div>
       )}
+      {!isSearching &&
+        search.length > 0 &&
+        searchResults.length === 0 &&
+        isSearched && (
+          <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80">
+            <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">
+              {searchResults.length} result{searchResults.length > 1 ? "s" : ""}{" "}
+              found {hasMore && "& more"}
+            </h1>
+          </div>
+        )}
       {isSearching && search.length > 0 && (
         <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80 flex justify-center items-center">
           <Loader />
