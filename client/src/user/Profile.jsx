@@ -17,6 +17,7 @@ const Profile = ({ socket }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setUserExists(true);
     // Fetch user data based on the userId
     setIsLoading(true);
     const fetchUserData = async () => {
@@ -24,11 +25,13 @@ const Profile = ({ socket }) => {
         const response = await axios.get(`${BASE_URL}/user/${id}`);
         if (!response.data) {
           setUserExists(false);
+          setIsLoading(false);
           return;
         }
 
         setUserData(response.data);
         setIsLoading(false);
+        setUserExists(true);
 
         // Emit a "profileVisit" event when the user's profile is visited
         if (userId !== id) {
@@ -40,6 +43,7 @@ const Profile = ({ socket }) => {
       } catch (error) {
         console.error("Error fetching user data:", error);
         setUserExists(false);
+        setIsLoading(false);
       }
     };
 
@@ -63,7 +67,7 @@ const Profile = ({ socket }) => {
             <CustomSkeleton className="text-2xl font-bold text-dark1 leading-7 min-w-48" />
           ) : (
             <h1 className="text-2xl font-bold text-dark1 leading-7 min-w-48">
-              {userData?.fullName}
+              {userData?.fullName || "Profile"}
             </h1>
           )}
           {isLoading ? (
@@ -124,57 +128,74 @@ const Profile = ({ socket }) => {
             )
           )}
         </div>
-        <div className="px-3 pb-4 border-b border-line">
-          <div className="mb-2 min-w-48">
-            {isLoading ? (
-              <CustomSkeleton className="text-2xl font-bold text-dark1 leading-6 w-48" />
-            ) : (
-              <h2 className="text-2xl font-bold text-dark1 leading-6 ">
-                {userData?.fullName}
-              </h2>
-            )}
-            {isLoading ? (
-              <CustomSkeleton className={"w-24"} />
-            ) : (
-              <p className="text-mainText">@{userData?.username}</p>
-            )}
+        {userExists ? (
+          <div className="px-3 pb-4 border-b border-line">
+            <div className="mb-2 min-w-48">
+              {isLoading ? (
+                <CustomSkeleton className="text-2xl font-bold text-dark1 leading-6 w-48" />
+              ) : (
+                <h2 className="text-2xl font-bold text-dark1 leading-6 ">
+                  {userData?.fullName}
+                </h2>
+              )}
+              {isLoading ? (
+                <CustomSkeleton className={"w-24"} />
+              ) : (
+                <p className="text-mainText">@{userData?.username}</p>
+              )}
+            </div>
+            <div className="mb-2 ">
+              {isLoading ? (
+                <>
+                  <CustomSkeleton className={"w-full"} />{" "}
+                  <CustomSkeleton className={"w-[60%]"} />
+                  <CustomSkeleton className={"w-[80%]"} />
+                </>
+              ) : (
+                <p className="text-mainText">
+                  {formatWithLineBreaks(userData?.about || "")}
+                </p>
+              )}
+            </div>
+            <div className="mb-2 ">
+              {isLoading ? (
+                <CustomSkeleton
+                  className={
+                    "text-mainText flex justify-start items-center gap-2 w-36"
+                  }
+                />
+              ) : (
+                <p className="text-mainText flex justify-start items-center gap-2">
+                  <IoCalendarOutline />
+                  <b>Joined</b>
+                  {userData?.dateJoined
+                    ? new Date(userData.dateJoined).toLocaleDateString(
+                        "en-US",
+                        {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }
+                      )
+                    : ""}
+                </p>
+              )}
+            </div>
           </div>
-          <div className="mb-2 ">
-            {isLoading ? (
-              <>
-                <CustomSkeleton className={"w-full"} />{" "}
-                <CustomSkeleton className={"w-[60%]"} />
-                <CustomSkeleton className={"w-[80%]"} />
-              </>
-            ) : (
-              <p className="text-mainText">
-                {formatWithLineBreaks(userData?.about || "")}
-              </p>
+        ) : (
+          <>
+            {!isLoading && (
+              <div className="w-[60%] mt-5 mx-auto">
+                <h2 className="text-4xl font-bold text-dark1">
+                  This account doesn&apos;t exist
+                </h2>
+                <p className="text-mainText">Try searching for another</p>
+              </div>
             )}
-          </div>
-          <div className="mb-2 ">
-            {isLoading ? (
-              <CustomSkeleton
-                className={
-                  "text-mainText flex justify-start items-center gap-2 w-36"
-                }
-              />
-            ) : (
-              <p className="text-mainText flex justify-start items-center gap-2">
-                <IoCalendarOutline />
-                <b>Joined</b>
-                {userData?.dateJoined
-                  ? new Date(userData.dateJoined).toLocaleDateString("en-US", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })
-                  : ""}
-              </p>
-            )}
-          </div>
-        </div>
+          </>
+        )}
       </div>
+
       <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">
         <TopUsers />
       </div>
