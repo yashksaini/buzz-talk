@@ -51,6 +51,23 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
+.active-tab {
+  position: relative;
+  font-weight: 700;
+}
+.active-tab::after {
+  content: "";
+  width: 60%;
+  height: 4px;
+  border-radius: 100px;
+  background-color: var(--primary);
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+}
+.active-tab:hover {
+  background-color: var(--line);
+}
 .defaultNav > div > span:nth-child(1) {
   display: none;
 }

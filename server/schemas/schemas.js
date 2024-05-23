@@ -26,10 +26,24 @@ const friendSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  // It contain who blocked the other
+  blockedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
+  },
   status: {
     type: String,
     enum: ["pending", "accepted", "rejected", "canceled", "blocked"],
     default: "pending",
+  },
+  requestDate: {
+    type: Date,
+    required: true,
+  },
+  startTime: {
+    type: Date,
+    required: true,
   },
   timestamp: {
     type: Date,
