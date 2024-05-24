@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import ProfileIcon from "../ProfileIcon";
 import PropTypes from "prop-types";
 
-const LineProfileCard = ({ key, user }) => {
+const LineProfileCard = ({ user }) => {
   return (
     <Link
       to={"/profile/" + user?.username}
-      key={key}
+      key={user?.username}
       className="w-full py-3 px-6 flex justify-start items-center gap-2 hover:bg-line cursor-pointer"
     >
       <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
@@ -30,7 +30,6 @@ const LineProfileCard = ({ key, user }) => {
 };
 // Prop types validation
 LineProfileCard.propTypes = {
-  key: PropTypes.number.isRequired,
   user: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     fullName: PropTypes.string.isRequired,

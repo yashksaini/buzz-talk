@@ -31,6 +31,7 @@ const friendSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: false,
+    default: null,
   },
   status: {
     type: String,
@@ -43,7 +44,7 @@ const friendSchema = new mongoose.Schema({
   },
   startTime: {
     type: Date,
-    required: true,
+    default: null,
   },
   timestamp: {
     type: Date,

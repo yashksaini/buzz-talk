@@ -11,6 +11,10 @@ import {
   searchUser,
   updateProfile,
 } from "../controllers/usersController.js";
+import {
+  addFriend,
+  getFriendshipStatus,
+} from "../controllers/friendsController.js";
 
 const router = express.Router();
 
@@ -25,5 +29,9 @@ router.get("/user/:username", getUserProfile);
 router.get("/users/recent-users", getRecentUsers);
 router.post("/update-profile", updateProfile);
 router.get("/search/:query", searchUser);
+
+//Friends Routes
+router.get("/friends/friendship-status", getFriendshipStatus);
+router.post("/friends/add-friend", addFriend);
 
 export default router;

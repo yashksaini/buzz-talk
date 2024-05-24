@@ -8,6 +8,8 @@ import { IoCalendarOutline } from "react-icons/io5";
 import TopUsers from "../components/TopUsers";
 import EditProfileModal from "../components/EditProfileModal";
 import CustomSkeleton from "../components/UI/CustomSkeleton";
+import { friendshipStatuses } from "../components/Contants/friendsConstants";
+import { toast } from "react-toastify";
 const Profile = ({ socket }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();
@@ -15,6 +17,9 @@ const Profile = ({ socket }) => {
   const [userExists, setUserExists] = useState(true);
   const [modalType, setModalType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [friendshipStatus, setFriendshipStatus] = useState(
+    friendshipStatuses.default
+  );
 
   useEffect(() => {
     setUserExists(true);
@@ -50,6 +55,30 @@ const Profile = ({ socket }) => {
     fetchUserData();
   }, [userId, modalType, id, socket, fullName]);
 
+  useEffect(() => {
+    const fetchFriendshipStatus = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/friends/friendship-status`,
+          {
+            params: {
+              ownerId: userId,
+              profileUsername: id,
+            },
+          }
+        );
+        if (response.data) {
+          const { friendshipStatus } = response.data;
+          setFriendshipStatus(friendshipStatuses[friendshipStatus]);
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching friendship status", error);
+      }
+    };
+    fetchFriendshipStatus();
+  }, [userId, id]);
+
   const formatWithLineBreaks = (input) => {
     return input?.split("\n").map((line, index) => (
       <Fragment key={index}>
@@ -57,6 +86,51 @@ const Profile = ({ socket }) => {
         <br />
       </Fragment>
     ));
+  };
+  const sendRequest = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/friends/add-friend`, {
+        ownerId: userId,
+        profileUsername: id,
+      });
+      if (response.data) {
+        const { friendshipStatus } = response.data;
+        setFriendshipStatus(friendshipStatuses[friendshipStatus]);
+        toast.success("Friend request sent successfully");
+        return;
+      }
+    } catch (error) {
+      console.error("Error sending friend request", error);
+      toast.error("Error sending friend request");
+    }
+  };
+  const withdrawRequest = () => {
+    console.log("WITHDRAW REQUEST");
+  };
+  const removeFriend = () => {
+    console.log("REMOVE FRIEND");
+  };
+  const handleFriendStatusChange = () => {
+    const statuses = friendshipStatuses;
+    switch (friendshipStatus) {
+      case statuses.default:
+      case statuses.rejected:
+      case statuses.canceled:
+        sendRequest();
+        break;
+      case statuses.pending:
+        withdrawRequest();
+        break;
+      case statuses.accepted:
+        removeFriend();
+        break;
+      case statuses.blocked:
+        toast.error("Sorry, you are blocked.");
+        break;
+      default:
+        // Optional: Handle unexpected statuses
+        console.warn("Unexpected friendship status:", friendshipStatus);
+    }
   };
 
   return (
@@ -115,17 +189,22 @@ const Profile = ({ socket }) => {
             <CustomSkeleton
               className={"mt-2 mr-2 rounded-full w-[108px] h-[38px]"}
             />
+          ) : userId === userData?.userId ? (
+            <button
+              className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
+              onClick={() => {
+                setModalType("edit");
+              }}
+            >
+              Edit Profile
+            </button>
           ) : (
-            userId === userData?.userId && (
-              <button
-                className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
-                onClick={() => {
-                  setModalType("edit");
-                }}
-              >
-                Edit Profile
-              </button>
-            )
+            <button
+              className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
+              onClick={handleFriendStatusChange}
+            >
+              {friendshipStatus}
+            </button>
           )}
         </div>
         {userExists ? (
