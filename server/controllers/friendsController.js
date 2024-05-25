@@ -20,13 +20,22 @@ export const getFriendshipStatus = async (req, res) => {
 
     // Determine the status of the friendship
     let friendshipStatus = "default";
+    let isSenderOwner = true;
     if (friendship) {
+      // If other user (Receiver) visit the profile of the sender
+      if (
+        String(friendship.sender) === String(profileUserId) &&
+        friendship.status === friendshipStatuses.pending
+      ) {
+        isSenderOwner = false;
+      }
       friendshipStatus = friendship.status;
     }
     // Send the response with the determined status
     res.status(200).json({
       message: "Friend status fetched successfully",
       friendshipStatus: friendshipStatus,
+      isSenderOwner,
     });
   } catch (error) {
     // Handle any errors that occurred during the database query
@@ -36,7 +45,7 @@ export const getFriendshipStatus = async (req, res) => {
     });
   }
 };
-export const addFriend = async (req, res) => {
+export const addFriendRequest = async (req, res) => {
   // ownerId represents the currently logged-in user
   // profileUserId represents the id of the profile being visited by the owner
   const { ownerId, profileUsername } = req.body;
@@ -45,24 +54,67 @@ export const addFriend = async (req, res) => {
     const user = await User.findOne({ username: profileUsername }).lean();
     const profileUserId = user._id;
     const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
-    const friendship = new Friend(
-      {
-        _id: new mongoose.Types.ObjectId(),
+
+    const friendship = await Friend.findOne({
+      $or: [
+        { sender: ownerObjectId, receiver: profileUserId },
+        { sender: profileUserId, receiver: ownerObjectId },
+      ],
+    });
+    if (friendship) {
+      friendship.sender = ownerObjectId;
+      friendship.receiver = profileUserId;
+      friendship.status = friendshipStatuses.pending;
+      friendship.requestDate = new Date();
+
+      await friendship.save();
+    } else {
+      const newFriendship = new Friend({
         sender: ownerObjectId,
         receiver: profileUserId,
-        status: friendshipStatuses.pending, // Default status for a new friend request
-        requestDate: new Date(), // Current date and time
-        startTime: null,
-        timestamp: new Date(),
-      },
-      {
-        upsert: true, // Create a new document if no matching document is found
-        new: true, // Return the updated document if it was modified
-      }
-    );
-    await friendship.save();
+        status: friendshipStatuses.pending,
+        requestDate: new Date(),
+      });
+      await newFriendship.save();
+    }
+
     res.status(200).json({
-      message: "Friend status fetched successfully",
+      message: "Friend request sent successfully",
+      friendshipStatus: friendshipStatuses.pending,
+    });
+  } catch (error) {
+    // Handle any errors that occurred during the database query
+    res.status(500).json({
+      message: "An error occurred while sending friend request",
+      error: error.message,
+    });
+  }
+};
+
+export const acceptRequest = async (req, res) => {
+  // ownerId represents the currently logged-in user
+  // profileUserId represents the id of the profile being visited by the owner
+  const { ownerId, profileUsername } = req.body;
+
+  try {
+    const user = await User.findOne({ username: profileUsername }).lean();
+    const profileUserId = user._id;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+
+    const friendship = await Friend.findOne({
+      $or: [
+        { sender: ownerObjectId, receiver: profileUserId },
+        { sender: profileUserId, receiver: ownerObjectId },
+      ],
+    });
+    if (friendship) {
+      friendship.status = friendshipStatuses.accepted;
+      friendship.startTime = new Date();
+      await friendship.save();
+    }
+
+    res.status(200).json({
+      message: "Friend request accepted",
       friendshipStatus: friendship.status,
     });
   } catch (error) {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { friendsTabsList } from "../components/Contants/friendsConstants";
+import { friendsTabsList } from "../Constants/friendsConstants";
 import FriendsTabs from "../components/Friends/FriendsTabs";
 import MyFriends from "../components/Friends/MyFriends";
 import Requests from "../components/Friends/Requests";

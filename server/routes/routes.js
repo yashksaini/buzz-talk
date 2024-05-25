@@ -12,8 +12,9 @@ import {
   updateProfile,
 } from "../controllers/usersController.js";
 import {
-  addFriend,
+  addFriendRequest,
   getFriendshipStatus,
+  acceptRequest,
 } from "../controllers/friendsController.js";
 
 const router = express.Router();
@@ -32,6 +33,7 @@ router.get("/search/:query", searchUser);
 
 //Friends Routes
 router.get("/friends/friendship-status", getFriendshipStatus);
-router.post("/friends/add-friend", addFriend);
+router.post("/friends/add-friend-request", addFriendRequest);
+router.post("/friends/accept-request", acceptRequest);
 
 export default router;

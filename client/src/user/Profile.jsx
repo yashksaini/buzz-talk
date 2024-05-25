@@ -8,7 +8,7 @@ import { IoCalendarOutline } from "react-icons/io5";
 import TopUsers from "../components/TopUsers";
 import EditProfileModal from "../components/EditProfileModal";
 import CustomSkeleton from "../components/UI/CustomSkeleton";
-import { friendshipStatuses } from "../components/Contants/friendsConstants";
+import { friendshipStatuses } from "../Constants/friendsConstants";
 import { toast } from "react-toastify";
 const Profile = ({ socket }) => {
   const [userData, setUserData] = useState({});
@@ -17,6 +17,7 @@ const Profile = ({ socket }) => {
   const [userExists, setUserExists] = useState(true);
   const [modalType, setModalType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isSender, setIsSender] = useState(false);
   const [friendshipStatus, setFriendshipStatus] = useState(
     friendshipStatuses.default
   );
@@ -68,8 +69,9 @@ const Profile = ({ socket }) => {
           }
         );
         if (response.data) {
-          const { friendshipStatus } = response.data;
+          const { friendshipStatus, isSenderOwner } = response.data;
           setFriendshipStatus(friendshipStatuses[friendshipStatus]);
+          setIsSender(isSenderOwner);
           return;
         }
       } catch (error) {
@@ -89,10 +91,13 @@ const Profile = ({ socket }) => {
   };
   const sendRequest = async () => {
     try {
-      const response = await axios.post(`${BASE_URL}/friends/add-friend`, {
-        ownerId: userId,
-        profileUsername: id,
-      });
+      const response = await axios.post(
+        `${BASE_URL}/friends/add-friend-request`,
+        {
+          ownerId: userId,
+          profileUsername: id,
+        }
+      );
       if (response.data) {
         const { friendshipStatus } = response.data;
         setFriendshipStatus(friendshipStatuses[friendshipStatus]);
@@ -130,6 +135,24 @@ const Profile = ({ socket }) => {
       default:
         // Optional: Handle unexpected statuses
         console.warn("Unexpected friendship status:", friendshipStatus);
+    }
+  };
+  const handleAcceptFriendship = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/friends/accept-request`, {
+        ownerId: userId,
+        profileUsername: id,
+      });
+      if (response.data) {
+        const { friendshipStatus } = response.data;
+        setFriendshipStatus(friendshipStatuses[friendshipStatus]);
+        setIsSender(true);
+        toast.success("Friend request accepted ");
+        return;
+      }
+    } catch (error) {
+      console.error("Error accepting friend request", error);
+      toast.error("Error accepting friend request");
     }
   };
 
@@ -198,12 +221,19 @@ const Profile = ({ socket }) => {
             >
               Edit Profile
             </button>
-          ) : (
+          ) : isSender ? (
             <button
               className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
               onClick={handleFriendStatusChange}
             >
               {friendshipStatus}
+            </button>
+          ) : (
+            <button
+              className="mt-2 mr-2 rounded-full border border-borderColor font-semibold px-4 py-1.5 hover:bg-line"
+              onClick={handleAcceptFriendship}
+            >
+              Accept Request
             </button>
           )}
         </div>

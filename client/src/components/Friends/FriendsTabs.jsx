@@ -1,4 +1,4 @@
-import { friendsTabsList } from "../Contants/friendsConstants";
+import { friendsTabsList } from "../../Constants/friendsConstants";
 import PropTypes from "prop-types";
 const FriendsTabs = ({ activeTab, setActiveTab }) => {
   return (
