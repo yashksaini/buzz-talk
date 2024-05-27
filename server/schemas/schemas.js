@@ -18,18 +18,18 @@ export const User = mongoose.model("users", userSchema);
 const friendSchema = new mongoose.Schema({
   sender: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: User,
     required: true,
   },
   receiver: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: User,
     required: true,
   },
   // It contain who blocked the other
   blockedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: User,
     required: false,
     default: null,
   },

@@ -90,7 +90,6 @@ export const addFriendRequest = async (req, res) => {
     });
   }
 };
-
 export const acceptRequest = async (req, res) => {
   // ownerId represents the currently logged-in user
   // profileUserId represents the id of the profile being visited by the owner
@@ -123,5 +122,35 @@ export const acceptRequest = async (req, res) => {
       message: "An error occurred while fetching friend status",
       error: error.message,
     });
+  }
+};
+export const getFriendsList = async (req, res) => {
+  try {
+    const { ownerId } = req.query;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const friends = await Friend.find({
+      $or: [{ sender: ownerObjectId }, { receiver: ownerObjectId }],
+      status: friendshipStatuses.accepted,
+    }).populate("sender receiver");
+
+    const friendsData = friends.map((friend) => {
+      const friendUser = friend.sender._id.equals(ownerObjectId)
+        ? friend.receiver
+        : friend.sender;
+      return {
+        username: friendUser.username,
+        fullName: friendUser.fullName,
+        imgUrl: friendUser.imgUrl,
+        about: friendUser.about,
+      };
+    });
+
+    res.status(200).json({
+      message: "All friends found successfully",
+      friends: friendsData,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error in getting friends list" });
+    console.log("Error in gettings friends list ", error);
   }
 };

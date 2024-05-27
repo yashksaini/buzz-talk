@@ -15,6 +15,7 @@ import {
   addFriendRequest,
   getFriendshipStatus,
   acceptRequest,
+  getFriendsList,
 } from "../controllers/friendsController.js";
 
 const router = express.Router();
@@ -35,5 +36,6 @@ router.get("/search/:query", searchUser);
 router.get("/friends/friendship-status", getFriendshipStatus);
 router.post("/friends/add-friend-request", addFriendRequest);
 router.post("/friends/accept-request", acceptRequest);
+router.get("/friends/getFriendsList", getFriendsList);
 
 export default router;
