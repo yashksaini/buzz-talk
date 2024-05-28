@@ -5,10 +5,12 @@ const ProfileIcon = ({ fullName }) => {
 
   // Function to extract initials from the full name
   const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("");
+    if (name) {
+      return name
+        .split(" ")
+        .map((word) => word[0])
+        .join("");
+    } else return "A";
   };
   useEffect(() => {
     const newInitials = getInitials(fullName);

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../main";
 import { useSelector } from "react-redux";
-import LineProfileCard from "../UI/LineProfileCard";
+import FriendProfileCard from "../UI/FriendProfileCard";
 
 const MyFriends = () => {
   const { userId } = useSelector((state) => state.userAuth);
@@ -28,12 +28,13 @@ const MyFriends = () => {
     <div>
       {friendsList?.map((friend, index) => {
         return (
-          <LineProfileCard
+          <FriendProfileCard
             user={{
               _id: friend._id,
               fullName: friend.fullName,
               username: friend.username,
               imgUrl: friend.imgUrl,
+              about: friend.about,
             }}
             key={index}
           />

@@ -138,6 +138,7 @@ export const getFriendsList = async (req, res) => {
         ? friend.receiver
         : friend.sender;
       return {
+        _id: friendUser._id,
         username: friendUser.username,
         fullName: friendUser.fullName,
         imgUrl: friendUser.imgUrl,
@@ -152,5 +153,67 @@ export const getFriendsList = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error in getting friends list" });
     console.log("Error in gettings friends list ", error);
+  }
+};
+
+export const getRequestsList = async (req, res) => {
+  try {
+    const { ownerId } = req.query;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const friendRequests = await Friend.find({
+      receiver: ownerObjectId,
+      status: friendshipStatuses.pending,
+    }).populate("sender");
+
+    const friendRequestsData = friendRequests.map((friend) => {
+      const requestUserData = friend.sender;
+      return {
+        _id: friend._id,
+        username: requestUserData.username,
+        fullName: requestUserData.fullName,
+        imgUrl: requestUserData.imgUrl,
+        about: requestUserData.about,
+      };
+    });
+
+    res.status(200).json({
+      message: "All friends requests found successfully",
+      requests: friendRequestsData,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error in getting friends request list" });
+    console.log("Error in gettings friends request list ", error);
+  }
+};
+
+export const getSentRequestsList = async (req, res) => {
+  try {
+    const { ownerId } = req.query;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const friendRequests = await Friend.find({
+      sender: ownerObjectId,
+      status: friendshipStatuses.pending,
+    }).populate("receiver");
+
+    const friendRequestsData = friendRequests.map((friend) => {
+      const requestUserData = friend.receiver;
+      return {
+        _id: friend._id,
+        username: requestUserData.username,
+        fullName: requestUserData.fullName,
+        imgUrl: requestUserData.imgUrl,
+        about: requestUserData.about,
+      };
+    });
+
+    res.status(200).json({
+      message: "All friends requests sent found successfully",
+      requests: friendRequestsData,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error in getting friends request sent list" });
+    console.log("Error in gettings friends request sent list ", error);
   }
 };
