@@ -3,10 +3,29 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../../main";
 import { useSelector } from "react-redux";
 import FriendProfileCard from "../UI/FriendProfileCard";
+import { LuUserX2 } from "react-icons/lu";
+import { LiaTelegramPlane } from "react-icons/lia";
 
 const MyFriends = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [friendsList, setFriendsList] = useState([]);
+  const [currentCardUsername, setCurrentCardUsername] = useState("");
+  const options = [
+    {
+      title: "Message this friend",
+      icon: LiaTelegramPlane,
+      action: () => {
+        console.log("GO TO MESSAGE");
+      },
+    },
+    {
+      title: "Remove this friend",
+      icon: LuUserX2,
+      action: () => {
+        console.log("REMOVE FRIEND");
+      },
+    },
+  ];
   useEffect(() => {
     const fetchFriends = async () => {
       try {
@@ -36,6 +55,9 @@ const MyFriends = () => {
               imgUrl: friend.imgUrl,
               about: friend.about,
             }}
+            setCurrentCardUsername={setCurrentCardUsername}
+            currentCardUsername={currentCardUsername}
+            options={options}
             key={index}
           />
         );

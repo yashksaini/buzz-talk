@@ -3,17 +3,25 @@ import ProfileIcon from "../ProfileIcon";
 import PropTypes from "prop-types";
 import { BsThreeDots } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
-const FriendProfileCard = ({ user }) => {
+import { MdBlock } from "react-icons/md";
+import { BiUser } from "react-icons/bi";
+const FriendProfileCard = ({
+  user,
+  setCurrentCardUsername,
+  currentCardUsername,
+  options,
+}) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const toggleDropdown = (e) => {
+  const toggleDropdown = (e, username) => {
     e.stopPropagation();
+    setCurrentCardUsername(username);
     setIsDropdownOpen(!isDropdownOpen);
   };
-  const handleOptionClick = (option) => {
-    console.log(option);
-    setIsDropdownOpen(false); // Close the dropdown after selecting an option
-  };
+  // const handleOptionClick = (option) => {
+  //   console.log(option);
+  //   setIsDropdownOpen(false); // Close the dropdown after selecting an option
+  // };
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownOpen(false);
@@ -25,6 +33,22 @@ const FriendProfileCard = ({ user }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+  const defaultOptions = [
+    {
+      title: "View Profile",
+      icon: BiUser,
+      action: () => {
+        console.log("View User Profile");
+      },
+    },
+    {
+      title: "Block this friend",
+      icon: MdBlock,
+      action: () => {
+        console.log("Block Friend");
+      },
+    },
+  ];
   return (
     <div
       key={user?.username}
@@ -57,32 +81,46 @@ const FriendProfileCard = ({ user }) => {
               className={`w-8 h-8 flex justify-center items-center rounded-full hover:bg-background ${
                 isDropdownOpen ? "bg-background" : ""
               }`}
-              onClick={toggleDropdown}
+              onClick={(e) => {
+                toggleDropdown(e, user?.username);
+              }}
             >
               <BsThreeDots />
             </div>
-            {isDropdownOpen && (
-              <div className="absolute right-0 top-0 w-64 rounded-md shadow-lg bg-white border border-line">
-                <div>
-                  <div
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleOptionClick("Accept")}
-                  >
-                    Accept
-                  </div>
-                  <div
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleOptionClick("Reject")}
-                  >
-                    Reject
-                  </div>
-                  <div
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleOptionClick("Block")}
-                  >
-                    Block
-                  </div>
-                </div>
+            {isDropdownOpen && currentCardUsername === user?.username && (
+              <div className="absolute right-0 top-0 w-52 rounded-md shadow-lg bg-white border border-line z-10 py-2">
+                {options.map((option, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer h-10 gap-1 items-center justify-start"
+                      onClick={option.action}
+                    >
+                      <span className="h-10 w-10 flex justify-center items-center text-base text-dark1 font-semibold">
+                        <option.icon />
+                      </span>
+                      <span className="text-base text-dark1 font-semibold">
+                        {option.title}
+                      </span>
+                    </div>
+                  );
+                })}
+                {defaultOptions.map((option, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="flex px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer h-10 gap-1 items-center justify-start"
+                      onClick={option.action}
+                    >
+                      <span className="h-10 w-10 flex justify-center items-center text-base text-dark1 font-semibold">
+                        <option.icon />
+                      </span>
+                      <span className="text-base text-dark1 font-semibold">
+                        {option.title}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -104,6 +142,9 @@ FriendProfileCard.propTypes = {
     imgUrl: PropTypes.string,
     about: PropTypes.string,
   }).isRequired,
+  currentCardUsername: PropTypes.string.isRequired,
+  setCurrentCardUsername: PropTypes.func.isRequired,
+  options: PropTypes.array.isRequired,
 };
 
 export default FriendProfileCard;

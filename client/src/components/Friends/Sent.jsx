@@ -7,6 +7,7 @@ import FriendProfileCard from "../UI/FriendProfileCard";
 const Sent = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [requestList, setRequestList] = useState([]);
+  const [currentCardUsername, setCurrentCardUsername] = useState("");
   useEffect(() => {
     const fetchFriends = async () => {
       try {
@@ -40,6 +41,8 @@ const Sent = () => {
               imgUrl: friend.imgUrl,
               about: friend.about,
             }}
+            setCurrentCardUsername={setCurrentCardUsername}
+            currentCardUsername={currentCardUsername}
             key={index}
           />
         );
