@@ -5,11 +5,13 @@ import { useSelector } from "react-redux";
 import FriendProfileCard from "../UI/FriendProfileCard";
 import { LuUserX2 } from "react-icons/lu";
 import { LiaTelegramPlane } from "react-icons/lia";
+import Loader from "../UI/Loader";
 
 const MyFriends = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [friendsList, setFriendsList] = useState([]);
   const [currentCardUsername, setCurrentCardUsername] = useState("");
+  const [loading, setLoading] = useState(true);
   const options = [
     {
       title: "Message this friend",
@@ -36,32 +38,40 @@ const MyFriends = () => {
         });
         if (response.data) {
           setFriendsList(response?.data?.friends || []);
+          setLoading(false);
         }
       } catch (error) {
         console.log("ERROR in fetching friends", error);
+        setLoading(false);
       }
     };
     fetchFriends();
   }, [userId]);
   return (
     <div>
-      {friendsList?.map((friend, index) => {
-        return (
-          <FriendProfileCard
-            user={{
-              _id: friend._id,
-              fullName: friend.fullName,
-              username: friend.username,
-              imgUrl: friend.imgUrl,
-              about: friend.about,
-            }}
-            setCurrentCardUsername={setCurrentCardUsername}
-            currentCardUsername={currentCardUsername}
-            options={options}
-            key={index}
-          />
-        );
-      })}
+      {loading && (
+        <div className="w-full flex justify-center items-center min-h-40">
+          <Loader />
+        </div>
+      )}
+      {!loading &&
+        friendsList?.map((friend, index) => {
+          return (
+            <FriendProfileCard
+              user={{
+                _id: friend._id,
+                fullName: friend.fullName,
+                username: friend.username,
+                imgUrl: friend.imgUrl,
+                about: friend.about,
+              }}
+              setCurrentCardUsername={setCurrentCardUsername}
+              currentCardUsername={currentCardUsername}
+              options={options}
+              key={index}
+            />
+          );
+        })}
     </div>
   );
 };
