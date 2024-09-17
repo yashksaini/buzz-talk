@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import FriendProfileCard from "../UI/FriendProfileCard";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Loader from "../UI/Loader";
+import NoDataFound from "../UI/NoDataFound";
 const Sent = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [requestList, setRequestList] = useState([]);
@@ -12,10 +13,10 @@ const Sent = () => {
   const [currentCardUsername, setCurrentCardUsername] = useState("");
   const options = [
     {
-      title: "Cancel",
+      title: "Withdraw Request",
       icon: AiOutlineCloseCircle,
       action: () => {
-        console.log("Cancel Request");
+        console.log("Withdraw Request");
       },
     },
   ];
@@ -67,6 +68,12 @@ const Sent = () => {
             />
           );
         })}
+      {!loading && requestList.length === 0 && (
+        <NoDataFound
+          title="No Friend Requests Sent"
+          desc="You haven't sent any friend requests yet. Sent requests will appear here once you send them."
+        />
+      )}
     </div>
   );
 };

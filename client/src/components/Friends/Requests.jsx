@@ -6,6 +6,7 @@ import FriendProfileCard from "../UI/FriendProfileCard";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Loader from "../UI/Loader";
 import { LuUserPlus2 } from "react-icons/lu";
+import NoDataFound from "../UI/NoDataFound";
 const Requests = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [requestList, setRequestList] = useState([]);
@@ -76,6 +77,12 @@ const Requests = () => {
             />
           );
         })}
+      {!loading && requestList.length === 0 && (
+        <NoDataFound
+          title="No Friend Requests"
+          desc="You currently have no pending friend requests. Any new requests will appear here."
+        />
+      )}
     </div>
   );
 };

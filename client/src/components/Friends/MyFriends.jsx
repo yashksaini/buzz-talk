@@ -6,6 +6,7 @@ import FriendProfileCard from "../UI/FriendProfileCard";
 import { LuUserX2 } from "react-icons/lu";
 import { LiaTelegramPlane } from "react-icons/lia";
 import Loader from "../UI/Loader";
+import NoDataFound from "../UI/NoDataFound";
 
 const MyFriends = () => {
   const { userId } = useSelector((state) => state.userAuth);
@@ -72,6 +73,12 @@ const MyFriends = () => {
             />
           );
         })}
+      {!loading && friendsList.length === 0 && (
+        <NoDataFound
+          title="No Friends"
+          desc="You haven't added any friends yet. Once you connect with others, your friends will appear here."
+        />
+      )}
     </div>
   );
 };
