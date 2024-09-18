@@ -51,3 +51,28 @@ export const acceptFriendship = async (ownerId, profileUsername) => {
     };
   }
 };
+
+// Withdraw Friend Request
+export const withdrawFriendReq = async (ownerId, profileUsername) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/friends/withdraw-request`, {
+      ownerId: ownerId,
+      profileUsername: profileUsername,
+    });
+    if (response.data) {
+      const { friendshipStatus } = response.data;
+      return {
+        status: friendshipStatus,
+        toastMsg: "Friend request withdrawn",
+        toastType: "success",
+      };
+    }
+  } catch (error) {
+    console.error("Error withdrawing friend request", error);
+    return {
+      status: "NA",
+      toastMsg: "Error withdrawing friend request",
+      toastType: "error",
+    };
+  }
+};

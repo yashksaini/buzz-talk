@@ -14,7 +14,10 @@ const MiniModal = ({
         {actionBtnText && (
           <button
             className="w-full mt-4 h-11 bg-dark1 rounded-full text-white font-semibold"
-            onClick={actionBtnFun}
+            onClick={() => {
+              actionBtnFun();
+              closeModal();
+            }}
           >
             {actionBtnText}
           </button>

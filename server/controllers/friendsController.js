@@ -90,6 +90,111 @@ export const addFriendRequest = async (req, res) => {
     });
   }
 };
+export const withdrawFriendRequest = async (req, res) => {
+  // ownerId represents the currently logged-in user
+  // profileUserId represents the id of the profile being visited by the owner
+  const { ownerId, profileUsername } = req.body;
+
+  try {
+    const user = await User.findOne({ username: profileUsername }).lean();
+    const profileUserId = user._id;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+
+    const friendship = await Friend.findOne({
+      $or: [
+        { sender: ownerObjectId, receiver: profileUserId },
+        { sender: profileUserId, receiver: ownerObjectId },
+      ],
+    });
+    if (friendship) {
+      friendship.status = friendshipStatuses.canceled;
+      friendship.requestDate = new Date();
+
+      await friendship.save();
+    }
+
+    res.status(200).json({
+      message: "Friend request withdrawn successfully",
+      friendshipStatus: friendshipStatuses.canceled,
+    });
+  } catch (error) {
+    // Handle any errors that occurred during the database query
+    res.status(500).json({
+      message: "An error occurred while withdrawing friend request",
+      error: error.message,
+    });
+  }
+};
+export const removeFriend = async (req, res) => {
+  // ownerId represents the currently logged-in user
+  // profileUserId represents the id of the profile being visited by the owner
+  const { ownerId, profileUsername } = req.body;
+
+  try {
+    const user = await User.findOne({ username: profileUsername }).lean();
+    const profileUserId = user._id;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+
+    const friendship = await Friend.findOne({
+      $or: [
+        { sender: ownerObjectId, receiver: profileUserId },
+        { sender: profileUserId, receiver: ownerObjectId },
+      ],
+    });
+    if (friendship) {
+      friendship.status = friendshipStatuses.canceled;
+      friendship.requestDate = new Date();
+
+      await friendship.save();
+    }
+
+    res.status(200).json({
+      message: "Friend removed successfully",
+      friendshipStatus: friendshipStatuses.canceled,
+    });
+  } catch (error) {
+    // Handle any errors that occurred during the database query
+    res.status(500).json({
+      message: "An error occurred while removing friend",
+      error: error.message,
+    });
+  }
+};
+export const rejectRequest = async (req, res) => {
+  // ownerId represents the currently logged-in user
+  // profileUserId represents the id of the profile being visited by the owner
+  const { ownerId, profileUsername } = req.body;
+
+  try {
+    const user = await User.findOne({ username: profileUsername }).lean();
+    const profileUserId = user._id;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+
+    const friendship = await Friend.findOne({
+      $or: [
+        { sender: ownerObjectId, receiver: profileUserId },
+        { sender: profileUserId, receiver: ownerObjectId },
+      ],
+    });
+    if (friendship) {
+      friendship.status = friendshipStatuses.rejected;
+      friendship.requestDate = new Date();
+
+      await friendship.save();
+    }
+
+    res.status(200).json({
+      message: "Friend request rejected successfully",
+      friendshipStatus: friendshipStatuses.rejected,
+    });
+  } catch (error) {
+    // Handle any errors that occurred during the database query
+    res.status(500).json({
+      message: "An error occurred while rejecting friend request",
+      error: error.message,
+    });
+  }
+};
 export const acceptRequest = async (req, res) => {
   // ownerId represents the currently logged-in user
   // profileUserId represents the id of the profile being visited by the owner
@@ -155,7 +260,6 @@ export const getFriendsList = async (req, res) => {
     console.log("Error in gettings friends list ", error);
   }
 };
-
 export const getRequestsList = async (req, res) => {
   try {
     const { ownerId } = req.query;
@@ -185,7 +289,6 @@ export const getRequestsList = async (req, res) => {
     console.log("Error in gettings friends request list ", error);
   }
 };
-
 export const getSentRequestsList = async (req, res) => {
   try {
     const { ownerId } = req.query;

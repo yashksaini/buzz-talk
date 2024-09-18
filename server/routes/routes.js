@@ -18,6 +18,9 @@ import {
   getFriendsList,
   getRequestsList,
   getSentRequestsList,
+  withdrawFriendRequest,
+  removeFriend,
+  rejectRequest,
 } from "../controllers/friendsController.js";
 
 const router = express.Router();
@@ -38,6 +41,9 @@ router.get("/search/:query", searchUser);
 router.get("/friends/friendship-status", getFriendshipStatus);
 router.post("/friends/add-friend-request", addFriendRequest);
 router.post("/friends/accept-request", acceptRequest);
+router.post("/friends/withdraw-request", withdrawFriendRequest);
+router.post("/friends/remove-friend", removeFriend);
+router.post("/friends/reject-request", rejectRequest);
 router.get("/friends/getFriendsList", getFriendsList);
 router.get("/friends/getRequestsList", getRequestsList);
 router.get("/friends/getSentRequestsList", getSentRequestsList);

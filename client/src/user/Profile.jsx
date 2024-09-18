@@ -10,7 +10,11 @@ import EditProfileModal from "../components/EditProfileModal";
 import CustomSkeleton from "../components/UI/CustomSkeleton";
 import { friendshipStatuses } from "../Constants/friendsConstants";
 import { toast } from "react-toastify";
-import { acceptFriendship, sendRequest } from "../components/commonFunctions";
+import {
+  acceptFriendship,
+  sendRequest,
+  withdrawFriendReq,
+} from "../components/commonFunctions";
 import MiniModal from "../components/UI/MiniModal";
 import NoDataFound from "../components/UI/NoDataFound";
 const Profile = ({ socket }) => {
@@ -94,8 +98,16 @@ const Profile = ({ socket }) => {
       </Fragment>
     ));
   };
-  const withdrawRequest = () => {
-    console.log("WITHDRAW REQUEST");
+  const withdrawRequest = async () => {
+    const { status, toastMsg, toastType } = await withdrawFriendReq(userId, id);
+    if (status !== "NA") {
+      setFriendshipStatus(friendshipStatuses[status]);
+    }
+    if (toastType === "success") {
+      toast.success(toastMsg);
+    } else if (toastType === "error") {
+      toast.error(toastMsg);
+    }
   };
   const removeFriend = () => {
     console.log("REMOVE FRIEND");
@@ -107,7 +119,9 @@ const Profile = ({ socket }) => {
       case statuses.rejected:
       case statuses.canceled: {
         const { status, toastMsg, toastType } = await sendRequest(userId, id);
-        setFriendshipStatus(friendshipStatuses[status]);
+        if (status !== "NA") {
+          setFriendshipStatus(friendshipStatuses[status]);
+        }
         if (toastType === "success") {
           toast.success(toastMsg);
         } else if (toastType === "error") {
@@ -232,7 +246,9 @@ const Profile = ({ socket }) => {
                   onClick={async () => {
                     const { status, toastMsg, toastType } =
                       await acceptFriendship(userId, id);
-                    setFriendshipStatus(friendshipStatuses[status]);
+                    if (status !== "NA") {
+                      setFriendshipStatus(friendshipStatuses[status]);
+                    }
                     setIsSender(true);
                     if (toastType === "success") {
                       toast.success(toastMsg);
