@@ -52,4 +52,81 @@ const friendSchema = new mongoose.Schema({
   },
 });
 
-export const Friend = mongoose.model("Friend", friendSchema);
+export const Friend = mongoose.model("friends", friendSchema);
+
+const readBySchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User,
+    required: true,
+  },
+  readAt: {
+    type: Date,
+    required: true,
+  },
+});
+
+const messageSchema = new mongoose.Schema({
+  senderId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User,
+    required: true,
+  },
+  message: {
+    type: String,
+    required: true,
+  },
+  sentAt: {
+    type: Date,
+    default: Date.now,
+  },
+  readBy: [readBySchema],
+});
+
+const chatUserSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User,
+    required: true,
+  },
+  permission: {
+    type: String,
+    enum: ["admin", "user"],
+    default: "admin",
+  },
+});
+
+const chatSchema = new mongoose.Schema({
+  chatId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  lastMessage: {
+    type: String,
+    required: false,
+  },
+  groupName: {
+    type: String,
+  },
+  groupDesc: {
+    type: String,
+  },
+  type: {
+    type: String,
+    enum: ["individual", "group"],
+    required: true,
+  },
+  users: [chatUserSchema],
+  messages: [messageSchema],
+});
+
+export const Chat = mongoose.model("chats", chatSchema);

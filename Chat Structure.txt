@@ -1,0 +1,27 @@
+Chat Sturcture
+ {
+    chatId: "Unique chat id",
+    createdAt: "Time when the chat was created",
+    updatedAt: "Time when the chat was updated",
+    lastMessage: "Text that is sent in the last message",
+    groupName:"Group name",
+    groupDesc:"Description of the group",
+    type:"Individual | Group ",
+    users:"List of users in the chat",
+        + {
+            userId: "User id",
+            permission:"Admin | User", // For Individual chat both are admins
+
+        }
+    messages: [ARRAY],
+            + {
+                senderId: "Sender id",
+                message:"Text that is sent by the sender",
+                sentAt: "Time when the message was sent",
+                readBy: [Array of users that read the message],
+                    + {
+                        userId:  "User id",
+                        readAt: "Time when user viewed the message",
+                    }
+            }
+ }

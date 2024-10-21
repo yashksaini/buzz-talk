@@ -43,11 +43,11 @@ const MyChats = () => {
               <span className="text-2xl font-bold text-dark1 leading-7 min-w-48">
                 Messages
               </span>
-              <span className="hover:bg-line p-2 rounded-full">
-                <IoSettingsOutline
-                  className="text-xl cursor-pointer"
-                  data-tooltip-id="settings-tip"
-                />
+              <span
+                className="hover:bg-line p-2 rounded-full cursor-pointer text-xl"
+                data-tooltip-id="settings-tip"
+              >
+                <IoSettingsOutline />
               </span>
 
               <ReactTooltip
@@ -103,8 +103,8 @@ const MyChats = () => {
               })}
             {!loading && friendsList.length === 0 && (
               <NoDataFound
-                title="No Friends"
-                desc="You haven't added any friends yet. Once you connect with others, your friends will appear here."
+                title="No Chats"
+                desc="You haven't added any chats yet. Once you connect with others, your chats will appear here."
               />
             )}
           </div>
