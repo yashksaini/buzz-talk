@@ -1,0 +1,110 @@
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
+import { GoSearch } from "react-icons/go";
+import { IoCloseOutline } from "react-icons/io5";
+import Loader from "./UI/Loader";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { BASE_URL } from "../main";
+import FriendsChatCard from "./UI/FriendsChatCard";
+import NoDataFound from "./UI/NoDataFound";
+
+const NewChatModal = ({ setIsNewChatModal }) => {
+  const { userId } = useSelector((state) => state.userAuth);
+  const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [friendsList, setFriendsList] = useState([]);
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/friends/getFriendsList`, {
+          params: {
+            ownerId: userId,
+          },
+        });
+        if (response.data) {
+          setFriendsList(response?.data?.friends || []);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log("ERROR in fetching friends", error);
+        setLoading(false);
+      }
+    };
+    fetchFriends();
+  }, [userId]);
+  const createNewChat = () => {};
+  return (
+    <>
+      <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-20 p-8 flex justify-center items-center">
+        <div className="max-w-full w-[600px] bg-white rounded-xl h-[650px] max-h-full overflow-hidden ">
+          <div className="w-full h-[650px] max-h-full overflow-x-hidden overflow-y-auto">
+            <div className="flex justify-between items-center h-14 w-full sticky top-0 left-0 bg-white  z-50 px-3">
+              <div className="flex justify-start items-center flex-1 gap-2 text-dark1">
+                <button
+                  onClick={() => setIsNewChatModal(false)}
+                  className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-line transition-all"
+                >
+                  <IoCloseOutline className="text-2xl" />
+                </button>
+                <h1 className="font-bold text-[20px] ">New Message</h1>
+              </div>
+              <button
+                className="h-9 px-6 flex justify-center items-center bg-dark2 text-white rounded-full font-semibold disabled:bg-grayText"
+                onClick={createNewChat}
+                disabled={isNextDisabled}
+              >
+                Next
+              </button>
+            </div>
+            {/* Modal Body */}
+            <div className="w-full">
+              <div className="w-full h-12 bg-white border-b border-borderColor flex justify-center items-center gap-3 pl-5 pr-2 focus-within:bg-white focus-within:border-primaryBorder ">
+                <GoSearch className="text-xl group:focus-within text-grayText " />
+                <input
+                  type="text"
+                  placeholder="Search People"
+                  className="flex-1 bg-transparent focus:outline-none text-dark1 font-medium"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="my-2">
+                {loading && (
+                  <div className="w-full flex justify-center items-center min-h-40">
+                    <Loader />
+                  </div>
+                )}
+                {!loading &&
+                  friendsList?.map((friend, index) => {
+                    return (
+                      <FriendsChatCard
+                        user={{
+                          _id: friend._id,
+                          fullName: friend.fullName,
+                          username: friend.username,
+                          imgUrl: friend.imgUrl,
+                        }}
+                        key={index}
+                      />
+                    );
+                  })}
+                {!loading && friendsList.length === 0 && (
+                  <NoDataFound
+                    title="No Friends"
+                    desc="You haven't added any friends yet. Once you connect with others, your friends will appear here."
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default NewChatModal;

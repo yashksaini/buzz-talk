@@ -7,12 +7,16 @@ import { useSelector } from "react-redux";
 import Loader from "../components/UI/Loader";
 import NoDataFound from "../components/UI/NoDataFound";
 import FriendsChatCard from "../components/UI/FriendsChatCard";
+import { LuMailPlus } from "react-icons/lu";
+import { GoSearch } from "react-icons/go";
+import NewChatModal from "../components/NewChatModal";
 const MyChats = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [search, setSearch] = useState("");
   const [friendsList, setFriendsList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const handleSearch = () => {};
+  const [isNewChatModal, setIsNewChatModal] = useState(false);
+  // const handleSearch = () => {};
   useEffect(() => {
     const fetchFriends = async () => {
       try {
@@ -43,17 +47,38 @@ const MyChats = () => {
               <span className="text-2xl font-bold text-dark1 leading-7 min-w-48">
                 Messages
               </span>
-              <span
-                className="hover:bg-line p-2 rounded-full cursor-pointer text-xl"
-                data-tooltip-id="settings-tip"
-              >
-                <IoSettingsOutline />
-              </span>
+              <div className="flex-1 flex justify-end items-center ">
+                <span
+                  className="hover:bg-line p-2 rounded-full cursor-pointer text-xl"
+                  data-tooltip-id="settings-tip"
+                >
+                  <IoSettingsOutline />
+                </span>
+                <span
+                  className="hover:bg-line p-2 rounded-full cursor-pointer text-xl"
+                  data-tooltip-id="new-message-tip"
+                  onClick={() => {
+                    setIsNewChatModal(true);
+                  }}
+                >
+                  <LuMailPlus />
+                </span>
+              </div>
 
               <ReactTooltip
                 id="settings-tip"
                 place="bottom"
                 content="Settings"
+                delayShow={500}
+                style={{
+                  zIndex: "50",
+                }}
+              />
+              <ReactTooltip
+                id="new-message-tip"
+                place="bottom"
+                content="New Message"
+                delayShow={500}
                 style={{
                   zIndex: "50",
                 }}
@@ -61,7 +86,7 @@ const MyChats = () => {
             </div>
             <div className="w-full bg-white">
               <div className="w-full h-12 bg-white rounded-full border border-borderColor flex justify-center items-center gap-3 pl-3 pr-2 focus-within:bg-white focus-within:border-primaryBorder ">
-                <search className="text-2xl group:focus-within text-primary " />
+                <GoSearch className="text-2xl group:focus-within text-grayText " />
                 <input
                   type="text"
                   placeholder="Search Direct Messages..."
@@ -71,12 +96,12 @@ const MyChats = () => {
                     setSearch(e.target.value);
                   }}
                 />
-                <button
+                {/* <button
                   onClick={handleSearch}
                   className="bg-dark2 text-white h-8 px-4 rounded-full"
                 >
                   Search
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -114,6 +139,7 @@ const MyChats = () => {
           Chat Area
         </div>
       </div>
+      {isNewChatModal && <NewChatModal setIsNewChatModal={setIsNewChatModal} />}
     </>
   );
 };

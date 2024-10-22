@@ -5,7 +5,7 @@ const FriendsChatCard = ({ user }) => {
   return (
     <div
       key={user?.username}
-      className={`w-full py-3 px-3 flex justify-start items-start gap-2 hover:bg-line cursor-pointer`}
+      className={`w-full py-3 px-5 flex justify-start items-start gap-2 hover:bg-line cursor-pointer`}
     >
       <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
         {!user?.imgUrl && <ProfileIcon fullName={user?.fullName} />}
