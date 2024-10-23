@@ -1,22 +1,26 @@
 import { Link } from "react-router-dom";
 import ProfileIcon from "../ProfileIcon";
 import PropTypes from "prop-types";
-const FriendsChatCard = ({ user }) => {
+import { BsCircle, BsFillCheckCircleFill } from "react-icons/bs";
+const FriendsChatCard = ({ user, selectedFriendId, setSelectedFriendId }) => {
   return (
     <div
       key={user?.username}
-      className={`w-full py-3 px-5 flex justify-start items-start gap-2 hover:bg-line cursor-pointer`}
+      className={`w-full py-3 px-5 flex justify-start items-start gap-2 hover:bg-line cursor-pointer ${
+        selectedFriendId === user?._id ? " bg-backgroundDark" : ""
+      }`}
+      onClick={() => {
+        setSelectedFriendId(user?._id);
+      }}
     >
       <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
         {!user?.imgUrl && <ProfileIcon fullName={user?.fullName} />}
         {user?.imgUrl && (
-          <Link to={"/profile/" + user?.username}>
-            <img
-              src={user?.imgUrl}
-              alt="profile"
-              className="w-9 h-9 rounded-full"
-            />
-          </Link>
+          <img
+            src={user?.imgUrl}
+            alt="profile"
+            className="w-9 h-9 rounded-full"
+          />
         )}
       </div>
       <div className="w-[calc(100%_-_52px)] ">
@@ -28,6 +32,13 @@ const FriendsChatCard = ({ user }) => {
             <p className="leading-4  text-mainText text-xs ">
               @{user?.username}
             </p>
+          </div>
+          <div className="text-dark2 text-xl">
+            {selectedFriendId === user?._id ? (
+              <BsFillCheckCircleFill />
+            ) : (
+              <BsCircle />
+            )}
           </div>
         </div>
       </div>
@@ -42,6 +53,8 @@ FriendsChatCard.propTypes = {
     username: PropTypes.string.isRequired,
     imgUrl: PropTypes.string,
   }).isRequired,
+  selectedFriendId: PropTypes.string,
+  setSelectedFriendId: PropTypes.func,
 };
 
 export default FriendsChatCard;

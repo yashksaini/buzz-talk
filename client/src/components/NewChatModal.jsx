@@ -12,6 +12,7 @@ import NoDataFound from "./UI/NoDataFound";
 const NewChatModal = ({ setIsNewChatModal }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [selectedFriendId, setSelectedFriendId] = useState(null);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [friendsList, setFriendsList] = useState([]);
@@ -35,6 +36,13 @@ const NewChatModal = ({ setIsNewChatModal }) => {
     fetchFriends();
   }, [userId]);
   const createNewChat = () => {};
+  useEffect(() => {
+    if (selectedFriendId) {
+      setIsNextDisabled(false);
+    } else {
+      setIsNextDisabled(true);
+    }
+  }, [selectedFriendId]);
   return (
     <>
       <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-20 p-8 flex justify-center items-center">
@@ -88,7 +96,9 @@ const NewChatModal = ({ setIsNewChatModal }) => {
                           username: friend.username,
                           imgUrl: friend.imgUrl,
                         }}
+                        selectedFriendId={selectedFriendId}
                         key={index}
+                        setSelectedFriendId={setSelectedFriendId}
                       />
                     );
                   })}

@@ -1,41 +1,18 @@
 import { useEffect, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { IoSettingsOutline } from "react-icons/io5";
-import { BASE_URL } from "../main";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import Loader from "../components/UI/Loader";
-import NoDataFound from "../components/UI/NoDataFound";
-import FriendsChatCard from "../components/UI/FriendsChatCard";
+// import { BASE_URL } from "../main";
+// import axios from "axios";
+// import { useSelector } from "react-redux";
 import { LuMailPlus } from "react-icons/lu";
 import { GoSearch } from "react-icons/go";
 import NewChatModal from "../components/NewChatModal";
 const MyChats = () => {
-  const { userId } = useSelector((state) => state.userAuth);
+  // const { userId } = useSelector((state) => state.userAuth);
   const [search, setSearch] = useState("");
-  const [friendsList, setFriendsList] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [isNewChatModal, setIsNewChatModal] = useState(false);
   // const handleSearch = () => {};
-  useEffect(() => {
-    const fetchFriends = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/friends/getFriendsList`, {
-          params: {
-            ownerId: userId,
-          },
-        });
-        if (response.data) {
-          setFriendsList(response?.data?.friends || []);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log("ERROR in fetching friends", error);
-        setLoading(false);
-      }
-    };
-    fetchFriends();
-  }, [userId]);
+
   return (
     <>
       <div className="flex justify-center items-center h-full">
@@ -105,34 +82,8 @@ const MyChats = () => {
               </div>
             </div>
           </div>
-          {/* Friends List */}
-          <div className="mt-4">
-            {loading && (
-              <div className="w-full flex justify-center items-center min-h-40">
-                <Loader />
-              </div>
-            )}
-            {!loading &&
-              friendsList?.map((friend, index) => {
-                return (
-                  <FriendsChatCard
-                    user={{
-                      _id: friend._id,
-                      fullName: friend.fullName,
-                      username: friend.username,
-                      imgUrl: friend.imgUrl,
-                    }}
-                    key={index}
-                  />
-                );
-              })}
-            {!loading && friendsList.length === 0 && (
-              <NoDataFound
-                title="No Chats"
-                desc="You haven't added any chats yet. Once you connect with others, your chats will appear here."
-              />
-            )}
-          </div>
+          {/* Chats List */}
+          <div className="mt-4"></div>
         </div>
         {/* Chat Area */}
         <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
