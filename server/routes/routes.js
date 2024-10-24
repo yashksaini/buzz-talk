@@ -22,6 +22,7 @@ import {
   removeFriend,
   rejectRequest,
 } from "../controllers/friendsController.js";
+import { createNewChat } from "../controllers/chatsController.js";
 
 const router = express.Router();
 
@@ -47,5 +48,8 @@ router.post("/friends/reject-request", rejectRequest);
 router.get("/friends/getFriendsList", getFriendsList);
 router.get("/friends/getRequestsList", getRequestsList);
 router.get("/friends/getSentRequestsList", getSentRequestsList);
+
+//Chats Routes
+router.post("/chat/create-new", createNewChat);
 
 export default router;

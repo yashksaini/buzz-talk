@@ -35,7 +35,25 @@ const NewChatModal = ({ setIsNewChatModal }) => {
     };
     fetchFriends();
   }, [userId]);
-  const createNewChat = () => {};
+  const createNewChat = async () => {
+    // userId is the current user id
+    // selectedFriendId is the friend id for creation
+    try {
+      const response = await axios.post(`${BASE_URL}/chat/create-new`, {
+        ownerId: userId,
+        profileUserId: selectedFriendId,
+      });
+
+      if (response.data.chat) {
+        console.log(response.data.message, response.data.chat);
+      } else {
+        console.log("Message:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error creating new chat:", error);
+    }
+    setIsNewChatModal(false);
+  };
   useEffect(() => {
     if (selectedFriendId) {
       setIsNextDisabled(false);

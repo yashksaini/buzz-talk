@@ -113,12 +113,15 @@ const chatSchema = new mongoose.Schema({
   lastMessage: {
     type: String,
     required: false,
+    default: "",
   },
   groupName: {
     type: String,
+    default: "",
   },
   groupDesc: {
     type: String,
+    default: "",
   },
   type: {
     type: String,
