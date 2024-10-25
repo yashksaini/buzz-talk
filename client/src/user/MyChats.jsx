@@ -1,18 +1,42 @@
 import { useEffect, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { IoSettingsOutline } from "react-icons/io5";
-// import { BASE_URL } from "../main";
-// import axios from "axios";
-// import { useSelector } from "react-redux";
+import { BASE_URL } from "../main";
+import axios from "axios";
+import { useSelector } from "react-redux";
 import { LuMailPlus } from "react-icons/lu";
 import { GoSearch } from "react-icons/go";
 import NewChatModal from "../components/NewChatModal";
+import Loader from "../components/UI/Loader";
+import ChatCard from "../components/UI/ChatCard";
+import NoDataFound from "../components/UI/NoDataFound";
 const MyChats = () => {
-  // const { userId } = useSelector((state) => state.userAuth);
+  const { userId } = useSelector((state) => state.userAuth);
   const [search, setSearch] = useState("");
   const [isNewChatModal, setIsNewChatModal] = useState(false);
+  const [chatsList, setChatsList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   // const handleSearch = () => {};
-
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/chat/getChatsList`, {
+          params: {
+            ownerId: userId,
+          },
+        });
+        console.log(response);
+        if (response?.data) {
+          setChatsList(response?.data?.chats || []);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.log("ERROR in fetching friends", error);
+        setIsLoading(false);
+      }
+    };
+    fetchChats();
+  }, [userId]);
   return (
     <>
       <div className="flex justify-center items-center h-full">
@@ -83,7 +107,35 @@ const MyChats = () => {
             </div>
           </div>
           {/* Chats List */}
-          <div className="mt-4"></div>
+          <div className="mt-4">
+            {isLoading && (
+              <div className="w-full flex justify-center items-center min-h-40">
+                <Loader />
+              </div>
+            )}
+            {!isLoading &&
+              chatsList?.map((chat, index) => {
+                return (
+                  <ChatCard
+                    user={{
+                      _id: chat?.friendProfile.userId,
+                      fullName: chat?.friendProfile.fullName,
+                      username: chat?.friendProfile.username,
+                      imgUrl: chat?.friendProfile.imgUrl,
+                    }}
+                    lastMessage={chat.lastMessage}
+                    updatedAt={chat.updatedAt}
+                    key={index}
+                  />
+                );
+              })}
+            {!isLoading && chatsList.length === 0 && (
+              <NoDataFound
+                title="No Chats Created"
+                desc="You haven't created any chats yet. Once you create chats, your chats will appear here."
+              />
+            )}
+          </div>
         </div>
         {/* Chat Area */}
         <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">

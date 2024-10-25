@@ -8,6 +8,7 @@ import axios from "axios";
 import { BASE_URL } from "../main";
 import FriendsChatCard from "./UI/FriendsChatCard";
 import NoDataFound from "./UI/NoDataFound";
+import { toast } from "react-toastify";
 
 const NewChatModal = ({ setIsNewChatModal }) => {
   const { userId } = useSelector((state) => state.userAuth);
@@ -44,13 +45,14 @@ const NewChatModal = ({ setIsNewChatModal }) => {
         profileUserId: selectedFriendId,
       });
 
-      if (response.data.chat) {
-        console.log(response.data.message, response.data.chat);
+      if (response?.data?.chat) {
+        toast.success(response?.data?.message);
       } else {
-        console.log("Message:", response.data.message);
+        toast.success(response?.data?.message);
       }
     } catch (error) {
       console.error("Error creating new chat:", error);
+      toast.error("Error creating new chat");
     }
     setIsNewChatModal(false);
   };
