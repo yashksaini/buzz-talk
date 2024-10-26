@@ -10,6 +10,7 @@ import NewChatModal from "../components/NewChatModal";
 import Loader from "../components/UI/Loader";
 import ChatCard from "../components/UI/ChatCard";
 import NoDataFound from "../components/UI/NoDataFound";
+import ChatArea from "../components/ChatArea";
 const MyChats = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [search, setSearch] = useState("");
@@ -28,6 +29,7 @@ const MyChats = () => {
         console.log(response);
         if (response?.data) {
           setChatsList(response?.data?.chats || []);
+          console.log(response?.data?.chats);
           setIsLoading(false);
         }
       } catch (error) {
@@ -123,6 +125,7 @@ const MyChats = () => {
                       username: chat?.friendProfile.username,
                       imgUrl: chat?.friendProfile.imgUrl,
                     }}
+                    chatId={chat?.chatId}
                     lastMessage={chat.lastMessage}
                     updatedAt={chat.updatedAt}
                     key={index}
@@ -139,7 +142,7 @@ const MyChats = () => {
         </div>
         {/* Chat Area */}
         <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
-          Chat Area
+          <ChatArea />
         </div>
       </div>
       {isNewChatModal && <NewChatModal setIsNewChatModal={setIsNewChatModal} />}

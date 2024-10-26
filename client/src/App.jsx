@@ -77,6 +77,14 @@ function App({ socket }) {
             <Route
               element={
                 <Layout>
+                  <MyChats socket={socket} />
+                </Layout>
+              }
+              path="/chats/:chatId"
+            />
+            <Route
+              element={
+                <Layout>
                   <Friends socket={socket} />
                 </Layout>
               }

@@ -1,13 +1,17 @@
 import ProfileIcon from "../ProfileIcon";
 import PropTypes from "prop-types";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
-const ChatCard = ({ user, lastMessage, updatedAt }) => {
+const ChatCard = ({ user, lastMessage, updatedAt, chatId }) => {
+  const navigate = useNavigate();
   return (
     <div
       key={user?.username}
       className={`w-full py-3 px-5 flex justify-start items-start gap-2 hover:bg-line cursor-pointer`}
-      onClick={() => {}}
+      onClick={() => {
+        navigate(`/chats/${chatId}`);
+      }}
     >
       <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
         {!user?.imgUrl && <ProfileIcon fullName={user?.fullName} />}
@@ -48,6 +52,7 @@ ChatCard.propTypes = {
   }).isRequired,
   lastMessage: PropTypes.string,
   updatedAt: PropTypes.any,
+  chatId: PropTypes.string,
 };
 
 export default ChatCard;
