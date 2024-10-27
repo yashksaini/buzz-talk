@@ -92,3 +92,71 @@ export const getChatsList = async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve chats", error });
   }
 };
+export const getChatById = async (req, res) => {
+  try {
+    const { chatId, ownerId } = req.query; // Get chatId and ownerId from query parameters
+
+    // Find the chat by its chatId and populate user data
+    const chat = await Chat.findOne({ chatId })
+      .populate({
+        path: "users.userId",
+        select: "username imgUrl fullName",
+      })
+      .exec();
+
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+    const otherUser = chat.users.find(
+      (user) => user.userId._id.toString() !== ownerId
+    );
+    // Format the response
+    const formattedChat = {
+      chat: chat,
+      friendsProfile: {
+        userId: otherUser.userId._id,
+        username: otherUser.userId.username,
+        imgUrl: otherUser.userId.imgUrl,
+        fullName: otherUser.userId.fullName,
+      },
+    };
+
+    res.status(200).json({ ...formattedChat });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve chat", error });
+  }
+};
+
+export const addMessage = async (req, res) => {
+  try {
+    const { ownerId, messageText, chatId } = req.body; // Use body to pass message data
+
+    console.log({ chatId, messageText, ownerId });
+    // Find the chat by its chatId
+    const chat = await Chat.findOne({ chatId });
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+
+    // Create a new message
+    const newMessage = {
+      senderId: ownerId,
+      message: messageText,
+      sentAt: new Date(),
+      readBy: [{ userId: ownerId, readAt: new Date() }],
+    };
+
+    // Add the new message to the messages array and update lastMessage
+    chat.messages.push(newMessage);
+    chat.lastMessage = messageText;
+    chat.updatedAt = new Date();
+
+    // Save the updated chat document
+    await chat.save();
+
+    res.status(200).json({ message: "Message added successfully", newMessage });
+  } catch (error) {
+    console.error("Error adding message:", error);
+    res.status(500).json({ message: "Failed to add message", error });
+  }
+};

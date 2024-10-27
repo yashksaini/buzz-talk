@@ -22,7 +22,12 @@ import {
   removeFriend,
   rejectRequest,
 } from "../controllers/friendsController.js";
-import { createNewChat, getChatsList } from "../controllers/chatsController.js";
+import {
+  addMessage,
+  createNewChat,
+  getChatById,
+  getChatsList,
+} from "../controllers/chatsController.js";
 
 const router = express.Router();
 
@@ -52,5 +57,6 @@ router.get("/friends/getSentRequestsList", getSentRequestsList);
 //Chats Routes
 router.post("/chat/create-new", createNewChat);
 router.get("/chat/getChatsList", getChatsList);
-
+router.get("/chat/getChatData", getChatById);
+router.post("/chat/sendMessage", addMessage);
 export default router;
