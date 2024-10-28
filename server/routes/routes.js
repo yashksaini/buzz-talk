@@ -26,6 +26,7 @@ import {
   addMessage,
   createNewChat,
   getChatById,
+  getChatMessages,
   getChatsList,
 } from "../controllers/chatsController.js";
 
@@ -59,4 +60,5 @@ router.post("/chat/create-new", createNewChat);
 router.get("/chat/getChatsList", getChatsList);
 router.get("/chat/getChatData", getChatById);
 router.post("/chat/sendMessage", addMessage);
+router.get("/chat/getChatMessages", getChatMessages);
 export default router;

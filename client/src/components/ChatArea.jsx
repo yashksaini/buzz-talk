@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiInfoCircle, BiSend } from "react-icons/bi";
 import axios from "axios";
 import { BASE_URL } from "../main";
@@ -6,12 +6,28 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-
+import { format } from "date-fns";
 const ChatArea = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const { chatId } = useParams();
   const [chatData, setChatData] = useState({});
   const [messageText, setMessageText] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const getChatMessages = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/chat/getChatMessages`, {
+        params: { chatId: chatId }, // Replace with actual values
+      });
+      if (response?.data) {
+        console.log(response.data);
+        setMessages(response?.data?.messages || []);
+      }
+    } catch (error) {
+      console.error("Error fetching chat data:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,6 +36,7 @@ const ChatArea = () => {
         });
         if (response?.data) {
           setChatData(response?.data || {});
+          setMessages(response?.data?.chat?.messages);
           console.log(response.data);
         }
       } catch (error) {
@@ -37,13 +54,25 @@ const ChatArea = () => {
         ownerId: userId,
         messageText,
       });
-
-      console.log("Message sent:", response.data);
-      setMessageText(""); // Clear input after sending
+      if (response.status === 200) {
+        getChatMessages();
+      }
+      setMessageText("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
+  const chatEndRef = useRef(null);
+
+  // Function to scroll to the bottom
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Scroll to bottom whenever chatData.messages changes
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
   return (
     <div className="h-[100dvh] w-full overflow-hidden">
       <div className="sticky top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line">
@@ -86,7 +115,41 @@ const ChatArea = () => {
           }}
         />
       </div>
-      <div className="w-full min-h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto"></div>
+      <div className="w-full h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto">
+        {/* Add chats here current user chat on right and sender chat on left */}
+        <div className="flex flex-col gap-2 p-3">
+          {messages?.map((message, index) => (
+            <div
+              key={index}
+              className={`flex ${
+                message.senderId === userId ? "justify-end" : "justify-start"
+              } mb-2`}
+            >
+              <div>
+                <div
+                  className={`max-w-xs py-2  px-4 mt-1 mx-2 rounded-2xl ${
+                    message.senderId === userId
+                      ? "bg-dark2 text-white rounded-br-none"
+                      : "bg-line text-black rounded-tl-none"
+                  }`}
+                >
+                  {message.message}
+                </div>
+                <div
+                  className={`text-xs text-grayText px-4 flex ${
+                    message.senderId === userId
+                      ? "justify-end"
+                      : "justify-start"
+                  } mt-1`}
+                >
+                  {format(new Date(message?.sentAt), "hh:mm a")}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div ref={chatEndRef} />
+        </div>
+      </div>
       <div className="flex justify-start items-center sticky bottom-0 w-full h-14 bg-white border-t border-line px-3 py-2">
         <div className="bg-gray-100 w-full h-full rounded-xl flex justify-center items-center">
           <input

@@ -127,6 +127,22 @@ export const getChatById = async (req, res) => {
   }
 };
 
+export const getChatMessages = async (req, res) => {
+  try {
+    const { chatId } = req.query;
+
+    const chat = await Chat.findOne({ chatId }).exec();
+
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+
+    res.status(200).json({ messages: chat.messages });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve chat", error });
+  }
+};
+
 export const addMessage = async (req, res) => {
   try {
     const { ownerId, messageText, chatId } = req.body; // Use body to pass message data
