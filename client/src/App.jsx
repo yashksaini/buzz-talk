@@ -14,8 +14,8 @@ import Notifications from "./user/Notifications";
 import MyChats from "./user/MyChats";
 import Friends from "./user/Friends";
 import Signup from "./pages/Signup";
-import { BASE_URL } from "./main";
 import Layout from "./pages/Layout";
+import { BASE_URL } from "./Constants/constants";
 
 function App({ socket }) {
   const dispatch = useDispatch();
@@ -25,9 +25,16 @@ function App({ socket }) {
   const getAuth = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/auth`);
+      console.log(response.data);
       dispatch(changeAuthentication(response.data));
+
       if (response.data) {
-        socket.emit("login", response.data);
+        const userData = {
+          id: response.data.id,
+          username: response.data.username,
+          fullName: response.data.fullName,
+        };
+        socket.emit("login", userData);
       } else {
         socket.emit("logout", socket.id);
       }

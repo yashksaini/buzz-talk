@@ -8,18 +8,14 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import Routes from "./routes/routes.js";
+import { getActiveUsers, initializeSocket } from "./socket/socket.js";
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: true, // Allow requests from this origin
-    methods: ["GET", "POST"],
-  },
-});
+initializeSocket(httpServer);
 
 const PORT = 3000;
-
 dotenv.config();
 
 const username = process.env.DB_USERNAME;
@@ -57,74 +53,10 @@ app.use(
   })
 );
 
-import Routes from "./routes/routes.js";
 app.use("/", Routes);
 
-// Created a list of new logged in users
-const activeUsers = new Set();
-
-io.on("connection", (socket) => {
-  io.emit("activeUsers", () => {}, Array.from(activeUsers));
-
-  socket.on("login", async (userData) => {
-    const user = {
-      userId: userData.id,
-      fullName: userData.fullName,
-      socketId: socket.id,
-    };
-    const existingUser = Array.from(activeUsers).find(
-      (user) => user.userId === userData.id
-    );
-    if (!existingUser) {
-      activeUsers.add(user);
-    }
-
-    activeUsers.add(user);
-
-    io.emit("activeUsers", Array.from(activeUsers));
-  });
-
-  socket.on("logout", async (socketId) => {
-    const userToRemove = Array.from(activeUsers).find(
-      (user) => user.socketId === socketId
-    );
-    if (userToRemove) {
-      activeUsers.delete(userToRemove);
-    }
-    io.emit("activeUsers", Array.from(activeUsers));
-  });
-
-  socket.on("disconnect", () => {
-    // Find the user object in activeUsers and remove it
-    const disconnectedUserId = socket.id;
-    const userToRemove = Array.from(activeUsers).find(
-      (user) => user.socketId === disconnectedUserId
-    );
-    if (userToRemove) {
-      activeUsers.delete(userToRemove);
-    }
-
-    io.emit("activeUsers", Array.from(activeUsers));
-  });
-
-  // Handle profile visit event
-  socket.on("profileVisit", ({ visitedUserId, visitorName }) => {
-    // Assuming you have a user socketId saved in activeUsers
-    const visitedUser = Array.from(activeUsers).find(
-      (user) => user.userId === visitedUserId
-    );
-
-    if (visitedUser) {
-      io.to(visitedUser.socketId).emit("profileVisit", {
-        visitorName,
-        visitedUserId,
-      });
-    }
-  });
-});
-
 app.get("/active-users", (req, res) => {
-  res.json(Array.from(activeUsers));
+  res.json(getActiveUsers());
 });
 
 httpServer.listen(PORT, () => {

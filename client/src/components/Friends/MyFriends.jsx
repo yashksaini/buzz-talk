@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../main";
 import { useSelector } from "react-redux";
 import FriendProfileCard from "../UI/FriendProfileCard";
 import { LuUserX2 } from "react-icons/lu";
 import { LiaTelegramPlane } from "react-icons/lia";
 import Loader from "../UI/Loader";
 import NoDataFound from "../UI/NoDataFound";
+import { BASE_URL } from "../../Constants/constants";
 
 const MyFriends = () => {
   const { userId } = useSelector((state) => state.userAuth);

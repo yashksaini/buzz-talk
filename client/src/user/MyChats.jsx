@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { IoSettingsOutline } from "react-icons/io5";
-import { BASE_URL } from "../main";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { LuMailPlus } from "react-icons/lu";
@@ -11,6 +10,7 @@ import Loader from "../components/UI/Loader";
 import ChatCard from "../components/UI/ChatCard";
 import NoDataFound from "../components/UI/NoDataFound";
 import ChatArea from "../components/ChatArea";
+import { BASE_URL } from "../Constants/constants";
 const MyChats = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [search, setSearch] = useState("");

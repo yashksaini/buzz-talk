@@ -2,8 +2,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../main";
 import { useSelector } from "react-redux";
+import { BASE_URL } from "../Constants/constants";
 
 const Dashboard = ({ socket }) => {
   const [activeUsers, setActiveUsers] = useState([]);
@@ -14,6 +14,7 @@ const Dashboard = ({ socket }) => {
       try {
         const response = await axios.get(`${BASE_URL}/active-users`);
         setActiveUsers(response.data);
+        console.log("Active users", response.data);
       } catch (error) {
         console.error("Error fetching initial active users:", error);
       }
@@ -24,6 +25,7 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     socket.on("activeUsers", (data) => {
+      console.log("Active users", data);
       setActiveUsers(data);
     });
   }, [socket]);
@@ -34,7 +36,7 @@ const Dashboard = ({ socket }) => {
       <div>
         {activeUsers?.map((user) => (
           <Link
-            to={`/profile/${user.userId}`}
+            to={`/profile/${user.username}`}
             key={user.userId}
             className="block p-4 m-2 bg-blue-500 text-white rounded"
           >

@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../main";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HomeBanner from "../components/HomeBanner";
 import { sharedStyles } from "../sharedStyles/utils";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { BASE_URL } from "../Constants/constants";
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");

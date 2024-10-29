@@ -3,12 +3,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../main";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import HomeBanner from "../components/HomeBanner";
 import { sharedStyles } from "../sharedStyles/utils";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { BASE_URL } from "../Constants/constants";
 
 const Login = () => {
   const [username, setUsername] = useState("");

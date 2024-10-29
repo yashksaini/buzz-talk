@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { BASE_URL } from "../main";
 import { FaRegUser, FaUser } from "react-icons/fa6";
 import { IoChatbubblesOutline, IoChatbubbles } from "react-icons/io5";
 import { HiOutlineUsers, HiMiniUsers } from "react-icons/hi2";
@@ -9,6 +8,7 @@ import { BsBell, BsBellFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { BASE_URL } from "../Constants/constants";
 const Navbar = () => {
   const { fullName, username, imgUrl } = useSelector((state) => state.userAuth);
   const adminNavs = [

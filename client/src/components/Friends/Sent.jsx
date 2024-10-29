@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../../main";
 import { useSelector } from "react-redux";
 import FriendProfileCard from "../UI/FriendProfileCard";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Loader from "../UI/Loader";
 import NoDataFound from "../UI/NoDataFound";
+import { BASE_URL } from "../../Constants/constants";
 const Sent = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const [requestList, setRequestList] = useState([]);

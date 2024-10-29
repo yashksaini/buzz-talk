@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { BiInfoCircle, BiSend } from "react-icons/bi";
 import axios from "axios";
-import { BASE_URL } from "../main";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { format } from "date-fns";
+import { BASE_URL } from "../Constants/constants";
 const ChatArea = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const { chatId } = useParams();
@@ -69,7 +69,7 @@ const ChatArea = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Scroll to bottom whenever chatData.messages changes
+  // Scroll to bottom whenever messages changes
   useEffect(() => {
     scrollToBottom();
   }, [messages]);

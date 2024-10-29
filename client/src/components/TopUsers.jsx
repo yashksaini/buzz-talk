@@ -3,9 +3,9 @@ import { GoSearch } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRecentUsers } from "../redux/topUsers";
 import axios from "axios";
-import { BASE_URL } from "../main";
 import LineProfileCard from "./UI/LineProfileCard";
 import Loader from "./UI/Loader";
+import { BASE_URL } from "../Constants/constants";
 const TopUsers = () => {
   const dispatch = useDispatch();
   const { userId } = useSelector((state) => state.userAuth);

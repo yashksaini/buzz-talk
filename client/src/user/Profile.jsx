@@ -2,7 +2,6 @@
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from "../main";
 import { useSelector } from "react-redux";
 import { IoCalendarOutline } from "react-icons/io5";
 import TopUsers from "../components/TopUsers";
@@ -17,6 +16,7 @@ import {
 } from "../components/commonFunctions";
 import MiniModal from "../components/UI/MiniModal";
 import NoDataFound from "../components/UI/NoDataFound";
+import { BASE_URL } from "../Constants/constants";
 const Profile = ({ socket }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();

@@ -5,10 +5,10 @@ import { IoCloseOutline } from "react-icons/io5";
 import Loader from "./UI/Loader";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { BASE_URL } from "../main";
 import FriendsChatCard from "./UI/FriendsChatCard";
 import NoDataFound from "./UI/NoDataFound";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../Constants/constants";
 
 const NewChatModal = ({ setIsNewChatModal }) => {
   const { userId } = useSelector((state) => state.userAuth);

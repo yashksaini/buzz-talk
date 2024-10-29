@@ -9,7 +9,7 @@ import { GrClose } from "react-icons/gr";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { BASE_URL } from "../main";
+import { BASE_URL } from "../Constants/constants";
 const EditProfileModal = ({ setModalType, user }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const initialData = {

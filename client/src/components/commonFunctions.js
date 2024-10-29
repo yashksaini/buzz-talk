@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "../main";
+import { BASE_URL } from "../Constants/constants";
 // Send Request to friend
 export const sendRequest = async (ownerId, profileUsername) => {
   try {

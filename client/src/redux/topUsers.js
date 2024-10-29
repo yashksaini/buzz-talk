@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { BASE_URL } from "../main";
 import axios from "axios";
+import { BASE_URL } from "../Constants/constants";
 
 // Create an async thunk for fetching recent users
 export const fetchRecentUsers = createAsyncThunk(
