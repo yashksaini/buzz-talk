@@ -17,11 +17,14 @@ const ChatArea = () => {
   const getChatMessages = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/chat/getChatMessages`, {
-        params: { chatId: chatId }, // Replace with actual values
+        params: { chatId: chatId, page: page }, // Replace with actual values
       });
       if (response?.data) {
-        console.log(response.data);
-        setMessages(response?.data?.messages || []);
+        setMessages((prevResults) => [
+          ...prevResults,
+          ...(response?.data?.messages || []),
+        ]);
+        setPage((prevPage) => prevPage + 1);
       }
     } catch (error) {
       console.error("Error fetching chat data:", error);
@@ -36,7 +39,7 @@ const ChatArea = () => {
         });
         if (response?.data) {
           setChatData(response?.data || {});
-          setMessages(response?.data?.chat?.messages);
+          // setMessages(response?.data?.chat?.messages);
           console.log(response.data);
         }
       } catch (error) {
@@ -45,6 +48,8 @@ const ChatArea = () => {
     };
 
     fetchData();
+    getChatMessages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, userId]);
 
   const sendMessage = async () => {
@@ -63,11 +68,22 @@ const ChatArea = () => {
     }
   };
   const chatEndRef = useRef(null);
+  const chatStartRef = useRef(null);
+  const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    setPage(1);
+    setMessages([]);
+  }, [chatId]);
   // Function to scroll to the bottom
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Function to scroll to the bottom
+  // const scrollToTop = () => {
+  //   chatStartRef.current?.scrollIntoView({ behavior: "smooth" });
+  // };
 
   // Scroll to bottom whenever messages changes
   useEffect(() => {
@@ -117,7 +133,9 @@ const ChatArea = () => {
       </div>
       <div className="w-full h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto">
         {/* Add chats here current user chat on right and sender chat on left */}
-        <div className="flex flex-col gap-2 p-3">
+
+        <div className="flex flex-col-reverse gap-2 p-3">
+          <div ref={chatEndRef} />
           {messages?.map((message, index) => (
             <div
               key={index}
@@ -147,7 +165,15 @@ const ChatArea = () => {
               </div>
             </div>
           ))}
-          <div ref={chatEndRef} />
+          <div
+            className="w-full flex justify-center items-center bg-line py-2"
+            onClick={() => {
+              getChatMessages();
+            }}
+          >
+            Load More
+          </div>
+          <div ref={chatStartRef} />
         </div>
       </div>
       <div className="flex justify-start items-center sticky bottom-0 w-full h-14 bg-white border-t border-line px-3 py-2">

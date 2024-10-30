@@ -129,15 +129,24 @@ export const getChatById = async (req, res) => {
 
 export const getChatMessages = async (req, res) => {
   try {
-    const { chatId } = req.query;
+    const { chatId, page = 1 } = req.query;
+    const messagesPerPage = 5;
+    const skip = (page - 1) * messagesPerPage;
 
-    const chat = await Chat.findOne({ chatId }).exec();
+    const chat = await Chat.aggregate([
+      { $match: { chatId } },
+      { $unwind: "$messages" }, // Unwind messages array
+      { $sort: { "messages.sentAt": -1 } }, // Sort by sentAt in descending order
+      { $skip: skip }, // Skip messages based on page number
+      { $limit: messagesPerPage }, // Limit to messagesPerPage
+      { $group: { _id: "$_id", messages: { $push: "$messages" } } }, // Group back to single document
+    ]);
 
-    if (!chat) {
+    if (!chat || chat.length === 0) {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    res.status(200).json({ messages: chat.messages });
+    res.status(200).json({ messages: chat[0].messages });
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve chat", error });
   }
