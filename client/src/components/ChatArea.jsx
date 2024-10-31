@@ -81,9 +81,9 @@ const ChatArea = () => {
   };
 
   // Function to scroll to the bottom
-  // const scrollToTop = () => {
-  //   chatStartRef.current?.scrollIntoView({ behavior: "smooth" });
-  // };
+  const scrollToTop = () => {
+    chatStartRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   // Scroll to bottom whenever messages changes
   useEffect(() => {
@@ -169,6 +169,7 @@ const ChatArea = () => {
             className="w-full flex justify-center items-center bg-line py-2"
             onClick={() => {
               getChatMessages();
+              scrollToTop();
             }}
           >
             Load More
