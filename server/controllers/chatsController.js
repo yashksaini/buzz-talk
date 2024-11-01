@@ -112,7 +112,7 @@ export const getChatById = async (req, res) => {
     );
     // Format the response
     const formattedChat = {
-      chat: chat,
+      totalMessages: chat.messages.length,
       friendsProfile: {
         userId: otherUser.userId._id,
         username: otherUser.userId.username,
@@ -130,7 +130,7 @@ export const getChatById = async (req, res) => {
 export const getChatMessages = async (req, res) => {
   try {
     const { chatId, page = 1 } = req.query;
-    const messagesPerPage = 5;
+    const messagesPerPage = 20;
     const skip = (page - 1) * messagesPerPage;
 
     const chat = await Chat.aggregate([

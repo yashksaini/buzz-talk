@@ -1,82 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 import { BiInfoCircle, BiSend } from "react-icons/bi";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { format } from "date-fns";
-import { BASE_URL } from "../Constants/constants";
+import Messages from "./Messages";
+import {
+  getChatData,
+  getChatMessages,
+  sendMessage,
+} from "../Constants/ChatUtils";
+import { CHAT_LIMIT_PER_PAGE } from "../Constants/constants";
 const ChatArea = () => {
   const { userId } = useSelector((state) => state.userAuth);
   const { chatId } = useParams();
   const [chatData, setChatData] = useState({});
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
-
-  const getChatMessages = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/chat/getChatMessages`, {
-        params: { chatId: chatId, page: page }, // Replace with actual values
-      });
-      if (response?.data) {
-        setMessages((prevResults) => [
-          ...prevResults,
-          ...(response?.data?.messages || []),
-        ]);
-        setPage((prevPage) => prevPage + 1);
-      }
-    } catch (error) {
-      console.error("Error fetching chat data:", error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/chat/getChatData`, {
-          params: { ownerId: userId, chatId: chatId }, // Replace with actual values
-        });
-        if (response?.data) {
-          setChatData(response?.data || {});
-          // setMessages(response?.data?.chat?.messages);
-          console.log(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching chat data:", error);
-      }
-    };
-
-    fetchData();
-    getChatMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId, userId]);
-
-  const sendMessage = async () => {
-    try {
-      const response = await axios.post(`${BASE_URL}/chat/sendMessage`, {
-        chatId: chatId,
-        ownerId: userId,
-        messageText,
-      });
-      if (response.status === 200) {
-        getChatMessages();
-      }
-      setMessageText("");
-    } catch (error) {
-      console.error("Error sending message:", error);
-    }
-  };
-  const chatEndRef = useRef(null);
   const chatStartRef = useRef(null);
+  const chatEndRef = useRef(null);
   const [page, setPage] = useState(1);
+  const [totalMessages, setTotalMessages] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    setPage(1);
-    setMessages([]);
-  }, [chatId]);
   // Function to scroll to the bottom
   const scrollToBottom = () => {
+    console.log("scrollToBottom");
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -84,11 +33,38 @@ const ChatArea = () => {
   const scrollToTop = () => {
     chatStartRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  // Scroll to bottom whenever messages changes
+  const fetchData = async () => {
+    const { data, isSuccess } = await getChatData(chatId, userId);
+    if (isSuccess) {
+      if (data?.totalMessages > CHAT_LIMIT_PER_PAGE) {
+        setHasMore(true);
+      } else {
+        setHasMore(false);
+      }
+      setChatData(data);
+      setTotalMessages(data?.totalMessages);
+      const { messages, isSuccess } = await getChatMessages(chatId, 1);
+      setTimeout(() => {
+        scrollToBottom();
+      }, 1000);
+      isSuccess && setMessages(messages);
+      isSuccess && setPage(2);
+      !isSuccess && setMessages([]);
+    }
+  };
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatId, userId]);
+
+  const loadMore = async () => {
+    const { messages, isSuccess } = await getChatMessages(chatId, page);
+    isSuccess && setMessages((prevResults) => [...prevResults, ...messages]);
+    isSuccess && setPage((prev) => prev + 1);
+    !isSuccess && setHasMore(false);
+    scrollToTop();
+  };
+
   return (
     <div className="h-[100dvh] w-full overflow-hidden">
       <div className="sticky top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line">
@@ -132,48 +108,17 @@ const ChatArea = () => {
         />
       </div>
       <div className="w-full h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto">
-        {/* Add chats here current user chat on right and sender chat on left */}
-
         <div className="flex flex-col-reverse gap-2 p-3">
           <div ref={chatEndRef} />
-          {messages?.map((message, index) => (
+          <Messages messages={messages} />
+          {totalMessages >= messages.length && hasMore && (
             <div
-              key={index}
-              className={`flex ${
-                message.senderId === userId ? "justify-end" : "justify-start"
-              } mb-2`}
+              className="w-full flex justify-center items-center bg-line py-2"
+              onClick={loadMore}
             >
-              <div>
-                <div
-                  className={`max-w-xs py-2  px-4 mt-1 mx-2 rounded-2xl ${
-                    message.senderId === userId
-                      ? "bg-dark2 text-white rounded-br-none"
-                      : "bg-line text-black rounded-tl-none"
-                  }`}
-                >
-                  {message.message}
-                </div>
-                <div
-                  className={`text-xs text-grayText px-4 flex ${
-                    message.senderId === userId
-                      ? "justify-end"
-                      : "justify-start"
-                  } mt-1`}
-                >
-                  {format(new Date(message?.sentAt), "hh:mm a")}
-                </div>
-              </div>
+              Load More
             </div>
-          ))}
-          <div
-            className="w-full flex justify-center items-center bg-line py-2"
-            onClick={() => {
-              getChatMessages();
-              scrollToTop();
-            }}
-          >
-            Load More
-          </div>
+          )}
           <div ref={chatStartRef} />
         </div>
       </div>
@@ -188,7 +133,28 @@ const ChatArea = () => {
               setMessageText(e.target.value);
             }}
           />
-          <button className="px-4 h-full text-gray-600" onClick={sendMessage}>
+          <button
+            className="px-4 h-full text-gray-600"
+            onClick={async () => {
+              const { isSuccess } = await sendMessage(
+                chatId,
+                userId,
+                messageText
+              );
+              if (isSuccess) {
+                const { messages, isSuccess } = await getChatMessages(
+                  chatId,
+                  1
+                );
+                isSuccess && setMessages(messages);
+                if (messages.length >= CHAT_LIMIT_PER_PAGE) {
+                  setHasMore(true);
+                }
+              }
+              isSuccess && setMessageText("");
+              !isSuccess && setMessageText("");
+            }}
+          >
             <BiSend />
           </button>
         </div>
