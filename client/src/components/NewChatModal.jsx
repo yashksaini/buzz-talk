@@ -4,11 +4,11 @@ import { GoSearch } from "react-icons/go";
 import { IoCloseOutline } from "react-icons/io5";
 import Loader from "./UI/Loader";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import FriendsChatCard from "./UI/FriendsChatCard";
 import NoDataFound from "./UI/NoDataFound";
 import { toast } from "react-toastify";
-import { BASE_URL } from "../Constants/constants";
+import { axios } from "../Constants/constants";
+import { useNavigate } from "react-router-dom";
 
 const NewChatModal = ({ setIsNewChatModal }) => {
   const { userId } = useSelector((state) => state.userAuth);
@@ -17,10 +17,12 @@ const NewChatModal = ({ setIsNewChatModal }) => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [friendsList, setFriendsList] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/friends/getFriendsList`, {
+        const response = await axios.get("/friends/getFriendsList", {
           params: {
             ownerId: userId,
           },
@@ -40,7 +42,7 @@ const NewChatModal = ({ setIsNewChatModal }) => {
     // userId is the current user id
     // selectedFriendId is the friend id for creation
     try {
-      const response = await axios.post(`${BASE_URL}/chat/create-new`, {
+      const response = await axios.post("/chat/create-new", {
         ownerId: userId,
         profileUserId: selectedFriendId,
       });
@@ -50,6 +52,8 @@ const NewChatModal = ({ setIsNewChatModal }) => {
       } else {
         toast.success(response?.data?.message);
       }
+      const chat = response?.data?.chat;
+      navigate(`/chats/${chat?.chatId}`);
     } catch (error) {
       console.error("Error creating new chat:", error);
       toast.error("Error creating new chat");

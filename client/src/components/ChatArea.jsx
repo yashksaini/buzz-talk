@@ -46,7 +46,7 @@ const ChatArea = () => {
       const { messages, isSuccess } = await getChatMessages(chatId, 1);
       setTimeout(() => {
         scrollToBottom();
-      }, 1000);
+      }, 200);
       isSuccess && setMessages(messages);
       isSuccess && setPage(2);
       !isSuccess && setMessages([]);
@@ -112,11 +112,13 @@ const ChatArea = () => {
           <div ref={chatEndRef} />
           <Messages messages={messages} />
           {totalMessages >= messages.length && hasMore && (
-            <div
-              className="w-full flex justify-center items-center bg-line py-2"
-              onClick={loadMore}
-            >
-              Load More
+            <div className="w-full flex justify-center items-center py-2">
+              <button
+                onClick={loadMore}
+                className="bg-backgroundDark hover:bg-line rounded-md text-sm hover:cursor-pointer px-4 py-2 text-dark2 font-semibold"
+              >
+                Load More
+              </button>
             </div>
           )}
           <div ref={chatStartRef} />
