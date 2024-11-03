@@ -110,6 +110,13 @@ export const getChatById = async (req, res) => {
     const otherUser = chat.users.find(
       (user) => user.userId._id.toString() !== ownerId
     );
+    // If the user is not a member of the of the chat
+    const isUserOfChat = chat.users.some(
+      (user) => user.userId._id.toString() === ownerId
+    );
+    if (!isUserOfChat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
     // Format the response
     const formattedChat = {
       totalMessages: chat.messages.length,

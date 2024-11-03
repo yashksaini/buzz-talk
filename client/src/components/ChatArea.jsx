@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import { BiInfoCircle, BiSend } from "react-icons/bi";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
@@ -13,7 +13,9 @@ import {
 } from "../Constants/ChatUtils";
 import { CHAT_LIMIT_PER_PAGE } from "../Constants/constants";
 import NoDataFound from "./UI/NoDataFound";
+import Loader from "./UI/Loader";
 const ChatArea = ({ socket }) => {
+  const navigate = useNavigate();
   const { userId } = useSelector((state) => state.userAuth);
   const { chatId } = useParams();
   const [chatData, setChatData] = useState({});
@@ -25,6 +27,7 @@ const ChatArea = ({ socket }) => {
   const [totalMessages, setTotalMessages] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (chatId) {
@@ -36,7 +39,6 @@ const ChatArea = ({ socket }) => {
 
   // Function to scroll to the bottom
   const scrollToBottom = () => {
-    console.log("scrollToBottom");
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -45,6 +47,7 @@ const ChatArea = ({ socket }) => {
     chatStartRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   const fetchData = async () => {
+    setIsLoading(true);
     const { data, isSuccess } = await getChatData(chatId, userId);
     if (isSuccess) {
       if (data?.totalMessages > CHAT_LIMIT_PER_PAGE) {
@@ -61,10 +64,16 @@ const ChatArea = ({ socket }) => {
       isSuccess && setMessages(messages);
       isSuccess && setPage(2);
       !isSuccess && setMessages([]);
+      setIsLoading(false);
+    } else {
+      // If chatId is invalid or the user is not of the chat
+      navigate("/chats");
     }
   };
   useEffect(() => {
-    fetchData();
+    if (chatId) {
+      fetchData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, userId]);
 
@@ -76,16 +85,18 @@ const ChatArea = ({ socket }) => {
     scrollToTop();
   };
   // Send a message
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (messageText.trim()) {
-      const messageData = {
-        chatId,
-        messageText: messageText,
-        ownerId: userId,
+      const newMessage = {
+        senderId: userId,
+        message: messageText,
+        sentAt: new Date(),
+        readBy: [{ userId: userId, readAt: new Date() }],
       };
 
+      await sendMessage(chatId, newMessage);
       // Emit the sendMessage event to the server
-      socket.emit("sendMessage", messageData);
+      socket.emit("sendMessage", { chatId, newMessage });
       setMessageText(""); // Clear input after sending
     }
   };
@@ -93,9 +104,6 @@ const ChatArea = ({ socket }) => {
   // Listen for incoming messages
   useEffect(() => {
     socket.on("receiveMessage", async (messageData) => {
-      if (userId === messageData.senderId) {
-        await sendMessage(chatId, messageData);
-      }
       setTimeout(() => {
         scrollToBottom();
       }, 200);
@@ -120,7 +128,7 @@ const ChatArea = ({ socket }) => {
 
   return (
     <div className="h-[100dvh] w-full overflow-hidden">
-      {chatId && (
+      {chatId && !isLoading && (
         <>
           <div className="sticky top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line">
             <div className="flex justify-center items-center gap-2">
@@ -200,9 +208,14 @@ const ChatArea = ({ socket }) => {
                 onBlur={() => {
                   socket.emit("stopTyping", { chatId, userId });
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && messageText.trim()) {
+                    handleSendMessage();
+                  }
+                }}
               />
               <button
-                className="px-4 h-full text-gray-600"
+                className="px-4 h-full text-gray-600 focus:outline-none"
                 onClick={async () => {
                   handleSendMessage();
                 }}
@@ -212,6 +225,11 @@ const ChatArea = ({ socket }) => {
             </div>
           </div>
         </>
+      )}
+      {isLoading && (
+        <div className="h-full w-full flex justify-center items-start py-6">
+          <Loader />
+        </div>
       )}
       {!chatId && (
         <div className="flex justify-center items-start h-full flex-col">

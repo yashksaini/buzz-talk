@@ -14,11 +14,11 @@ export const getChatMessages = async (chatId, page) => {
   }
 };
 
-export const sendMessage = async (chatId, messageData) => {
+export const sendMessage = async (chatId, newMessage) => {
   try {
     const response = await axios.post("/chat/sendMessage", {
       chatId: chatId,
-      messageData: messageData,
+      messageData: newMessage,
     });
     if (response.status === 200) {
       return { isSuccess: true };

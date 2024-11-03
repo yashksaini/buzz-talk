@@ -84,15 +84,8 @@ export const initializeSocket = (httpServer) => {
       io.to(chatId).emit("userTyping", { typingUser: userId, isTyping: false });
     });
 
-    socket.on("sendMessage", async ({ chatId, messageText, ownerId }) => {
+    socket.on("sendMessage", async ({ chatId, newMessage }) => {
       try {
-        const newMessage = {
-          senderId: ownerId,
-          message: messageText,
-          sentAt: new Date(),
-          readBy: [{ userId: ownerId, readAt: new Date() }],
-        };
-
         io.to(chatId).emit("receiveMessage", newMessage);
       } catch (error) {
         console.error("Error adding new message:", error);
