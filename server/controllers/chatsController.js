@@ -154,32 +154,24 @@ export const getChatMessages = async (req, res) => {
 
 export const addMessage = async (req, res) => {
   try {
-    const { ownerId, messageText, chatId } = req.body; // Use body to pass message data
-
-    console.log({ chatId, messageText, ownerId });
+    const { messageData, chatId } = req.body; // Use body to pass message data
     // Find the chat by its chatId
     const chat = await Chat.findOne({ chatId });
     if (!chat) {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    // Create a new message
-    const newMessage = {
-      senderId: ownerId,
-      message: messageText,
-      sentAt: new Date(),
-      readBy: [{ userId: ownerId, readAt: new Date() }],
-    };
-
     // Add the new message to the messages array and update lastMessage
-    chat.messages.push(newMessage);
-    chat.lastMessage = messageText;
+    chat.messages.push(messageData);
+    chat.lastMessage = messageData.message;
     chat.updatedAt = new Date();
 
     // Save the updated chat document
     await chat.save();
 
-    res.status(200).json({ message: "Message added successfully", newMessage });
+    res
+      .status(200)
+      .json({ message: "Message added successfully", messageData });
   } catch (error) {
     console.error("Error adding message:", error);
     res.status(500).json({ message: "Failed to add message", error });

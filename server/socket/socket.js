@@ -1,8 +1,9 @@
 // socket.js
 import { Server } from "socket.io";
+// import { addNewMessage } from "../utils/chatUtils.js";
 
 const activeUsers = new Set();
-
+const chatPools = {}; // Store active users per chatId
 export const initializeSocket = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
@@ -63,6 +64,49 @@ export const initializeSocket = (httpServer) => {
           visitorName,
           visitedUserId,
         });
+      }
+    });
+
+    // Chat Sockets
+    socket.on("joinChatPool", ({ chatId }) => {
+      socket.join(chatId);
+    });
+
+    socket.on("leaveChatPool", ({ chatId }) => {
+      socket.leave(chatId);
+    });
+
+    socket.on("startTyping", ({ chatId, userId }) => {
+      io.to(chatId).emit("userTyping", { typingUser: userId, isTyping: true });
+    });
+
+    socket.on("stopTyping", ({ chatId, userId }) => {
+      io.to(chatId).emit("userTyping", { typingUser: userId, isTyping: false });
+    });
+
+    socket.on("sendMessage", async ({ chatId, messageText, ownerId }) => {
+      try {
+        const newMessage = {
+          senderId: ownerId,
+          message: messageText,
+          sentAt: new Date(),
+          readBy: [{ userId: ownerId, readAt: new Date() }],
+        };
+
+        io.to(chatId).emit("receiveMessage", newMessage);
+      } catch (error) {
+        console.error("Error adding new message:", error);
+      }
+    });
+
+    socket.on("disconnectChat", () => {
+      for (const chatId in chatPools) {
+        chatPools[chatId] = new Set(
+          Array.from(chatPools[chatId]).filter(
+            (user) => user.socketId !== socket.id
+          )
+        );
+        io.to(chatId).emit("chatPoolUpdate", Array.from(chatPools[chatId]));
       }
     });
   });

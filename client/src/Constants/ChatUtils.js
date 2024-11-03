@@ -14,12 +14,11 @@ export const getChatMessages = async (chatId, page) => {
   }
 };
 
-export const sendMessage = async (chatId, userId, messageText) => {
+export const sendMessage = async (chatId, messageData) => {
   try {
     const response = await axios.post("/chat/sendMessage", {
       chatId: chatId,
-      ownerId: userId,
-      messageText,
+      messageData: messageData,
     });
     if (response.status === 200) {
       return { isSuccess: true };
@@ -47,5 +46,15 @@ export const getChatData = async (chatId, userId) => {
       data: {},
       isSuccess: false,
     };
+  }
+};
+
+export const getActiveUsers = async () => {
+  try {
+    const response = await axios.get("/active-users");
+    return { data: response?.data, isSuccess: true };
+  } catch (error) {
+    console.error("Error fetching active users:", error);
+    return { data: [], isSuccess: false };
   }
 };

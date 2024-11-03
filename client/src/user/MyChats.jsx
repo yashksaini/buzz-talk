@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -11,12 +12,14 @@ import ChatCard from "../components/UI/ChatCard";
 import NoDataFound from "../components/UI/NoDataFound";
 import ChatArea from "../components/ChatArea";
 import { BASE_URL } from "../Constants/constants";
-const MyChats = () => {
+import { getActiveUsers } from "../Constants/ChatUtils";
+const MyChats = ({ socket }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [search, setSearch] = useState("");
   const [isNewChatModal, setIsNewChatModal] = useState(false);
   const [chatsList, setChatsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeUsers, setActiveUsers] = useState([]);
   // const handleSearch = () => {};
   useEffect(() => {
     const fetchChats = async () => {
@@ -26,10 +29,8 @@ const MyChats = () => {
             ownerId: userId,
           },
         });
-        console.log(response);
         if (response?.data) {
           setChatsList(response?.data?.chats || []);
-          console.log(response?.data?.chats);
           setIsLoading(false);
         }
       } catch (error) {
@@ -39,6 +40,25 @@ const MyChats = () => {
     };
     fetchChats();
   }, [userId]);
+
+  const checkUserStatus = (friendId) => {
+    const isFriendOnline = activeUsers.some((user) => user.userId === friendId);
+    return isFriendOnline;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, isSuccess } = await getActiveUsers();
+      isSuccess && setActiveUsers(data);
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    socket.on("activeUsers", (data) => {
+      setActiveUsers(data);
+    });
+  }, [socket]);
+
   return (
     <>
       <div className="flex justify-center items-center h-full">
@@ -125,10 +145,12 @@ const MyChats = () => {
                       username: chat?.friendProfile.username,
                       imgUrl: chat?.friendProfile.imgUrl,
                     }}
-                    chatId={chat?.chatId}
+                    chatId_={chat?.chatId}
                     lastMessage={chat.lastMessage}
                     updatedAt={chat.updatedAt}
                     key={index}
+                    isOnline={checkUserStatus(chat?.friendProfile.userId)}
+                    socket={socket}
                   />
                 );
               })}
@@ -142,7 +164,7 @@ const MyChats = () => {
         </div>
         {/* Chat Area */}
         <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
-          <ChatArea />
+          <ChatArea socket={socket} />
         </div>
       </div>
       {isNewChatModal && <NewChatModal setIsNewChatModal={setIsNewChatModal} />}
