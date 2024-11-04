@@ -184,3 +184,33 @@ export const addMessage = async (req, res) => {
     res.status(500).json({ message: "Failed to add message", error });
   }
 };
+
+export const markMessagesAsRead = async (req, res) => {
+  try {
+    const { ownerId, chatId } = req.body;
+    const chat = await Chat.findOne({ chatId });
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+    chat.messages.forEach((message) => {
+      const alreadyRead = message.readBy.some(
+        (readInfo) => readInfo.userId.toString() === ownerId.toString()
+      );
+
+      if (!alreadyRead) {
+        message.readBy.push({
+          userId: ownerId,
+          readAt: new Date(),
+        });
+      }
+    });
+
+    // Save the updated chat document
+    await chat.save();
+
+    res.status(200).json({ message: "Message marked as read" });
+  } catch (error) {
+    console.error("Error marking messages as read:", error);
+    res.status(500).json({ message: "Error marking messages as read:", error });
+  }
+};

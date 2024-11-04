@@ -9,6 +9,7 @@ import Messages from "./Messages";
 import {
   getChatData,
   getChatMessages,
+  markMessagesAsRead,
   sendMessage,
 } from "../Constants/ChatUtils";
 import { CHAT_LIMIT_PER_PAGE } from "../Constants/constants";
@@ -33,9 +34,10 @@ const ChatArea = ({ socket }) => {
     if (chatId) {
       socket.emit("joinChatPool", {
         chatId: chatId,
+        userId: userId,
       });
     }
-  }, [chatId, socket]);
+  }, [chatId, socket, userId]);
 
   // Function to scroll to the bottom
   const scrollToBottom = () => {
@@ -64,6 +66,9 @@ const ChatArea = ({ socket }) => {
       isSuccess && setMessages(messages);
       isSuccess && setPage(2);
       !isSuccess && setMessages([]);
+      if (isSuccess) {
+        await markMessagesAsRead({ chatId, ownerId: userId });
+      }
       setIsLoading(false);
     } else {
       // If chatId is invalid or the user is not of the chat
@@ -107,6 +112,7 @@ const ChatArea = ({ socket }) => {
       setTimeout(() => {
         scrollToBottom();
       }, 200);
+      await markMessagesAsRead({ chatId, ownerId: userId });
       setMessages((prevMessages) => [messageData, ...prevMessages]);
     });
 

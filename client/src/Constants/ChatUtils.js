@@ -58,3 +58,17 @@ export const getActiveUsers = async () => {
     return { data: [], isSuccess: false };
   }
 };
+export const markMessagesAsRead = async ({ chatId, ownerId }) => {
+  try {
+    const response = await axios.post("/chat/markMessagesAsRead", {
+      chatId: chatId,
+      ownerId: ownerId,
+    });
+    if (response.status === 200) {
+      return { isSuccess: true };
+    }
+  } catch (error) {
+    console.error("Error marking as read", error);
+    return { isSuccess: false };
+  }
+};

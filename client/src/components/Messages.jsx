@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { format, parseISO } from "date-fns";
 import { useSelector } from "react-redux";
-
+import { PiChecksBold, PiCheckBold } from "react-icons/pi";
 const Messages = ({ messages }) => {
   const { userId } = useSelector((state) => state.userAuth);
 
@@ -12,6 +12,27 @@ const Messages = ({ messages }) => {
     groups[date].push(message);
     return groups;
   }, {});
+
+  // const getMessageReadTime = (message) => {
+  //   const otherUserReadData = message.readBy.filter(
+  //     (readInfo) => readInfo.userId !== userId
+  //   );
+  //   if (otherUserReadData.length > 0) {
+  //     return format(parseISO(otherUserReadData[0].readAt), "hh:mm a");
+  //   } else {
+  //     return null;
+  //   }
+  // };
+  const isMessageRead = (message) => {
+    const otherUserReadData = message.readBy.filter(
+      (readInfo) => readInfo.userId !== userId
+    );
+    if (otherUserReadData.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <>
@@ -50,6 +71,14 @@ const Messages = ({ messages }) => {
                   } mt-1`}
                 >
                   {format(parseISO(message.sentAt), "hh:mm a")}
+                  <span className="ml-2 text-base">
+                    {message.senderId === userId && isMessageRead(message) && (
+                      <PiChecksBold className="text-primary" />
+                    )}
+                    {message.senderId === userId && !isMessageRead(message) && (
+                      <PiCheckBold />
+                    )}
+                  </span>
                 </div>
               </div>
             </div>

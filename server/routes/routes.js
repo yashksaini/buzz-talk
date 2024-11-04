@@ -28,6 +28,7 @@ import {
   getChatById,
   getChatMessages,
   getChatsList,
+  markMessagesAsRead,
 } from "../controllers/chatsController.js";
 
 const router = express.Router();
@@ -61,4 +62,5 @@ router.get("/chat/getChatsList", getChatsList);
 router.get("/chat/getChatData", getChatById);
 router.post("/chat/sendMessage", addMessage);
 router.get("/chat/getChatMessages", getChatMessages);
+router.post("/chat/markMessagesAsRead", markMessagesAsRead);
 export default router;

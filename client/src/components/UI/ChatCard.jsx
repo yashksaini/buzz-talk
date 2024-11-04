@@ -35,10 +35,11 @@ const ChatCard = ({
       onClick={() => {
         // Emit leaveChatPool for the current chat if switching
         if (chatId && chatId !== chatId_) {
-          socket.emit("leaveChatPool", { chatId });
+          socket.emit("leaveChatPool", { chatId, userId });
         }
         socket.emit("joinChatPool", {
           chatId: chatId_,
+          userId: userId,
         });
         navigate(`/chats/${chatId_}`);
       }}

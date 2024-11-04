@@ -68,11 +68,31 @@ export const initializeSocket = (httpServer) => {
     });
 
     // Chat Sockets
-    socket.on("joinChatPool", ({ chatId }) => {
+    socket.on("joinChatPool", ({ chatId, userId }) => {
       socket.join(chatId);
+      if (!chatPools[chatId]) {
+        chatPools[chatId] = new Set();
+      }
+
+      // Check if user is already in the chat pool
+      const isUserInChat = Array.from(chatPools[chatId]).some(
+        (user) => user.userId === userId
+      );
+
+      if (!isUserInChat) {
+        chatPools[chatId].add({
+          userId: userId,
+          socketId: socket.id,
+        });
+      }
     });
 
-    socket.on("leaveChatPool", ({ chatId }) => {
+    socket.on("leaveChatPool", ({ chatId, userId }) => {
+      if (chatPools[chatId]) {
+        chatPools[chatId] = new Set(
+          Array.from(chatPools[chatId]).filter((user) => user.userId !== userId)
+        );
+      }
       socket.leave(chatId);
     });
 
@@ -86,6 +106,8 @@ export const initializeSocket = (httpServer) => {
 
     socket.on("sendMessage", async ({ chatId, newMessage }) => {
       try {
+        // console.log(newMessage, chatPools, chatId);
+        // Continue from here...
         io.to(chatId).emit("receiveMessage", newMessage);
       } catch (error) {
         console.error("Error adding new message:", error);
