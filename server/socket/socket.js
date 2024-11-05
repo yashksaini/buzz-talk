@@ -104,10 +104,22 @@ export const initializeSocket = (httpServer) => {
       io.to(chatId).emit("userTyping", { typingUser: userId, isTyping: false });
     });
 
+    socket.on("newReadMessages", ({ chatId, newReadMessages }) => {
+      io.to(chatId).emit("broadCastNewMessages", newReadMessages);
+    });
+
     socket.on("sendMessage", async ({ chatId, newMessage }) => {
       try {
-        // console.log(newMessage, chatPools, chatId);
-        // Continue from here...
+        const otherOnlineUser = Array.from(chatPools[chatId]).filter(
+          (user) => user.userId !== newMessage.senderId
+        );
+        if (otherOnlineUser.length > 0) {
+          newMessage.readBy.push({
+            userId: otherOnlineUser.userId,
+            readAt: new Date(),
+          });
+        }
+
         io.to(chatId).emit("receiveMessage", newMessage);
       } catch (error) {
         console.error("Error adding new message:", error);

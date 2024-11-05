@@ -67,7 +67,11 @@ const ChatArea = ({ socket }) => {
       isSuccess && setPage(2);
       !isSuccess && setMessages([]);
       if (isSuccess) {
-        await markMessagesAsRead({ chatId, ownerId: userId });
+        const { newReadMessages } = await markMessagesAsRead({
+          chatId,
+          ownerId: userId,
+        });
+        socket.emit("newReadMessages", { chatId, newReadMessages });
       }
       setIsLoading(false);
     } else {
@@ -121,6 +125,30 @@ const ChatArea = ({ socket }) => {
       socket.off("receiveMessage");
     };
   }, [chatId, socket, userId]);
+
+  useEffect(() => {
+    const updateMessageStatus = (newMessages) => {
+      const temp = [...messages];
+      const newData = temp.filter((message) => {
+        return message._id;
+      });
+      newData.unshift(...newMessages.reverse());
+      setMessages(newData);
+    };
+
+    socket.on("broadCastNewMessages", async (newReadMessages) => {
+      if (newReadMessages.length > 0) {
+        if (newReadMessages[0].senderId === userId) {
+          updateMessageStatus(newReadMessages);
+        }
+      }
+    });
+
+    // Cleanup listener on component unmount
+    return () => {
+      socket.off("broadCastNewMessages");
+    };
+  }, [messages, socket, userId]);
 
   useEffect(() => {
     socket.on("userTyping", async ({ typingUser, isTyping }) => {

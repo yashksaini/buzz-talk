@@ -65,7 +65,10 @@ export const markMessagesAsRead = async ({ chatId, ownerId }) => {
       ownerId: ownerId,
     });
     if (response.status === 200) {
-      return { isSuccess: true };
+      return {
+        isSuccess: true,
+        newReadMessages: response?.data?.newReadMessages,
+      };
     }
   } catch (error) {
     console.error("Error marking as read", error);
