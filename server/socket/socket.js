@@ -85,6 +85,7 @@ export const initializeSocket = (httpServer) => {
           socketId: socket.id,
         });
       }
+      io.to(chatId).emit("chatUsers", Array.from(chatPools[chatId]));
     });
 
     socket.on("leaveChatPool", ({ chatId, userId }) => {
@@ -94,6 +95,7 @@ export const initializeSocket = (httpServer) => {
         );
       }
       socket.leave(chatId);
+      io.to(chatId).emit("chatUsers", Array.from(chatPools[chatId]));
     });
 
     socket.on("startTyping", ({ chatId, userId }) => {

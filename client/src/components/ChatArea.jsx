@@ -28,6 +28,7 @@ const ChatArea = ({ socket }) => {
   const [totalMessages, setTotalMessages] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -60,13 +61,14 @@ const ChatArea = ({ socket }) => {
       setChatData(data);
       setTotalMessages(data?.totalMessages);
       const { messages, isSuccess } = await getChatMessages(chatId, 1);
-      setTimeout(() => {
-        scrollToBottom();
-      }, 200);
+
       isSuccess && setMessages(messages);
       isSuccess && setPage(2);
       !isSuccess && setMessages([]);
       if (isSuccess) {
+        setTimeout(() => {
+          scrollToBottom();
+        }, 200);
         const { newReadMessages } = await markMessagesAsRead({
           chatId,
           ownerId: userId,
@@ -115,7 +117,7 @@ const ChatArea = ({ socket }) => {
     socket.on("receiveMessage", async (messageData) => {
       setTimeout(() => {
         scrollToBottom();
-      }, 200);
+      }, 400);
       await markMessagesAsRead({ chatId, ownerId: userId });
       setMessages((prevMessages) => [messageData, ...prevMessages]);
     });
@@ -160,6 +162,16 @@ const ChatArea = ({ socket }) => {
     });
   }, [socket, userId]);
 
+  useEffect(() => {
+    socket.on("chatUsers", async (chatUsers) => {
+      if (chatUsers.length > 1) {
+        setIsActive(true);
+      } else {
+        setIsActive(false);
+      }
+    });
+  }, [socket]);
+
   return (
     <div className="h-[100dvh] w-full overflow-hidden">
       {chatId && !isLoading && (
@@ -184,8 +196,13 @@ const ChatArea = ({ socket }) => {
                 </h1>
                 <p className="leading-4  text-mainText text-xs ">
                   {chatData?.friendsProfile?.username}
+                  {isActive && !isTyping && (
+                    <span className="ml-2 font-medium text-green-600">
+                      Active
+                    </span>
+                  )}
                   {isTyping && (
-                    <span className="ml-2 italic font-medium text-dark1">
+                    <span className="ml-2  font-medium text-green-600">
                       Typing...
                     </span>
                   )}
