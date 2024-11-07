@@ -25,7 +25,6 @@ const Dashboard = ({ socket }) => {
 
   useEffect(() => {
     socket.on("activeUsers", (data) => {
-      console.log("Active users", data);
       setActiveUsers(data);
     });
   }, [socket]);

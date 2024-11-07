@@ -77,6 +77,7 @@ const ChatArea = ({ socket }) => {
       }
       setIsLoading(false);
     } else {
+      socket.emit("leaveChatPool", { chatId, userId });
       // If chatId is invalid or the user is not of the chat
       navigate("/chats");
     }
@@ -84,6 +85,8 @@ const ChatArea = ({ socket }) => {
   useEffect(() => {
     if (chatId) {
       fetchData();
+    } else {
+      setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId, userId]);

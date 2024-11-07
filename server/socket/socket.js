@@ -50,6 +50,23 @@ export const initializeSocket = (httpServer) => {
       if (userToRemove) {
         activeUsers.delete(userToRemove);
       }
+      // Remove user from all chat pools
+      for (const chatId in chatPools) {
+        chatPools[chatId] = new Set(
+          Array.from(chatPools[chatId]).filter(
+            (user) => user.socketId !== disconnectedUserId
+          )
+        );
+
+        // Emit updated chatUsers to the specific chat room if any users are left
+        if (chatPools[chatId].size > 0) {
+          io.to(chatId).emit("chatUsers", Array.from(chatPools[chatId]));
+        } else {
+          // If no users are left, emit an empty array and optionally clean up the chat pool
+          delete chatPools[chatId];
+          io.to(chatId).emit("chatUsers", []);
+        }
+      }
 
       io.emit("activeUsers", Array.from(activeUsers));
     });
@@ -95,7 +112,11 @@ export const initializeSocket = (httpServer) => {
         );
       }
       socket.leave(chatId);
-      io.to(chatId).emit("chatUsers", Array.from(chatPools[chatId]));
+      if (chatPools[chatId]) {
+        io.to(chatId).emit("chatUsers", Array.from(chatPools[chatId]));
+      } else {
+        io.to(chatId).emit("chatUsers", []);
+      }
     });
 
     socket.on("startTyping", ({ chatId, userId }) => {
