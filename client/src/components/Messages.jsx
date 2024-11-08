@@ -2,8 +2,14 @@
 import { format, parseISO } from "date-fns";
 import { useSelector } from "react-redux";
 import { PiChecksBold, PiCheckBold } from "react-icons/pi";
-const Messages = ({ messages }) => {
+import { useState } from "react";
+import MessageInfoModal from "./MessageInfoModal";
+import { BsInfoLg } from "react-icons/bs";
+const Messages = ({ messages, friendsProfile }) => {
   const { userId } = useSelector((state) => state.userAuth);
+  console.log(friendsProfile);
+  const [isMessageInfo, setIsMessageInfo] = useState(false);
+  const [messageInfo, setMessageInfo] = useState({});
 
   // Group messages by date
   const groupedMessages = messages.reduce((groups, message) => {
@@ -13,16 +19,6 @@ const Messages = ({ messages }) => {
     return groups;
   }, {});
 
-  // const getMessageReadTime = (message) => {
-  //   const otherUserReadData = message.readBy.filter(
-  //     (readInfo) => readInfo.userId !== userId
-  //   );
-  //   if (otherUserReadData.length > 0) {
-  //     return format(parseISO(otherUserReadData[0].readAt), "hh:mm a");
-  //   } else {
-  //     return null;
-  //   }
-  // };
   const isMessageRead = (message) => {
     const otherUserReadData = message.readBy.filter(
       (readInfo) => readInfo.userId !== userId
@@ -54,14 +50,27 @@ const Messages = ({ messages }) => {
               } mb-2`}
             >
               <div>
-                <div
-                  className={`max-w-xs py-2 px-4 mt-1 mx-2 rounded-2xl ${
-                    message.senderId === userId
-                      ? "bg-dark2 text-white rounded-br-none"
-                      : "bg-line text-black rounded-tl-none"
-                  }`}
-                >
-                  {message.message}
+                <div className="flex justify-center items-end mt-1 mx-2 gap-1">
+                  {message.senderId === userId && (
+                    <span
+                      onClick={() => {
+                        setMessageInfo(message);
+                        setIsMessageInfo(true);
+                      }}
+                      className="h-6 w-6 rounded-full flex justify-center items-center hover:bg-line cursor-pointer text-grayText"
+                    >
+                      <BsInfoLg />
+                    </span>
+                  )}
+                  <div
+                    className={`max-w-xs py-2 px-4  rounded-2xl ${
+                      message.senderId === userId
+                        ? "bg-dark2 text-white rounded-br-none"
+                        : "bg-line text-black rounded-tl-none"
+                    }`}
+                  >
+                    {message.message}
+                  </div>
                 </div>
                 <div
                   className={`text-xs text-grayText px-4 flex ${
@@ -85,6 +94,13 @@ const Messages = ({ messages }) => {
           ))}
         </div>
       ))}
+      {isMessageInfo && (
+        <MessageInfoModal
+          setIsMessageInfo={setIsMessageInfo}
+          messageInfo={messageInfo}
+          friendsProfile={friendsProfile}
+        />
+      )}
     </>
   );
 };

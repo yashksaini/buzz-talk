@@ -232,7 +232,10 @@ const ChatArea = ({ socket }) => {
           <div className="w-full h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto">
             <div className="flex flex-col-reverse gap-2 p-3">
               <div ref={chatEndRef} />
-              <Messages messages={messages} />
+              <Messages
+                messages={messages}
+                friendsProfile={chatData?.friendsProfile}
+              />
               {totalMessages >= messages.length && hasMore && (
                 <div className="w-full flex justify-center items-center py-2">
                   <button
