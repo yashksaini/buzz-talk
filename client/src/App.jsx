@@ -25,7 +25,6 @@ function App({ socket }) {
   const getAuth = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/auth`);
-      console.log(response.data);
       dispatch(changeAuthentication(response.data));
 
       if (response.data) {

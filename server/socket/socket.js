@@ -22,6 +22,7 @@ export const initializeSocket = (httpServer) => {
         socketId: socket.id,
         username: userData.username,
       };
+      socket.join(userData.id);
       const existingUser = Array.from(activeUsers).find(
         (user) => user.userId === userData.id
       );
@@ -49,6 +50,8 @@ export const initializeSocket = (httpServer) => {
       );
       if (userToRemove) {
         activeUsers.delete(userToRemove);
+        // Remove the user from its own room
+        socket.leave(userToRemove.userId);
       }
       // Remove user from all chat pools
       for (const chatId in chatPools) {
@@ -131,7 +134,7 @@ export const initializeSocket = (httpServer) => {
       io.to(chatId).emit("broadCastNewMessages", newReadMessages);
     });
 
-    socket.on("sendMessage", async ({ chatId, newMessage }) => {
+    socket.on("sendMessage", async ({ chatId, newMessage, friendId }) => {
       try {
         const otherOnlineUser = Array.from(chatPools[chatId]).filter(
           (user) => user.userId !== newMessage.senderId
@@ -143,6 +146,10 @@ export const initializeSocket = (httpServer) => {
           });
         }
 
+        io.to(friendId).emit("recentMessage", {
+          newMessage: newMessage,
+          chatId: chatId,
+        });
         io.to(chatId).emit("receiveMessage", newMessage);
       } catch (error) {
         console.error("Error adding new message:", error);

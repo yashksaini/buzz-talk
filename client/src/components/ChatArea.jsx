@@ -110,7 +110,11 @@ const ChatArea = ({ socket }) => {
 
       await sendMessage(chatId, newMessage);
       // Emit the sendMessage event to the server
-      socket.emit("sendMessage", { chatId, newMessage });
+      socket.emit("sendMessage", {
+        chatId,
+        newMessage,
+        friendId: chatData?.friendsProfile?.userId,
+      });
       setMessageText(""); // Clear input after sending
     }
   };

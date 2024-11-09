@@ -4,7 +4,8 @@ import { formatDistanceToNow } from "date-fns";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaCircle } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { BsCircleFill } from "react-icons/bs";
 
 const ChatCard = ({
   user,
@@ -17,6 +18,9 @@ const ChatCard = ({
   const navigate = useNavigate();
   const { userId } = useSelector((state) => state.userAuth);
   const { chatId } = useParams();
+  const [cardUpdatedAt, setCardUpdatedAt] = useState(updatedAt);
+  const [cardLastMessage, setCardLastMessage] = useState(lastMessage);
+  const [isUnreadMessages, setIsUnreadMessages] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -24,6 +28,26 @@ const ChatCard = ({
       socket.emit("leaveChatPool", { chatId: chatId_, userId });
     };
   }, [chatId_, socket, userId]);
+
+  useEffect(() => {
+    socket.on("recentMessage", async (messageData) => {
+      const { newMessage } = messageData;
+      if (chatId_ === messageData.chatId) {
+        setCardUpdatedAt(newMessage?.sentAt);
+        setCardLastMessage(newMessage?.message);
+        if (messageData.chatId === chatId) {
+          setIsUnreadMessages(false);
+        } else {
+          setIsUnreadMessages(true);
+        }
+      }
+    });
+    // Cleanup listener on component unmount
+    return () => {
+      socket.off("recentMessage");
+    };
+  }, [chatId, chatId_, socket]);
+
   return (
     <div
       key={user?.username}
@@ -60,7 +84,7 @@ const ChatCard = ({
             <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 font-semibold ">
               {user?.fullName}{" "}
               <span className="text-xs font-normal text-dark2 ml-2">
-                {formatDistanceToNow(updatedAt, { addSuffix: true })}
+                {formatDistanceToNow(cardUpdatedAt, { addSuffix: true })}
               </span>
             </p>
             <p className="leading-4  text-grayText text-xs font-bold">
@@ -79,10 +103,15 @@ const ChatCard = ({
           </div>
         </div>
         <div className="text-xs text-grayText font-medium">
-          {lastMessage.substring(0, 84)}
-          {lastMessage?.length > 84 && "..."}
+          {cardLastMessage.substring(0, 84)}
+          {cardLastMessage?.length > 84 && "..."}
         </div>
       </div>
+      <span>
+        {isUnreadMessages && (
+          <BsCircleFill className="inline text-primary/80 text-[10px]" />
+        )}
+      </span>
     </div>
   );
 };
