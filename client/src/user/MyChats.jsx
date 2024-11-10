@@ -151,6 +151,7 @@ const MyChats = ({ socket }) => {
                     key={index}
                     isOnline={checkUserStatus(chat?.friendProfile.userId)}
                     socket={socket}
+                    unreadCount={chat.unreadCount}
                   />
                 );
               })}

@@ -14,6 +14,7 @@ const ChatCard = ({
   chatId_: chatId_,
   isOnline,
   socket,
+  unreadCount,
 }) => {
   const navigate = useNavigate();
   const { userId } = useSelector((state) => state.userAuth);
@@ -21,6 +22,7 @@ const ChatCard = ({
   const [cardUpdatedAt, setCardUpdatedAt] = useState(updatedAt);
   const [cardLastMessage, setCardLastMessage] = useState(lastMessage);
   const [isUnreadMessages, setIsUnreadMessages] = useState(false);
+  const [chatUnreadCount, setChatUnreadCount] = useState(unreadCount);
 
   useEffect(() => {
     return () => {
@@ -66,6 +68,8 @@ const ChatCard = ({
           userId: userId,
         });
         navigate(`/chats/${chatId_}`);
+        setIsUnreadMessages(false);
+        setChatUnreadCount(0);
       }}
     >
       <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
@@ -108,9 +112,13 @@ const ChatCard = ({
         </div>
       </div>
       <span>
-        {isUnreadMessages && (
+        {isUnreadMessages ? (
           <BsCircleFill className="inline text-primary/80 text-[10px]" />
-        )}
+        ) : chatUnreadCount > 0 ? (
+          <span className="w-6 h-6 text-white text-xs rounded-full bg-primary/80 flex justify-center items-center">
+            {chatUnreadCount}
+          </span>
+        ) : null}
       </span>
     </div>
   );
@@ -128,6 +136,7 @@ ChatCard.propTypes = {
   chatId_: PropTypes.string,
   isOnline: PropTypes.bool,
   socket: PropTypes.any,
+  unreadCount: PropTypes.number,
 };
 
 export default ChatCard;

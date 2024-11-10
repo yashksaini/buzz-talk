@@ -69,6 +69,15 @@ export const getChatsList = async (req, res) => {
         const otherUser = chat.users.find(
           (user) => user.userId._id.toString() !== ownerId
         );
+        let unreadCount = 0;
+        chat?.messages?.forEach((message) => {
+          const alreadyRead = message.readBy.some(
+            (readInfo) => readInfo.userId.toString() === ownerId.toString()
+          );
+          if (!alreadyRead) {
+            unreadCount++;
+          }
+        });
 
         // Ensure the other user exists before extracting details
         if (otherUser) {
@@ -76,6 +85,7 @@ export const getChatsList = async (req, res) => {
             chatId: chat.chatId,
             lastMessage: chat.lastMessage,
             updatedAt: chat.updatedAt,
+            unreadCount: unreadCount,
             friendProfile: {
               userId: otherUser.userId._id,
               username: otherUser.userId.username,
@@ -117,6 +127,7 @@ export const getChatById = async (req, res) => {
     if (!isUserOfChat) {
       return res.status(404).json({ message: "Chat not found" });
     }
+
     // Format the response
     const formattedChat = {
       totalMessages: chat.messages.length,
