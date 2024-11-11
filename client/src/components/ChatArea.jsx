@@ -15,6 +15,7 @@ import {
 import { CHAT_LIMIT_PER_PAGE } from "../Constants/constants";
 import NoDataFound from "./UI/NoDataFound";
 import Loader from "./UI/Loader";
+import { IoMdArrowBack } from "react-icons/io";
 const ChatArea = ({ socket }) => {
   const navigate = useNavigate();
   const { userId } = useSelector((state) => state.userAuth);
@@ -22,7 +23,6 @@ const ChatArea = ({ socket }) => {
   const [chatData, setChatData] = useState({});
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
-  const chatStartRef = useRef(null);
   const chatEndRef = useRef(null);
   const [page, setPage] = useState(1);
   const [totalMessages, setTotalMessages] = useState(0);
@@ -30,6 +30,7 @@ const ChatArea = ({ socket }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDetails, setIsDetails] = useState(false);
 
   useEffect(() => {
     if (chatId) {
@@ -45,12 +46,9 @@ const ChatArea = ({ socket }) => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Function to scroll to the bottom
-  const scrollToTop = () => {
-    chatStartRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
   const fetchData = async () => {
     setIsLoading(true);
+    setIsDetails(false);
     const { data, isSuccess } = await getChatData(chatId, userId);
     if (isSuccess) {
       if (data?.totalMessages > CHAT_LIMIT_PER_PAGE) {
@@ -96,7 +94,6 @@ const ChatArea = ({ socket }) => {
     isSuccess && setMessages((prevResults) => [...prevResults, ...messages]);
     isSuccess && setPage((prev) => prev + 1);
     !isSuccess && setHasMore(false);
-    scrollToTop();
   };
   // Send a message
   const handleSendMessage = async () => {
@@ -181,7 +178,7 @@ const ChatArea = ({ socket }) => {
 
   return (
     <div className="h-[100dvh] w-full overflow-hidden">
-      {chatId && !isLoading && (
+      {chatId && !isLoading && !isDetails && (
         <>
           <div className="sticky top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line">
             <div className="flex justify-center items-center gap-2">
@@ -220,6 +217,9 @@ const ChatArea = ({ socket }) => {
             <span
               className="aspect-square h-8 hover:bg-gray-100 cursor-pointer flex justify-center items-center rounded-full"
               data-tooltip-id="chat-info"
+              onClick={() => {
+                setIsDetails(true);
+              }}
             >
               <BiInfoCircle />
             </span>
@@ -250,7 +250,6 @@ const ChatArea = ({ socket }) => {
                   </button>
                 </div>
               )}
-              <div ref={chatStartRef} />
             </div>
           </div>
           <div className="flex justify-start items-center sticky bottom-0 w-full h-14 bg-white border-t border-line px-3 py-2">
@@ -284,6 +283,56 @@ const ChatArea = ({ socket }) => {
                 <BiSend />
               </button>
             </div>
+          </div>
+        </>
+      )}
+      {chatId && !isLoading && isDetails && (
+        <>
+          <div className="flex justify-start items-center w-full gap-2 text-dark1 px-3 py-2">
+            <button
+              onClick={() => {
+                setIsDetails(false);
+                setTimeout(() => {
+                  scrollToBottom();
+                }, 300);
+              }}
+              className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-line transition-all"
+            >
+              <IoMdArrowBack className="text-2xl" />
+            </button>
+            <h1 className="font-bold text-[20px] ">Conversation info</h1>
+          </div>
+          <div className="h-14 bg-white flex justify-between items-center px-3 border-b border-line">
+            <div className="flex justify-center items-center gap-2">
+              <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
+                {!chatData?.friendsProfile?.imgUrl && (
+                  <ProfileIcon fullName={chatData?.friendsProfile?.fullName} />
+                )}
+                {chatData?.friendsProfile?.imgUrl && (
+                  <img
+                    src={chatData?.friendsProfile?.imgUrl}
+                    alt="profile"
+                    className="w-9 h-9 rounded-full"
+                  />
+                )}
+              </div>
+              <div>
+                <h1 className="text-dark1 font-bold">
+                  {chatData?.friendsProfile?.fullName}
+                </h1>
+                <p className="leading-4  text-mainText text-xs ">
+                  {chatData?.friendsProfile?.username}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex justify-center items-center flex-col">
+            <button className="h-14 flex justify-center items-center hover:bg-transPrimary w-full text-primary">
+              Block DMs
+            </button>
+            <button className="h-14 flex justify-center items-center hover:bg-transRed w-full text-red">
+              Leave conversation
+            </button>
           </div>
         </>
       )}

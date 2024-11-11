@@ -17,6 +17,8 @@
   --line: #eff3f4;
   --transPrimary: #f2f7ff;
   --primaryBorder: #a9c8fd;
+  --red: #f4212e;
+  --transRed: #fee8ea;
 }
 * {
   font-family: "Assistant", sans-serif;

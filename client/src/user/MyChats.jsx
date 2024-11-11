@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { IoSettingsOutline } from "react-icons/io5";
+// import { IoSettingsOutline } from "react-icons/io5";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { LuMailPlus } from "react-icons/lu";
@@ -71,12 +71,12 @@ const MyChats = ({ socket }) => {
                 Messages
               </span>
               <div className="flex-1 flex justify-end items-center ">
-                <span
+                {/* <span
                   className="hover:bg-line p-2 rounded-full cursor-pointer text-xl"
                   data-tooltip-id="settings-tip"
                 >
                   <IoSettingsOutline />
-                </span>
+                </span> */}
                 <span
                   className="hover:bg-line p-2 rounded-full cursor-pointer text-xl"
                   data-tooltip-id="new-message-tip"
@@ -88,7 +88,7 @@ const MyChats = ({ socket }) => {
                 </span>
               </div>
 
-              <ReactTooltip
+              {/* <ReactTooltip
                 id="settings-tip"
                 place="bottom"
                 content="Settings"
@@ -96,7 +96,7 @@ const MyChats = ({ socket }) => {
                 style={{
                   zIndex: "50",
                 }}
-              />
+              /> */}
               <ReactTooltip
                 id="new-message-tip"
                 place="bottom"

@@ -15,6 +15,8 @@ export const theme = {
       transPrimary: "#f2f7ff",
       primaryBorder: "#a9c8fd",
       line: "#eff3f4",
+      red: "#f4212E",
+      transRed: "#fee8ea",
     },
   },
 };
