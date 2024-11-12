@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Chat } from "../schemas/schemas.js";
+import { addNotification } from "./notificationsController.js";
 
 export const createNewChat = async (req, res) => {
   try {
@@ -186,7 +187,6 @@ export const addMessage = async (req, res) => {
 
     // Save the updated chat document
     await chat.save();
-
     res
       .status(200)
       .json({ message: "Message added successfully", messageData });

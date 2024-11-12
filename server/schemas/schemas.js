@@ -133,3 +133,36 @@ const chatSchema = new mongoose.Schema({
 });
 
 export const Chat = mongoose.model("chats", chatSchema);
+
+const notificationSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  desc: {
+    type: String,
+    reqired: true,
+  },
+  url: {
+    type: String,
+    required: false,
+  },
+  time: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const notificationsSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User,
+    required: true,
+  },
+  notifications: [notificationSchema],
+});
+
+export const Notifications = mongoose.model(
+  "notifications",
+  notificationsSchema
+);

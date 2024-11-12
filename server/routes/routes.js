@@ -30,6 +30,7 @@ import {
   getChatsList,
   markMessagesAsRead,
 } from "../controllers/chatsController.js";
+import { getNotificationsOfUser } from "../controllers/notificationsController.js";
 
 const router = express.Router();
 
@@ -63,4 +64,7 @@ router.get("/chat/getChatData", getChatById);
 router.post("/chat/sendMessage", addMessage);
 router.get("/chat/getChatMessages", getChatMessages);
 router.post("/chat/markMessagesAsRead", markMessagesAsRead);
+
+// Notifications Routes
+router.get("/notifications/getNotificationsOfUser", getNotificationsOfUser);
 export default router;

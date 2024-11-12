@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { friendshipStatuses } from "../constants/friendsConstants.js";
 import { Friend, User } from "../schemas/schemas.js";
+import { addNotification } from "./notificationsController.js";
 
 export const getFriendshipStatus = async (req, res) => {
   const { ownerId, profileUsername } = req.query;
@@ -54,6 +55,7 @@ export const addFriendRequest = async (req, res) => {
     const user = await User.findOne({ username: profileUsername }).lean();
     const profileUserId = user._id;
     const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const owner = await User.findOne({ _id: ownerObjectId }).lean();
 
     const friendship = await Friend.findOne({
       $or: [
@@ -67,6 +69,13 @@ export const addFriendRequest = async (req, res) => {
       friendship.status = friendshipStatuses.pending;
       friendship.requestDate = new Date();
 
+      await addNotification({
+        userId: profileUserId,
+        title: `${owner.fullName} wants to be your friend`,
+        desc: "Check your user profile to accept the request",
+        url: `/profile/${owner.username}`,
+      });
+
       await friendship.save();
     } else {
       const newFriendship = new Friend({
@@ -74,6 +83,12 @@ export const addFriendRequest = async (req, res) => {
         receiver: profileUserId,
         status: friendshipStatuses.pending,
         requestDate: new Date(),
+      });
+      await addNotification({
+        userId: profileUserId,
+        title: `${owner.fullName} wants to be your friend`,
+        desc: "Check your user profile to accept the request",
+        url: `/profile/${owner.username}`,
       });
       await newFriendship.save();
     }
