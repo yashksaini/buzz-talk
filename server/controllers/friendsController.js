@@ -74,6 +74,7 @@ export const addFriendRequest = async (req, res) => {
         title: `${owner.fullName} wants to be your friend`,
         desc: "Check your user profile to accept the request",
         url: `/profile/${owner.username}`,
+        type: "REQUEST",
       });
 
       await friendship.save();
@@ -89,6 +90,7 @@ export const addFriendRequest = async (req, res) => {
         title: `${owner.fullName} wants to be your friend`,
         desc: "Check your user profile to accept the request",
         url: `/profile/${owner.username}`,
+        type: "REQUEST",
       });
       await newFriendship.save();
     }
@@ -149,6 +151,7 @@ export const removeFriend = async (req, res) => {
     const user = await User.findOne({ username: profileUsername }).lean();
     const profileUserId = user._id;
     const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const owner = await User.findOne({ _id: ownerObjectId }).lean();
 
     const friendship = await Friend.findOne({
       $or: [
@@ -159,7 +162,13 @@ export const removeFriend = async (req, res) => {
     if (friendship) {
       friendship.status = friendshipStatuses.canceled;
       friendship.requestDate = new Date();
-
+      await addNotification({
+        userId: profileUserId,
+        title: `${owner.fullName} removed you as a friend`,
+        desc: "Visit the user profile to send friend request again",
+        url: `/profile/${owner.username}`,
+        type: "REMOVED",
+      });
       await friendship.save();
     }
 
@@ -184,6 +193,7 @@ export const rejectRequest = async (req, res) => {
     const user = await User.findOne({ username: profileUsername }).lean();
     const profileUserId = user._id;
     const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const owner = await User.findOne({ _id: ownerObjectId }).lean();
 
     const friendship = await Friend.findOne({
       $or: [
@@ -194,7 +204,13 @@ export const rejectRequest = async (req, res) => {
     if (friendship) {
       friendship.status = friendshipStatuses.rejected;
       friendship.requestDate = new Date();
-
+      await addNotification({
+        userId: profileUserId,
+        title: `${owner.fullName} rejected your friend request`,
+        desc: "Visit the user profile to send friend request again",
+        url: `/profile/${owner.username}`,
+        type: "REJECTED",
+      });
       await friendship.save();
     }
 
@@ -219,6 +235,7 @@ export const acceptRequest = async (req, res) => {
     const user = await User.findOne({ username: profileUsername }).lean();
     const profileUserId = user._id;
     const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const owner = await User.findOne({ _id: ownerObjectId }).lean();
 
     const friendship = await Friend.findOne({
       $or: [
@@ -230,6 +247,14 @@ export const acceptRequest = async (req, res) => {
       friendship.status = friendshipStatuses.accepted;
       friendship.startTime = new Date();
       await friendship.save();
+
+      await addNotification({
+        userId: profileUserId,
+        title: `${owner.fullName} accepted your friend request`,
+        desc: "Visit the user profile and start chatting.",
+        url: `/profile/${owner.username}`,
+        type: "ACCEPTED",
+      });
     }
 
     res.status(200).json({

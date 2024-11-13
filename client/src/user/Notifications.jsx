@@ -1,6 +1,16 @@
+import { useEffect } from "react";
 import TopUsers from "../components/TopUsers";
+import { getNotifications } from "../Constants/notificationsUtils";
+import { useSelector } from "react-redux";
 
 const Notifications = () => {
+  const { userId } = useSelector((state) => state.userAuth);
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      await getNotifications(userId);
+    };
+    fetchNotifications();
+  }, [userId]);
   return (
     <div className="flex justify-center items-center h-full">
       <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
