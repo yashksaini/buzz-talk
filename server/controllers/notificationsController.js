@@ -39,8 +39,7 @@ export const getNotificationsOfUser = async (req, res) => {
   try {
     // Find notifications for the user and sort by time in descending order
     const userNotifications = await Notifications.findOne(
-      { userId },
-      { notifications: { $slice: -1 } } // assuming notifications are in embedded array
+      { userId } // assuming notifications are in embedded array
     ).sort({ "notifications.time": -1 });
 
     if (!userNotifications) {

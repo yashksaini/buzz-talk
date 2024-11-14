@@ -9,14 +9,14 @@ export const getNotifications = async (userId) => {
     if (response?.data) {
       console.log("NOTIFICATIONS", response.data);
       return {
-        data: response?.data || [],
+        data: response?.data?.notifications || [],
         isSuccess: true,
       };
     }
   } catch (error) {
     console.error("Error fetching notification data:", error);
     return {
-      data: {},
+      data: [],
       isSuccess: false,
     };
   }
