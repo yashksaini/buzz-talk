@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import TopUsers from "../components/TopUsers";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { BsBell } from "react-icons/bs";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDeleteOutline } from "react-icons/md";
 import NotificationsList from "../components/NotificationsList";
@@ -51,7 +51,7 @@ const Notifications = () => {
                   setIsDropdownOpen(!isDropdownOpen);
                 }}
               >
-                <BsThreeDotsVertical />
+                <BsBell />
               </div>
               {isDropdownOpen && (
                 <div className="absolute right-0 top-0 w-52 rounded-md shadow-lg bg-white border border-line z-10 py-2">

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { getNotifications } from "../Constants/notificationsUtils";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
-import Dropdown from "./UI/Dropdown";
+import NotificationDropdown from "./UI/NotificationDropdown";
 
 const NotificationsList = () => {
   const { userId } = useSelector((state) => state.userAuth);
@@ -38,7 +38,7 @@ const NotificationsList = () => {
                   {formatDistanceToNow(notification?.time, { addSuffix: true })}
                 </p>
               </Link>
-              <Dropdown
+              <NotificationDropdown
                 setCurrentNotificationId={setCurrentNotificationId}
                 currentNotificationId={currentNotificationId}
                 notificationId={notification?._id}

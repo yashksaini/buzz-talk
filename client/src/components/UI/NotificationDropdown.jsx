@@ -5,14 +5,13 @@ import { BsThreeDots } from "react-icons/bs";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDeleteOutline } from "react-icons/md";
 
-const Dropdown = ({
+const NotificationDropdown = ({
   currentNotificationId,
   setCurrentNotificationId,
   notificationId,
 }) => {
   const dropdownRef = useRef(notificationId);
   const handleClickOutside = (event) => {
-    console.log("OUTSIDE CLICKED");
     if (
       dropdownRef.current &&
       !dropdownRef.current.contains(event.target) &&
@@ -26,6 +25,7 @@ const Dropdown = ({
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
+    // Every time currentNotificationId changed then new event added and old event is removed
   }, [currentNotificationId]);
   const defaultOptions = [
     {
@@ -79,4 +79,4 @@ const Dropdown = ({
   );
 };
 
-export default Dropdown;
+export default NotificationDropdown;
