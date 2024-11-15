@@ -4,6 +4,7 @@ import { getNotifications } from "../Constants/notificationsUtils";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import NotificationDropdown from "./UI/NotificationDropdown";
+import NotificationIcon from "./UI/NotificationIcon";
 
 const NotificationsList = () => {
   const { userId } = useSelector((state) => state.userAuth);
@@ -20,14 +21,14 @@ const NotificationsList = () => {
   }, [userId]);
   return (
     <div>
-      {notifications.map((notification) => (
+      {notifications.map((notification) => {
+
+        return(
         <div
           key={notification?._id}
           className={`w-full py-3 px-6 flex justify-start items-start gap-2 `}
         >
-          <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
-            {"AA"}
-          </div>
+            <NotificationIcon type={notification?.type}/>
           <div className="w-[calc(100%_-_52px)] ">
             <div className=" h-10 flex justify-between items-center  gap-[2px]">
               <Link to={notification?.url}>
@@ -50,7 +51,7 @@ const NotificationsList = () => {
             </p>
           </div>
         </div>
-      ))}
+      )})}
     </div>
   );
 };
