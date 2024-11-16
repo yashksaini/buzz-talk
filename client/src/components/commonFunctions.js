@@ -1,10 +1,9 @@
-import axios from "axios";
-import { BASE_URL } from "../Constants/constants";
+import { axios } from "../Constants/constants";
 // Send Request to friend
 export const sendRequest = async (ownerId, profileUsername) => {
   try {
     const response = await axios.post(
-      `${BASE_URL}/friends/add-friend-request`,
+      `/friends/add-friend-request`,
       {
         ownerId: ownerId,
         profileUsername: profileUsername,
@@ -30,7 +29,7 @@ export const sendRequest = async (ownerId, profileUsername) => {
 // Accept Friend Request
 export const acceptFriendship = async (ownerId, profileUsername) => {
   try {
-    const response = await axios.post(`${BASE_URL}/friends/accept-request`, {
+    const response = await axios.post(`/friends/accept-request`, {
       ownerId: ownerId,
       profileUsername: profileUsername,
     });
@@ -55,7 +54,7 @@ export const acceptFriendship = async (ownerId, profileUsername) => {
 // Withdraw Friend Request
 export const withdrawFriendReq = async (ownerId, profileUsername) => {
   try {
-    const response = await axios.post(`${BASE_URL}/friends/withdraw-request`, {
+    const response = await axios.post(`/friends/withdraw-request`, {
       ownerId: ownerId,
       profileUsername: profileUsername,
     });
@@ -72,6 +71,30 @@ export const withdrawFriendReq = async (ownerId, profileUsername) => {
     return {
       status: "NA",
       toastMsg: "Error withdrawing friend request",
+      toastType: "error",
+    };
+  }
+};
+// Remove Friendship
+export const removeFriendship = async (ownerId, profileUsername) => {
+  try {
+    const response = await axios.post(`/friends/remove-friend`, {
+      ownerId: ownerId,
+      profileUsername: profileUsername,
+    });
+    if (response.data) {
+      const { friendshipStatus } = response.data;
+      return {
+        status: friendshipStatus,
+        toastMsg: "Friend removed",
+        toastType: "success",
+      };
+    }
+  } catch (error) {
+    console.error("Error removing friend", error);
+    return {
+      status: "NA",
+      toastMsg: "Error removing friend",
       toastType: "error",
     };
   }

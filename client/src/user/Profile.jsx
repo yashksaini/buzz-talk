@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IoCalendarOutline } from "react-icons/io5";
@@ -12,11 +12,11 @@ import { toast } from "react-toastify";
 import {
   acceptFriendship,
   sendRequest,
-  withdrawFriendReq,
+  withdrawFriendReq,removeFriendship
 } from "../components/commonFunctions";
 import MiniModal from "../components/UI/MiniModal";
 import NoDataFound from "../components/UI/NoDataFound";
-import { BASE_URL } from "../Constants/constants";
+import { axios } from "../Constants/constants";
 const Profile = ({ socket }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();
@@ -37,7 +37,7 @@ const Profile = ({ socket }) => {
     setIsLoading(true);
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/user/${id}`);
+        const response = await axios.get(`/user/${id}`);
         if (!response.data) {
           setUserExists(false);
           setIsLoading(false);
@@ -69,7 +69,7 @@ const Profile = ({ socket }) => {
     const fetchFriendshipStatus = async () => {
       try {
         const response = await axios.get(
-          `${BASE_URL}/friends/friendship-status`,
+          `/friends/friendship-status`,
           {
             params: {
               ownerId: userId,
@@ -109,8 +109,17 @@ const Profile = ({ socket }) => {
       toast.error(toastMsg);
     }
   };
-  const removeFriend = () => {
-    console.log("REMOVE FRIEND");
+  const removeFriend = async() => {
+    const { status, toastMsg, toastType } = await removeFriendship(userId, id);
+    if (status !== "NA") {
+      setFriendshipStatus(friendshipStatuses[status]);
+    }
+    if (toastType === "success") {
+      toast.success(toastMsg);
+    } else if (toastType === "error") {
+      toast.error(toastMsg);
+    }
+    
   };
   const handleFriendStatusChange = async () => {
     const statuses = friendshipStatuses;
@@ -145,24 +154,6 @@ const Profile = ({ socket }) => {
         console.warn("Unexpected friendship status:", friendshipStatus);
     }
   };
-  // const handleAcceptFriendship = async () => {
-  //   try {
-  //     const response = await axios.post(`${BASE_URL}/friends/accept-request`, {
-  //       ownerId: userId,
-  //       profileUsername: id,
-  //     });
-  //     if (response.data) {
-  //       const { friendshipStatus } = response.data;
-  //       setFriendshipStatus(friendshipStatuses[friendshipStatus]);
-  //       setIsSender(true);
-  //       toast.success("Friend request accepted ");
-  //       return;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error accepting friend request", error);
-  //     toast.error("Error accepting friend request");
-  //   }
-  // };
   const closeModal = () => {
     setIsModal(false);
   };

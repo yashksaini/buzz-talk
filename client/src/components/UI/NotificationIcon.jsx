@@ -1,27 +1,23 @@
 /* eslint-disable react/prop-types */
 import { FaRegBell } from 'react-icons/fa';
-import { FiUserCheck, FiUserPlus, FiUserX } from 'react-icons/fi';
+import { LuUserCheck2, LuUserPlus2, LuUserX2 } from 'react-icons/lu';
 
 // The notificationIcons mapping
 const notificationIcons = {
   ACCEPTED: {
-    icon: FiUserCheck,
-    color: '#0EAA50',
+    icon: LuUserCheck2,
   },
   REQUEST: {
-    icon: FiUserPlus,
-    color: '#165ddd',
+    icon: LuUserPlus2,
   },
   REMOVED: {
-    icon: FiUserX,
-    color: '#f4212e',
+    icon: LuUserX2,
   },
 };
 
 const NotificationIcon = ({ type }) => {
   // Get the corresponding icon and color based on the type
-  const { icon: Icon, color } = notificationIcons[type] || {
-    color: "#787f8a",
+  const { icon: Icon } = notificationIcons[type] || {
     icon: FaRegBell
   };
 
@@ -29,8 +25,8 @@ const NotificationIcon = ({ type }) => {
   if (!Icon) return null; // Or use a default icon if you prefer
   
   return (
-    <div style={{ color, background:color+10,borderColor:color }} className='min-w-10 min-h-10 rounded-full flex justify-center items-center border'>
-      <Icon size={18} />
+    <div style={{  background:"#3b4560" }} className='min-w-10 min-h-10 rounded-full flex justify-center items-center text-white'>
+      <Icon size={20} />
     </div>
   );
 };

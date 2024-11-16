@@ -26,16 +26,17 @@ const NotificationsList = () => {
         return(
         <div
           key={notification?._id}
-          className={`w-full py-3 px-6 flex justify-start items-start gap-2 `}
+          className={`w-full py-4 px-6 flex justify-start items-start gap-2 border-b border-line`}
         >
             <NotificationIcon type={notification?.type}/>
           <div className="w-[calc(100%_-_52px)] ">
             <div className=" h-10 flex justify-between items-center  gap-[2px]">
               <Link to={notification?.url}>
-                <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 font-semibold hover:underline ">
-                  {notification?.title}
+                <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 hover:underline ">
+                <span className="font-semibold">{notification?.senderName}</span> 
+                  <span className="text-grayText ml-1">{notification?.title}</span>
                 </p>
-                <p className="leading-4  text-mainText text-xs hover:underline hover:underline-offset-2">
+                <p className="leading-4  text-mainText text-xs">
                   {formatDistanceToNow(notification?.time, { addSuffix: true })}
                 </p>
               </Link>

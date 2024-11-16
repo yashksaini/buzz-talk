@@ -135,6 +135,10 @@ const chatSchema = new mongoose.Schema({
 export const Chat = mongoose.model("chats", chatSchema);
 
 const notificationSchema = new mongoose.Schema({
+  senderName: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,

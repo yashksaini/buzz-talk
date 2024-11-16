@@ -1,7 +1,7 @@
 import { Notifications } from "../schemas/schemas.js";
 
 export const addNotification = async (notificationData) => {
-  const { title, desc, url, type, userId } = notificationData;
+  const { title, desc, url, type, userId,senderName } = notificationData;
 
   if (!title || !desc) {
     return res
@@ -22,7 +22,7 @@ export const addNotification = async (notificationData) => {
       title,
       desc,
       url,
-      type,
+      type,senderName,
       time: new Date(),
     });
 
@@ -39,14 +39,18 @@ export const getNotificationsOfUser = async (req, res) => {
   try {
     // Find notifications for the user and sort by time in descending order
     const userNotifications = await Notifications.findOne(
-      { userId } // assuming notifications are in embedded array
-    ).sort({ "notifications.time": -1 });
+      { userId }
+    );
 
     if (!userNotifications) {
       return res.status(200).json({ notifications: [] });
     }
+    // Sort the notifications array by 'time' field in descending order
+    const sortedNotifications = userNotifications.notifications.sort(
+      (a, b) => b.time - a.time
+    );
 
-    res.status(200).json({ notifications: userNotifications.notifications });
+    res.status(200).json({ notifications: sortedNotifications });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to retrieve notifications." });

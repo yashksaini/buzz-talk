@@ -5,7 +5,6 @@ import { addNotification } from "./notificationsController.js";
 
 export const getFriendshipStatus = async (req, res) => {
   const { ownerId, profileUsername } = req.query;
-
   try {
     // Find the friendship document between the two users
     const user = await User.findOne({ username: profileUsername }).lean();
@@ -71,7 +70,8 @@ export const addFriendRequest = async (req, res) => {
 
       await addNotification({
         userId: profileUserId,
-        title: `${owner.fullName} wants to be your friend`,
+        senderName: owner.fullName,
+        title: `wants to be your friend`,
         desc: "Check your user profile to accept the request",
         url: `/profile/${owner.username}`,
         type: "REQUEST",
@@ -87,7 +87,8 @@ export const addFriendRequest = async (req, res) => {
       });
       await addNotification({
         userId: profileUserId,
-        title: `${owner.fullName} wants to be your friend`,
+        senderName: owner.fullName,
+        title: ` wants to be your friend`,
         desc: "Check your user profile to accept the request",
         url: `/profile/${owner.username}`,
         type: "REQUEST",
@@ -164,7 +165,8 @@ export const removeFriend = async (req, res) => {
       friendship.requestDate = new Date();
       await addNotification({
         userId: profileUserId,
-        title: `${owner.fullName} removed you as a friend`,
+        senderName: owner.fullName,
+        title: ` removed you as a friend`,
         desc: "Visit the user profile to send friend request again",
         url: `/profile/${owner.username}`,
         type: "REMOVED",
@@ -206,7 +208,8 @@ export const rejectRequest = async (req, res) => {
       friendship.requestDate = new Date();
       await addNotification({
         userId: profileUserId,
-        title: `${owner.fullName} rejected your friend request`,
+        senderName: owner.fullName,
+        title: ` rejected your friend request`,
         desc: "Visit the user profile to send friend request again",
         url: `/profile/${owner.username}`,
         type: "REJECTED",
@@ -250,7 +253,8 @@ export const acceptRequest = async (req, res) => {
 
       await addNotification({
         userId: profileUserId,
-        title: `${owner.fullName} accepted your friend request`,
+        senderName: owner.fullName,
+        title: ` accepted your friend request`,
         desc: "Visit the user profile and start chatting.",
         url: `/profile/${owner.username}`,
         type: "ACCEPTED",
