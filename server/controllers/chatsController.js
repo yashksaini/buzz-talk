@@ -79,6 +79,14 @@ export const getChatsList = async (req, res) => {
         const otherUser = chat.users.find(
           (user) => user.userId._id.toString() !== ownerId
         );
+        let isBlocked = false;
+        chat.users.forEach(
+          (user) => {
+            if(user?.isBlocked){
+              isBlocked = true;
+            }
+          }
+        );
         let unreadCount = 0;
         chat?.messages?.forEach((message) => {
           const alreadyRead = message.readBy.some(
@@ -96,6 +104,7 @@ export const getChatsList = async (req, res) => {
             lastMessage: chat.lastMessage,
             updatedAt: chat.updatedAt,
             unreadCount: unreadCount,
+            isBlocked:isBlocked,
             friendProfile: {
               userId: otherUser.userId._id,
               username: otherUser.userId.username,
@@ -141,6 +150,7 @@ export const getChatById = async (req, res) => {
     // Format the response
     const formattedChat = {
       totalMessages: chat.messages.length,
+      users: chat.users,
       friendsProfile: {
         userId: otherUser.userId._id,
         username: otherUser.userId.username,
@@ -238,3 +248,44 @@ export const markMessagesAsRead = async (req, res) => {
     res.status(500).json({ message: "Error marking messages as read:", error });
   }
 };
+
+export const unBlockUserInChat = async (req,res)=>{
+  try{
+    const {userId,chatId} = req.body;
+    const chat = await Chat.findOne({ chatId });
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+    chat.users.forEach((user)=>{
+      if(user.userId.toString()===userId.toString()){
+        user.isBlocked = false;
+      }
+    });
+    chat.save();
+    res.status(200).json({ message: "User unblocked successfully"});
+  }catch(error){
+    console.log("Error in unblocking user in chat",error);
+    res.status(500).json({ message: "Error in unblocking user in chat", error });
+  }
+}
+export const blockUserInChat = async (req,res)=>{
+  try{
+    const {userId,chatId} = req.body;
+    console.log(req.body);
+    const chat = await Chat.findOne({ chatId });
+    if (!chat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+    chat.users.forEach((user)=>{
+      if(user.userId.toString()===userId.toString()){
+        user.isBlocked = true;
+      }
+    });
+    chat.save();
+    res.status(200).json({ message: "User blocked successfully"});
+  }catch(error){
+    console.log("Error in blocking user in chat",error);
+    res.status(500).json({ message: "Error in blocking user in chat", error });
+  }
+
+}

@@ -6,7 +6,6 @@ export const getNotifications = async (userId) => {
       params: { userId: userId },
     });
     if (response?.data) {
-      console.log("NOTIFICATIONS", response.data);
       return {
         data: response?.data?.notifications || [],
         isSuccess: true,

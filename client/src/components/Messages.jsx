@@ -7,7 +7,6 @@ import MessageInfoModal from "./MessageInfoModal";
 import { BsInfoLg } from "react-icons/bs";
 const Messages = ({ messages, friendsProfile }) => {
   const { userId } = useSelector((state) => state.userAuth);
-  console.log(friendsProfile);
   const [isMessageInfo, setIsMessageInfo] = useState(false);
   const [messageInfo, setMessageInfo] = useState({});
 

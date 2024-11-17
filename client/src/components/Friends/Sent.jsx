@@ -33,7 +33,6 @@ const Sent = () => {
         );
         if (response.data) {
           setRequestList(response?.data?.requests || []);
-          console.log("RESPONSE DATA", response.data);
           setLoading(false);
         }
       } catch (error) {

@@ -20,7 +20,6 @@ const EditProfileModal = ({ setModalType, user }) => {
     banner: user?.banner,
     userId: userId,
   };
-  console.log(user);
   const [form, setForm] = useState(initialData);
   const [isCropper, setIsCropper] = useState(false);
   const [title, setTitle] = useState("");

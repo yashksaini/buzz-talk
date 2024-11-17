@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { changeAuthentication } from "./redux/userAuthentication";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./user/Dashboard";
 import Profile from "./user/Profile";
@@ -44,10 +44,9 @@ function App({ socket }) {
 
   useEffect(() => {
     getAuth();
-    socket.on("profileVisit", ({ visitedUserId, visitorName }) => {
-      console.log(visitedUserId);
-      toast.info(`${visitorName} visited your profile.`);
-    });
+    // socket.on("profileVisit", ({ visitedUserId, visitorName }) => {
+    //   toast.info(`${visitorName} visited your profile.`);
+    // });
   }, []);
 
   return (

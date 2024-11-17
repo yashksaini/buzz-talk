@@ -89,6 +89,10 @@ const chatUserSchema = new mongoose.Schema({
     ref: User,
     required: true,
   },
+  isBlocked: {
+    type: Boolean,
+    default: false,
+  },
   permission: {
     type: String,
     enum: ["admin", "user"],

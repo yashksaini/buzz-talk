@@ -7,10 +7,12 @@ import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import Messages from "./Messages";
 import {
+  blockUserInChat,
   getChatData,
   getChatMessages,
   markMessagesAsRead,
   sendMessage,
+  unblockUserInChat,
 } from "../Constants/ChatUtils";
 import { CHAT_LIMIT_PER_PAGE } from "../Constants/constants";
 import NoDataFound from "./UI/NoDataFound";
@@ -30,7 +32,9 @@ const ChatArea = ({ socket }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDetails, setIsDetails] = useState(false);
+  const [isDetails, setIsDetails] = useState(false); 
+  const [blocked,setBlocked] = useState(false);
+  const [unblock,setUnblock] = useState(false);
 
   useEffect(() => {
     if (chatId) {
@@ -45,6 +49,24 @@ const ChatArea = ({ socket }) => {
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  const checkIsBlocked = (usersList)=>{
+    let isBlocked = false;
+    let isUnblock = false;
+    usersList?.forEach((user)=>{
+      if(user?.userId?._id===userId && user?.isBlocked){
+        if(user?.isBlocked){
+          isBlocked = true;
+        }else{
+          isBlocked = false;
+        }
+      }
+      if(user?.isBlocked){
+        isUnblock = true;
+      }
+    });
+    setUnblock(isUnblock);
+    setBlocked(isBlocked);
+  }
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -57,6 +79,7 @@ const ChatArea = ({ socket }) => {
         setHasMore(false);
       }
       setChatData(data);
+      checkIsBlocked(data?.users);
       setTotalMessages(data?.totalMessages);
       const { messages, isSuccess } = await getChatMessages(chatId, 1);
 
@@ -200,12 +223,12 @@ const ChatArea = ({ socket }) => {
                 </h1>
                 <p className="leading-4  text-mainText text-xs ">
                   {chatData?.friendsProfile?.username}
-                  {isActive && !isTyping && (
+                  {!(blocked || unblock )&& isActive && !isTyping && (
                     <span className="ml-2 font-medium text-green-600">
                       Active
                     </span>
                   )}
-                  {isTyping && (
+                  {!(blocked || unblock )&&isTyping && (
                     <span className="ml-2  font-medium text-green-600">
                       Typing...
                     </span>
@@ -240,7 +263,7 @@ const ChatArea = ({ socket }) => {
                 messages={messages}
                 friendsProfile={chatData?.friendsProfile}
               />
-              {totalMessages >= messages.length && hasMore && (
+              {!(blocked || unblock )&&totalMessages >= messages.length && hasMore && (
                 <div className="w-full flex justify-center items-center py-2">
                   <button
                     onClick={loadMore}
@@ -253,7 +276,7 @@ const ChatArea = ({ socket }) => {
             </div>
           </div>
           <div className="flex justify-start items-center sticky bottom-0 w-full h-14 bg-white border-t border-line px-3 py-2">
-            <div className="bg-gray-100 w-full h-full rounded-xl flex justify-center items-center">
+            {!(blocked || unblock )&& <div className="bg-gray-100 w-full h-full rounded-xl flex justify-center items-center">
               <input
                 type="text"
                 className="bg-transparent flex-1 focus:outline-none px-4"
@@ -282,8 +305,10 @@ const ChatArea = ({ socket }) => {
               >
                 <BiSend />
               </button>
-            </div>
-          </div>
+            </div>}
+            {blocked && <div className="text-dark2">You are no longer allowed to send messages in this chat.</div>}
+            {!blocked && unblock && <div className="text-dark2">Unblock the user to enable messaging. <span className="text-primary cursor-pointer ml-1" onClick={()=>{setIsDetails(true)}}>Allow DMs</span></div>}
+          </div> 
         </>
       )}
       {chatId && !isLoading && isDetails && (
@@ -327,12 +352,35 @@ const ChatArea = ({ socket }) => {
             </div>
           </div>
           <div className="w-full flex justify-center items-center flex-col">
-            <button className="h-14 flex justify-center items-center hover:bg-transPrimary w-full text-primary">
-              Block DMs
-            </button>
-            <button className="h-14 flex justify-center items-center hover:bg-transRed w-full text-red">
-              Leave conversation
-            </button>
+            {
+              !blocked && <button className="h-14 flex justify-center items-center hover:bg-transPrimary w-full text-primary" onClick={async()=>{
+                if(!unblock){
+                  const {isSuccess} = await blockUserInChat(chatId,chatData?.friendsProfile?.userId);
+                  if(isSuccess){
+                    setIsDetails(false);
+                    setBlocked(false);
+                    setUnblock(true);
+                  }
+                }else{
+                  const {isSuccess} = await unblockUserInChat(chatId,chatData?.friendsProfile?.userId);
+                  if(isSuccess){
+                    setIsDetails(false);
+                    setBlocked(false);
+                    setUnblock(false);
+                  }
+                }
+              }}>
+                {unblock ? "Allow DMs ": "Block DMs"}
+              </button>
+            }
+            {blocked && (
+  <NoDataFound 
+    title={"No actions"} 
+    desc={"You are restricted from performing any actions in this chat at the moment."} 
+  />
+)}
+
+            
           </div>
         </>
       )}

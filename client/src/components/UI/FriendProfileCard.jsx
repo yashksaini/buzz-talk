@@ -18,10 +18,6 @@ const FriendProfileCard = ({
     setCurrentCardUsername(username);
     setIsDropdownOpen(!isDropdownOpen);
   };
-  // const handleOptionClick = (option) => {
-  //   console.log(option);
-  //   setIsDropdownOpen(false); // Close the dropdown after selecting an option
-  // };
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownOpen(false);

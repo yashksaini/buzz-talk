@@ -135,8 +135,8 @@ const MyChats = ({ socket }) => {
                 <Loader />
               </div>
             )}
-            {!isLoading &&
-              chatsList?.map((chat, index) => {
+            {!isLoading && 
+              chatsList?.filter((c)=>!c?.isBlocked)?.map((chat, index) => {
                 return (
                   <ChatCard
                     user={{
@@ -152,6 +152,35 @@ const MyChats = ({ socket }) => {
                     isOnline={checkUserStatus(chat?.friendProfile.userId)}
                     socket={socket}
                     unreadCount={chat.unreadCount}
+                    isBlocked={false}
+                  />
+                );
+              })}
+              {!isLoading && chatsList?.filter((c)=>c?.isBlocked)?.length>0 && (
+                <div className="w-full flex justify-center items-center gap-2 my-4">
+                  <span className="w-full h-[1px] bg-line"></span>
+                  <span className="whitespace-nowrap text-sm text-grayText">Blocked Chats</span>
+                  <span className="w-full h-[1px] bg-line"></span>
+                </div>)
+              }
+              {!isLoading &&
+              chatsList?.filter((c)=>c?.isBlocked)?.map((chat, index) => {
+                return (
+                  <ChatCard
+                    user={{
+                      _id: chat?.friendProfile.userId,
+                      fullName: chat?.friendProfile.fullName,
+                      username: chat?.friendProfile.username,
+                      imgUrl: chat?.friendProfile.imgUrl,
+                    }}
+                    chatId_={chat?.chatId}
+                    lastMessage={chat.lastMessage}
+                    updatedAt={chat.updatedAt}
+                    key={index}
+                    isOnline={checkUserStatus(chat?.friendProfile.userId)}
+                    socket={socket}
+                    unreadCount={chat.unreadCount}
+                    isBlocked={true}
                   />
                 );
               })}

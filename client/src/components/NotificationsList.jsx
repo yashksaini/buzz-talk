@@ -13,7 +13,6 @@ const NotificationsList = ({isListUpdate}) => {
   const [currentNotificationId, setCurrentNotificationId] = useState(null);
   const fetchNotifications = async () => {
     const { data } = await getNotifications(userId);
-    console.log(data);
     setNotifications(data);
   };
   useEffect(() => {

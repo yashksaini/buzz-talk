@@ -59,7 +59,7 @@ export const getActiveUsers = async () => {
     return { data: [], isSuccess: false };
   }
 };
-export const markMessagesAsRead = async ({ chatId, ownerId }) => {
+export const markMessagesAsRead = async ({chatId, ownerId} ) => {
   try {
     const response = await axios.post("/chat/markMessagesAsRead", {
       chatId: chatId,
@@ -76,3 +76,36 @@ export const markMessagesAsRead = async ({ chatId, ownerId }) => {
     return { isSuccess: false };
   }
 };
+export const unblockUserInChat = async (chatId, userId ) => {
+  try {
+    const response = await axios.post("/chat/unBlockUser", {
+      chatId: chatId,
+      userId: userId,
+    });
+    if (response.status === 200) {
+      return {
+        isSuccess: true,
+      };
+    }
+  } catch (error) {
+    console.error("Error in unblocking user", error);
+    return { isSuccess: false };
+  }
+};
+
+export const blockUserInChat = async(chatId,userId)=>{
+  try {
+    const response = await axios.post("/chat/blockUser", {
+      chatId: chatId,
+      userId: userId,
+    });
+    if (response.status === 200) {
+      return {
+        isSuccess: true,
+      };
+    }
+  } catch (error) {
+    console.error("Error in blocking user", error);
+    return { isSuccess: false };
+  }
+}

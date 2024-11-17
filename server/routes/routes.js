@@ -24,11 +24,13 @@ import {
 } from "../controllers/friendsController.js";
 import {
   addMessage,
+  blockUserInChat,
   createNewChat,
   getChatById,
   getChatMessages,
   getChatsList,
   markMessagesAsRead,
+  unBlockUserInChat,
 } from "../controllers/chatsController.js";
 import { deleteAllReadNotifications, deleteNotificationById, getNotificationsOfUser, markAllNotificationsAsRead, markNotificationAsRead } from "../controllers/notificationsController.js";
 
@@ -64,6 +66,8 @@ router.get("/chat/getChatData", getChatById);
 router.post("/chat/sendMessage", addMessage);
 router.get("/chat/getChatMessages", getChatMessages);
 router.post("/chat/markMessagesAsRead", markMessagesAsRead);
+router.post("/chat/blockUser",blockUserInChat);
+router.post("/chat/unBlockUser",unBlockUserInChat);
 
 // Notifications Routes
 router.get("/notifications/getNotificationsOfUser", getNotificationsOfUser);

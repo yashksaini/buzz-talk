@@ -20,7 +20,6 @@ import { axios } from "../Constants/constants";
 const Profile = ({ socket }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();
-  console.log("id", id);
   const { fullName, userId } = useSelector((state) => state.userAuth);
   const [userExists, setUserExists] = useState(true);
   const [modalType, setModalType] = useState("");

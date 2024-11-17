@@ -15,6 +15,7 @@ const ChatCard = ({
   isOnline,
   socket,
   unreadCount,
+  isBlocked,
 }) => {
   const navigate = useNavigate();
   const { userId } = useSelector((state) => state.userAuth);
@@ -93,12 +94,12 @@ const ChatCard = ({
             </p>
             <p className="leading-4  text-grayText text-xs font-bold">
               @{user?.username}{" "}
-              {isOnline && (
+              {!isBlocked&&isOnline && (
                 <span className="text-green-500 font-bold inline-flex justify-center items-center gap-1 ml-2">
                   <FaCircle className="inline text-[8px]" /> Online
                 </span>
               )}
-              {!isOnline && (
+              {!isBlocked&&!isOnline && (
                 <span className="text-grayText font-medium inline-flex justify-center items-center gap-1 ml-2">
                   <FaCircle className="inline text-[8px]" /> Offline
                 </span>
@@ -137,6 +138,7 @@ ChatCard.propTypes = {
   isOnline: PropTypes.bool,
   socket: PropTypes.any,
   unreadCount: PropTypes.number,
+  isBlocked: PropTypes.bool,
 };
 
 export default ChatCard;
