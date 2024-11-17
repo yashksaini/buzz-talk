@@ -2,7 +2,7 @@ import { Notifications } from "../schemas/schemas.js";
 
 export const addNotification = async (notificationData) => {
   const { title, desc, url, type, userId,senderName } = notificationData;
-
+  const LIMIT = 100;
   if (!title || !desc) {
     return res
       .status(400)
@@ -25,6 +25,9 @@ export const addNotification = async (notificationData) => {
       type,senderName,
       time: new Date(),
     });
+    if(userNotifications.notifications.length>LIMIT){
+      userNotifications.notifications.splice(0,1);
+    }
 
     await userNotifications.save();
     console.log("Notifications saved");
