@@ -21,24 +21,26 @@ const MyChats = ({ socket }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeUsers, setActiveUsers] = useState([]);
   // const handleSearch = () => {};
-  useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const response = await axios.get(`${BASE_URL}/chat/getChatsList`, {
-          params: {
-            ownerId: userId,
-          },
-        });
-        if (response?.data) {
-          setChatsList(response?.data?.chats || []);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.log("ERROR in fetching friends", error);
+  const fetchChats = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/chat/getChatsList`, {
+        params: {
+          ownerId: userId,
+        },
+      });
+      if (response?.data) {
+        setChatsList(response?.data?.chats || []);
         setIsLoading(false);
       }
-    };
+    } catch (error) {
+      console.log("ERROR in fetching friends", error);
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    
     fetchChats();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const checkUserStatus = (friendId) => {
@@ -112,7 +114,7 @@ const MyChats = ({ socket }) => {
                 <GoSearch className="text-2xl group:focus-within text-grayText " />
                 <input
                   type="text"
-                  placeholder="Search Direct Messages..."
+                  placeholder="Search People ..."
                   className="flex-1 bg-transparent focus:outline-none text-dark1 font-medium"
                   value={search}
                   onChange={(e) => {
@@ -136,7 +138,9 @@ const MyChats = ({ socket }) => {
               </div>
             )}
             {!isLoading && 
-              chatsList?.filter((c)=>!c?.isBlocked)?.map((chat, index) => {
+              chatsList?.filter((ch)=> {
+                return ch.friendProfile.fullName.toLowerCase().includes(search.toLowerCase()) || ch.friendProfile.username.toLowerCase().includes(search.toLowerCase());
+              })?.filter((c)=>!c?.isBlocked)?.map((chat, index) => {
                 return (
                   <ChatCard
                     user={{
@@ -197,7 +201,7 @@ const MyChats = ({ socket }) => {
           <ChatArea socket={socket} />
         </div>
       </div>
-      {isNewChatModal && <NewChatModal setIsNewChatModal={setIsNewChatModal} />}
+      {isNewChatModal && <NewChatModal setIsNewChatModal={setIsNewChatModal} fetchChats={fetchChats} />}
     </>
   );
 };

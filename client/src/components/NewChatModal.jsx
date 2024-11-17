@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { axios } from "../Constants/constants";
 import { useNavigate } from "react-router-dom";
 
-const NewChatModal = ({ setIsNewChatModal }) => {
+const NewChatModal = ({ setIsNewChatModal,fetchChats }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const [selectedFriendId, setSelectedFriendId] = useState(null);
@@ -58,6 +58,7 @@ const NewChatModal = ({ setIsNewChatModal }) => {
       console.error("Error creating new chat:", error);
       toast.error("Error creating new chat");
     }
+    fetchChats();
     setIsNewChatModal(false);
   };
   useEffect(() => {
@@ -111,7 +112,9 @@ const NewChatModal = ({ setIsNewChatModal }) => {
                   </div>
                 )}
                 {!loading &&
-                  friendsList?.map((friend, index) => {
+                  friendsList?.filter((friend)=>{
+                    return friend.fullName.toLowerCase().includes(search.toLowerCase()) || friend.username.toLowerCase().includes(search.toLowerCase());
+                  })?.map((friend, index) => {
                     return (
                       <FriendsChatCard
                         user={{
