@@ -4,12 +4,16 @@ import { useEffect, useRef } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDeleteOutline } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { deleteNotification, markNotificationRead } from "../../Constants/notificationsUtils";
 
 const NotificationDropdown = ({
   currentNotificationId,
   setCurrentNotificationId,
-  notificationId,
+  notificationId,fetchNotifications,
+  isRead
 }) => {
+  const { userId } = useSelector((state) => state.userAuth);
   const dropdownRef = useRef(notificationId);
   const handleClickOutside = (event) => {
     if (
@@ -31,15 +35,22 @@ const NotificationDropdown = ({
     {
       title: "Mark as Read",
       icon: IoMdCheckmarkCircleOutline,
-      action: (id) => {
-        console.log("Mark as read", id);
+      hidden: isRead,
+      action: async(id) => {
+        setCurrentNotificationId(null);
+        const {isSuccess} = await markNotificationRead(userId,id);
+        isSuccess && fetchNotifications();
+
       },
     },
     {
       title: "Delete",
       icon: MdDeleteOutline,
-      action: (id) => {
-        console.log("Delete Notification", id);
+      hidden: false,
+      action: async(id) => {
+        setCurrentNotificationId(null);
+        const {isSuccess} = await deleteNotification(userId,id);
+        isSuccess && fetchNotifications();
       },
     },
   ];
@@ -55,7 +66,7 @@ const NotificationDropdown = ({
       </div>
       {currentNotificationId === notificationId && (
         <div className="absolute right-0 top-0 w-52 rounded-md shadow-lg bg-white border border-line z-10 py-2">
-          {defaultOptions.map((option, index) => {
+          {defaultOptions?.filter((opt)=>opt.hidden===false).map((option, index) => {
             return (
               <div
                 key={index}

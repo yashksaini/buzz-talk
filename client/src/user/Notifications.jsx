@@ -4,25 +4,34 @@ import { BsBell } from "react-icons/bs";
 import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { MdDeleteOutline } from "react-icons/md";
 import NotificationsList from "../components/NotificationsList";
+import { useSelector } from "react-redux";
+import { deleteAllReadNotifications, markAllNotificationsAsRead } from "../Constants/notificationsUtils";
 
 const Notifications = () => {
+  const {userId} = useSelector(state=> state.userAuth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isListUpdate,setIsListUpdate] = useState(false);
   const dropdownRef = useRef(null);
 
   const defaultOptions = [
     {
       title: "Mark all as read",
       icon: IoMdCheckmarkCircleOutline,
-      action: () => {
-        console.log("Mark all as read");
+      action: async() => {
+        setIsDropdownOpen(false);
+       const {isSuccess} = await markAllNotificationsAsRead(userId);
+       isSuccess && setIsListUpdate(prev=>!prev);
+
       },
     },
     {
       title: "Delete Read",
       icon: MdDeleteOutline,
-      action: () => {
-        console.log("Block Friend");
-      },
+      action: async() => {
+        setIsDropdownOpen(false);
+        const {isSuccess} = await deleteAllReadNotifications(userId);
+        isSuccess && setIsListUpdate(prev=>!prev);
+       },
     },
   ];
   const handleClickOutside = (event) => {
@@ -39,7 +48,7 @@ const Notifications = () => {
   return (
     <div className="flex justify-center items-center h-full">
       <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
-        <div className="w-full flex justify-between items-center py-6 px-3 border-b border-line">
+        <div className="w-full flex justify-between items-center py-4 px-3 border-b border-line">
           <span className="text-2xl font-bold text-dark1 leading-7 min-w-48">
             Notifications
           </span>
@@ -77,7 +86,7 @@ const Notifications = () => {
           </div>
         </div>
         <div>
-          <NotificationsList />
+          <NotificationsList isListUpdate={isListUpdate}/>
         </div>
       </div>
       <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">

@@ -1,5 +1,8 @@
 // socket.js
 import { Server } from "socket.io";
+import { addNotification } from "../controllers/notificationsController.js";
+import { User } from "../schemas/schemas.js";
+import mongoose from "mongoose";
 // import { addNewMessage } from "../utils/chatUtils.js";
 
 const activeUsers = new Set();
@@ -136,13 +139,27 @@ export const initializeSocket = (httpServer) => {
 
     socket.on("sendMessage", async ({ chatId, newMessage, friendId }) => {
       try {
-        const otherOnlineUser = Array.from(chatPools[chatId]).filter(
+        if(!chatPools) return;
+        const otherOnlineUser = Array.from(chatPools[chatId])?.filter(
           (user) => user.userId !== newMessage.senderId
         );
         if (otherOnlineUser.length > 0) {
           newMessage.readBy.push({
             userId: otherOnlineUser.userId,
             readAt: new Date(),
+          });
+        }
+        else{
+          const ownerObjectId = new mongoose.Types.ObjectId(newMessage.senderId);
+          const owner = await User.findOne({ _id: ownerObjectId }).lean();
+      
+          await addNotification({
+            userId: friendId,
+            senderName: owner.fullName,
+            title: ` sent you a message.`,
+            desc: newMessage.message || "You have a new message in your chat. Visit the chat page to view it.",
+            url: `/chats/${chatId}`,
+            type: "NEW_MESSAGE",
           });
         }
 

@@ -105,7 +105,7 @@ const ChatArea = ({ socket }) => {
         readBy: [{ userId: userId, readAt: new Date() }],
       };
 
-      await sendMessage(chatId, newMessage);
+      await sendMessage(chatId, newMessage,userId);
       // Emit the sendMessage event to the server
       socket.emit("sendMessage", {
         chatId,

@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
-import { Chat } from "../schemas/schemas.js";
+import { Chat,User } from "../schemas/schemas.js";
 import { addNotification } from "./notificationsController.js";
 
 export const createNewChat = async (req, res) => {
   try {
     // Extract ownerId (current user) and profileUserId (chat creation with user) from the request body
     const { ownerId, profileUserId } = req.body;
-
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const owner = await User.findOne({ _id: ownerObjectId }).lean();
     // Check if the chat between these users already exists for individual chat
     let existingChat = await Chat.findOne({
       type: "individual",
@@ -33,6 +34,14 @@ export const createNewChat = async (req, res) => {
       messages: [],
       createdAt: new Date(),
       updatedAt: new Date(),
+    });
+    await addNotification({
+      userId: profileUserId,
+      senderName: owner.fullName,
+      title: ` started a conversation.`,
+      desc: "You have a new chat with this user. Visit the chat page to start chatting.",
+      url: `/chats/${chatId}`,
+      type: "NEW_CHAT",
     });
 
     await newChat.save();
@@ -173,7 +182,7 @@ export const getChatMessages = async (req, res) => {
 
 export const addMessage = async (req, res) => {
   try {
-    const { messageData, chatId } = req.body; // Use body to pass message data
+    const { messageData, chatId,ownerId } = req.body; // Use body to pass message data
     // Find the chat by its chatId
     const chat = await Chat.findOne({ chatId });
     if (!chat) {

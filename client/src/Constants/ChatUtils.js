@@ -14,9 +14,10 @@ export const getChatMessages = async (chatId, page) => {
   }
 };
 
-export const sendMessage = async (chatId, newMessage) => {
+export const sendMessage = async (chatId, newMessage,userId) => {
   try {
     const response = await axios.post("/chat/sendMessage", {
+      ownerId: userId,
       chatId: chatId,
       messageData: newMessage,
     });
