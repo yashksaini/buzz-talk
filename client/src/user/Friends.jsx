@@ -9,6 +9,7 @@ import TopUsers from "../components/TopUsers";
 
 const Friends = () => {
   const [activeTab, setActiveTab] = useState(friendsTabsList.friends);
+  const [isUpdated,setIsUpdated] = useState(false);
   return (
     <div className="flex justify-center items-center h-full">
       <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
@@ -18,10 +19,10 @@ const Friends = () => {
             All your friends list appear below
           </p>
         </div>
-        <FriendsTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-        {activeTab === friendsTabsList.friends && <MyFriends />}
-        {activeTab === friendsTabsList.requests && <Requests />}
-        {activeTab === friendsTabsList.sent && <Sent />}
+        <FriendsTabs activeTab={activeTab} setActiveTab={setActiveTab} isUpdated={isUpdated} />
+        {activeTab === friendsTabsList.friends && <MyFriends setIsUpdated={setIsUpdated} />}
+        {activeTab === friendsTabsList.requests && <Requests setIsUpdated={setIsUpdated} />}
+        {activeTab === friendsTabsList.sent && <Sent setIsUpdated={setIsUpdated}/>}
         {/* {activeTab === friendsTabsList.blocked && <Blocked />} */}
       </div>
       <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">

@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProfileIcon from "../ProfileIcon";
 import PropTypes from "prop-types";
 import { BsThreeDots } from "react-icons/bs";
 import { useEffect, useRef, useState } from "react";
-import { MdBlock } from "react-icons/md";
+// import { MdBlock } from "react-icons/md";
 import { BiUser } from "react-icons/bi";
 const FriendProfileCard = ({
   user,
@@ -13,6 +13,7 @@ const FriendProfileCard = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
   const toggleDropdown = (e, username) => {
     e.stopPropagation();
     setCurrentCardUsername(username);
@@ -34,16 +35,16 @@ const FriendProfileCard = ({
       title: "View Profile",
       icon: BiUser,
       action: () => {
-        console.log("View User Profile");
+        navigate(`/profile/${currentCardUsername}`);
       },
     },
-    {
-      title: "Block this friend",
-      icon: MdBlock,
-      action: () => {
-        console.log("Block Friend");
-      },
-    },
+    // {
+    //   title: "Block this friend",
+    //   icon: MdBlock,
+    //   action: () => {
+    //     console.log("Block Friend");
+    //   },
+    // },
   ];
   return (
     <div

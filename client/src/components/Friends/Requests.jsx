@@ -2,54 +2,67 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import FriendProfileCard from "../UI/FriendProfileCard";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+// import { AiOutlineCloseCircle } from "react-icons/ai";
 import Loader from "../UI/Loader";
 import { LuUserPlus2 } from "react-icons/lu";
 import NoDataFound from "../UI/NoDataFound";
 import { BASE_URL } from "../../Constants/constants";
-const Requests = () => {
+import { acceptFriendship } from "../commonFunctions";
+import { toast } from "react-toastify";
+// eslint-disable-next-line react/prop-types
+const Requests = ({setIsUpdated}) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [requestList, setRequestList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentCardUsername, setCurrentCardUsername] = useState("");
+  const acceptReq = async () => {
+    const { toastMsg, toastType } = await acceptFriendship(
+      userId,
+      currentCardUsername
+    );
+    if (toastType === "success") {
+      toast.success(toastMsg);
+      fetchFriends();
+      setIsUpdated(prev=>!prev);
+    } else if (toastType === "error") {
+      toast.error(toastMsg);
+    }
+  };
   const options = [
     {
       title: "Accept Request",
       icon: LuUserPlus2,
       action: () => {
-        console.log("Accept Request");
+        acceptReq();
       },
     },
-    {
-      title: "Decline Request",
-      icon: AiOutlineCloseCircle,
-      action: () => {
-        console.log("Decline Request");
-      },
-    },
+    // {
+    //   title: "Decline Request",
+    //   icon: AiOutlineCloseCircle,
+    //   action: () => {
+    //     console.log("Decline Request");
+    //   },
+    // },
   ];
-
-  useEffect(() => {
-    const fetchFriends = async () => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/friends/getRequestsList`,
-          {
-            params: {
-              ownerId: userId,
-            },
-          }
-        );
-        if (response.data) {
-          setRequestList(response?.data?.requests || []);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log("ERROR in fetching friends", error);
+  const fetchFriends = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/friends/getRequestsList`, {
+        params: {
+          ownerId: userId,
+        },
+      });
+      if (response.data) {
+        setRequestList(response?.data?.requests || []);
         setLoading(false);
       }
-    };
+    } catch (error) {
+      console.log("ERROR in fetching friends", error);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchFriends();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
   return (
     <div>

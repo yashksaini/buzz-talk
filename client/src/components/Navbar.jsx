@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { FaRegUser, FaUser } from "react-icons/fa6";
@@ -8,9 +7,12 @@ import { BsBell, BsBellFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { BASE_URL } from "../Constants/constants";
-const Navbar = () => {
-  const { fullName, username, imgUrl } = useSelector((state) => state.userAuth);
+import { axios } from "../Constants/constants";
+import { useEffect, useState } from "react";
+// eslint-disable-next-line react/prop-types
+const Navbar = ({isUpdated}) => {
+  const { fullName, username, imgUrl,userId } = useSelector((state) => state.userAuth);
+  const [unReadCount, setUnReadCount] = useState(0);
   const adminNavs = [
     {
       text: "Home",
@@ -45,9 +47,27 @@ const Navbar = () => {
   ];
 
   const logout = async () => {
-    await axios.post(`${BASE_URL}/logout`);
+    await axios.post(`/logout`);
     window.location.href = "/";
   };
+  
+  useEffect(()=>{
+    const getNotificationsCount = async()=>{
+      try {
+        const response = await axios.get(`/notifications/getUnreadNotificationsOfUser`,{
+          params: {
+            userId: userId,
+          },
+        });
+        if (response?.data) {
+          setUnReadCount(response?.data?.unReadCount);
+        }
+      } catch (error) {
+        console.error("Error getting notifications count:", error);
+      }
+    }
+    getNotificationsCount();
+  },[userId,isUpdated]);
 
   return (
     <nav className=" h-full p-2 flex flex-col px-3 overflow-y-auto overflow-x-hidden">
@@ -66,14 +86,14 @@ const Navbar = () => {
                   : "group text-mainText text-md flex justify-start items-center gap-2 text-xl  h-12 mb-4 defaultNav"
               }
             >
-              <div className="inline-flex group-hover:bg-backgroundDark transition duration-300 ease-in-out justify-center items-center gap-3 px-5 h-12 rounded-full">
+              <div className="inline-flex group-hover:bg-backgroundDark transition duration-300 ease-in-out justify-center items-center gap-3 px-5 h-12 rounded-full relative">
                 <span className="h-12 flex justify-center items-center pb-[2px]">
                   {nav.activeIcon}
                 </span>
                 <span className="h-12 flex justify-center items-center pb-[2px]">
                   {nav.icon}
                 </span>
-                <span className="leading-[48px]">{nav.text}</span>
+                <div className="leading-[48px]">{nav.text} {nav.text==="Notifications" && unReadCount!==0 && <span className="w-6 h-6 flex justify-center items-center bg-primary text-white absolute top-[-6px] right-[-6px] rounded-full font-normal text-sm">{unReadCount}</span>}</div>
               </div>
             </NavLink>
           );

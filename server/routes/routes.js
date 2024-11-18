@@ -33,7 +33,7 @@ import {
   markMessagesAsRead,
   unBlockUserInChat,
 } from "../controllers/chatsController.js";
-import { deleteAllReadNotifications, deleteNotificationById, getNotificationsOfUser, markAllNotificationsAsRead, markNotificationAsRead } from "../controllers/notificationsController.js";
+import { deleteAllReadNotifications, deleteNotificationById, getNotificationsOfUser, getUnreadNotificationsOfUser, markAllNotificationsAsRead, markNotificationAsRead } from "../controllers/notificationsController.js";
 
 const router = express.Router();
 
@@ -73,6 +73,7 @@ router.post("/chat/unBlockUser",unBlockUserInChat);
 
 // Notifications Routes
 router.get("/notifications/getNotificationsOfUser", getNotificationsOfUser);
+router.get("/notifications/getUnreadNotificationsOfUser", getUnreadNotificationsOfUser);
 router.post("/notifications/deleteNotificationById",deleteNotificationById);
 router.post("/notifications/markNotificationAsRead",markNotificationAsRead);
 router.post("/notifications/markAllNotificationsAsRead",markAllNotificationsAsRead);

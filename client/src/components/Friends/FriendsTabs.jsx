@@ -3,7 +3,7 @@ import { friendsTabsList } from "../../Constants/friendsConstants";
 import PropTypes from "prop-types";
 import { axios } from "../../Constants/constants";
 import { useSelector } from "react-redux";
-const FriendsTabs = ({ activeTab, setActiveTab }) => {
+const FriendsTabs = ({ activeTab, setActiveTab,isUpdated }) => {
   const {userId} = useSelector(state=> state.userAuth);
   const [dataCount,setDataCount] = useState({
     sent: 0,
@@ -26,7 +26,7 @@ const FriendsTabs = ({ activeTab, setActiveTab }) => {
     }
   }
     getFriendships();
-  }, [userId]);
+  }, [userId,isUpdated]);
   return (
     <div className="grid grid-cols-3 border-b border-line h-14 mt-2">
       {Object.entries(friendsTabsList).map(([key, value]) => (
@@ -39,7 +39,7 @@ const FriendsTabs = ({ activeTab, setActiveTab }) => {
             activeTab === value ? "active-tab" : ""
           } hover:bg-line text-mainText`}
         >
-          {value}  {dataCount[key]!==0 && <span className="inline-flex justify-center items-center bg-primary/80 text-white rounded-full ml-2 aspect-square w-6 text-sm font-normal">{dataCount[key]}</span>}
+          {value}  {dataCount[key]!==0 && <span className="inline-flex justify-center items-center bg-line text-primary rounded-full ml-2 aspect-square w-6 text-sm font-semibold">{dataCount[key]}</span>}
         </button>
       ))}
     </div>
@@ -48,5 +48,6 @@ const FriendsTabs = ({ activeTab, setActiveTab }) => {
 FriendsTabs.propTypes = {
   activeTab: PropTypes.string.isRequired,
   setActiveTab: PropTypes.func.isRequired,
+  isUpdated: PropTypes.bool,
 };
 export default FriendsTabs;

@@ -1,11 +1,11 @@
 import Navbar from "../components/Navbar";
 
 // eslint-disable-next-line react/prop-types
-const Layout = ({ children }) => {
+const Layout = ({ isUpdated,children }) => {
   return (
     <div className="container">
       <div className="navbar">
-        <Navbar />
+        <Navbar isUpdated={isUpdated}/>
       </div>
       <div className="content ">{children}</div>
     </div>

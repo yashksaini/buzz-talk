@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { changeAuthentication } from "./redux/userAuthentication";
@@ -20,6 +20,7 @@ import { BASE_URL } from "./Constants/constants";
 function App({ socket }) {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.userAuth);
+  const [isUpdated,setIsUpdated] = useState(false);
 
   axios.defaults.withCredentials = true;
   const getAuth = async () => {
@@ -81,7 +82,7 @@ function App({ socket }) {
             />
             <Route
               element={
-                <Layout>
+                <Layout isUpdated={isUpdated}>
                   <MyChats socket={socket} />
                 </Layout>
               }
@@ -97,8 +98,8 @@ function App({ socket }) {
             />
             <Route
               element={
-                <Layout>
-                  <Notifications socket={socket} />
+                <Layout isUpdated={isUpdated}>
+                  <Notifications socket={socket} setIsUpdated={setIsUpdated}/>
                 </Layout>
               }
               path="/notifications"

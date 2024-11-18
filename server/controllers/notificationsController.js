@@ -36,6 +36,29 @@ export const addNotification = async (notificationData) => {
   }
 };
 
+export const getUnreadNotificationsOfUser = async (req, res) => {
+  const { userId } = req.query;
+  try {
+    const userNotifications = await Notifications.findOne({ userId });
+
+    if (!userNotifications) {
+      return res.status(200).json({ unReadCount: 0 });
+    }
+    
+    const unreadNotifications = userNotifications.notifications.filter(
+      (notification) => !notification.isRead
+    );
+
+    res.status(200).json({
+      unReadCount: unreadNotifications.length,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve notifications." });
+  }
+};
+
+
 export const getNotificationsOfUser = async (req, res) => {
   const { userId } = req.query;
 

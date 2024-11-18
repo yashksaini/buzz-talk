@@ -7,13 +7,14 @@ import NotificationDropdown from "./UI/NotificationDropdown";
 import NotificationIcon from "./UI/NotificationIcon";
 import NoDataFound from "./UI/NoDataFound";
 // eslint-disable-next-line react/prop-types
-const NotificationsList = ({isListUpdate}) => {
+const NotificationsList = ({isListUpdate,setIsUpdated}) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [notifications, setNotifications] = useState([]);
   const [currentNotificationId, setCurrentNotificationId] = useState(null);
   const fetchNotifications = async () => {
     const { data } = await getNotifications(userId);
     setNotifications(data);
+    setIsUpdated(prev=> !prev);
   };
   useEffect(() => {
     fetchNotifications();
