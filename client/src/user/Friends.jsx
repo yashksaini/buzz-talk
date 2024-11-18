@@ -4,7 +4,7 @@ import FriendsTabs from "../components/Friends/FriendsTabs";
 import MyFriends from "../components/Friends/MyFriends";
 import Requests from "../components/Friends/Requests";
 import Sent from "../components/Friends/Sent";
-import Blocked from "../components/Friends/Blocked";
+// import Blocked from "../components/Friends/Blocked";
 import TopUsers from "../components/TopUsers";
 
 const Friends = () => {
@@ -22,7 +22,7 @@ const Friends = () => {
         {activeTab === friendsTabsList.friends && <MyFriends />}
         {activeTab === friendsTabsList.requests && <Requests />}
         {activeTab === friendsTabsList.sent && <Sent />}
-        {activeTab === friendsTabsList.blocked && <Blocked />}
+        {/* {activeTab === friendsTabsList.blocked && <Blocked />} */}
       </div>
       <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">
         <TopUsers />

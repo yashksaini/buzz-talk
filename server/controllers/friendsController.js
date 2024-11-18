@@ -364,3 +364,28 @@ export const getSentRequestsList = async (req, res) => {
     console.log("Error in gettings friends request sent list ", error);
   }
 };
+export const getAllFriendsStatus = async(req,res)=>{
+  try{
+    const { ownerId } = req.query;
+    const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
+    const [friends, sent, requests] = await Promise.all([
+      Friend.countDocuments({
+        $or: [{ sender: ownerObjectId }, { receiver: ownerObjectId }],
+        status: friendshipStatuses.accepted,
+      }),
+      Friend.countDocuments({
+        sender: ownerObjectId,
+        status: friendshipStatuses.pending,
+      }),
+      Friend.countDocuments({
+        receiver: ownerObjectId,
+        status: friendshipStatuses.pending,
+      }),
+    ]);
+    res.status(200).json({friends, sent, requests});
+
+  }catch(error){
+    console.log("Error in getting all friends status", error);
+    res.status(500).json({ message: "Error in getting all friends status", error });
+  }
+}

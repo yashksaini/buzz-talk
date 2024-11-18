@@ -1,8 +1,34 @@
+import { useEffect, useState } from "react";
 import { friendsTabsList } from "../../Constants/friendsConstants";
 import PropTypes from "prop-types";
+import { axios } from "../../Constants/constants";
+import { useSelector } from "react-redux";
 const FriendsTabs = ({ activeTab, setActiveTab }) => {
+  const {userId} = useSelector(state=> state.userAuth);
+  const [dataCount,setDataCount] = useState({
+    sent: 0,
+    friends: 0,
+    requests: 0,
+  });
+  useEffect(() => {
+    const getFriendships = async()=>{
+      try {
+        const response = await axios.get("/friends/getAllFriendsStatus",{
+          params: {
+            ownerId: userId,
+          }
+        });
+        if(response?.data){
+          setDataCount(response.data);
+        }
+      }catch(error){
+        console.log("Error in fetching friendships", error);
+    }
+  }
+    getFriendships();
+  }, [userId]);
   return (
-    <div className="grid grid-cols-4 border-b border-line h-14 mt-2">
+    <div className="grid grid-cols-3 border-b border-line h-14 mt-2">
       {Object.entries(friendsTabsList).map(([key, value]) => (
         <button
           key={key}
@@ -13,7 +39,7 @@ const FriendsTabs = ({ activeTab, setActiveTab }) => {
             activeTab === value ? "active-tab" : ""
           } hover:bg-line text-mainText`}
         >
-          {value}
+          {value}  {dataCount[key]!==0 && <span className="inline-flex justify-center items-center bg-primary/80 text-white rounded-full ml-2 aspect-square w-6 text-sm font-normal">{dataCount[key]}</span>}
         </button>
       ))}
     </div>

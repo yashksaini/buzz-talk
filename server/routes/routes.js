@@ -21,6 +21,7 @@ import {
   withdrawFriendRequest,
   removeFriend,
   rejectRequest,
+  getAllFriendsStatus,
 } from "../controllers/friendsController.js";
 import {
   addMessage,
@@ -58,6 +59,7 @@ router.post("/friends/reject-request", rejectRequest);
 router.get("/friends/getFriendsList", getFriendsList);
 router.get("/friends/getRequestsList", getRequestsList);
 router.get("/friends/getSentRequestsList", getSentRequestsList);
+router.get("/friends/getAllFriendsStatus",getAllFriendsStatus);
 
 //Chats Routes
 router.post("/chat/create-new", createNewChat);
