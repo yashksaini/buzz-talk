@@ -64,7 +64,7 @@ export const login = async (req, res) => {
           fullName: user.fullName,
           id: user._id,
           username: user.username,
-          imgUrl: user.imgUrl,
+          // imgUrl: user.imgUrl,
         };
         req.session.userData = data;
         req.session.save();
