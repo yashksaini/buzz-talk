@@ -6,6 +6,7 @@ import {
   logout,
 } from "../controllers/authController.js";
 import {
+  getAllUsers,
   getRecentUsers,
   getUserNameAndImage,
   getUserProfile,
@@ -48,6 +49,7 @@ router.post("/login", login);
 router.get("/user/:username", getUserProfile);
 router.get("/userImage/:username",getUserNameAndImage)
 router.get("/users/recent-users", getRecentUsers);
+router.get("/users/all-users", getAllUsers);
 router.post("/update-profile", updateProfile);
 router.get("/search/:query", searchUser);
 

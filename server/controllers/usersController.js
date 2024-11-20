@@ -50,6 +50,21 @@ export const getUserNameAndImage = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+export const getAllUsers = async(req, res) => {
+  const { userId } = req.query;
+  try {
+    // Find all users excluding the specified userId
+    const allUsers = await User.find()
+      .sort({ dateJoined: -1 })
+      .limit(20)
+      .select("fullName username _id imgUrl ") // Specify the fields to retrieve
+      .lean();
+    res.status(200).json(allUsers);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+}
 export const getRecentUsers = async (req, res) => {
   const { userId } = req.query;
   try {
