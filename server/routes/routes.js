@@ -7,6 +7,7 @@ import {
 } from "../controllers/authController.js";
 import {
   getRecentUsers,
+  getUserNameAndImage,
   getUserProfile,
   searchUser,
   updateProfile,
@@ -45,6 +46,7 @@ router.post("/login", login);
 
 // User Profile Routes
 router.get("/user/:username", getUserProfile);
+router.get("/userImage/:username",getUserNameAndImage)
 router.get("/users/recent-users", getRecentUsers);
 router.post("/update-profile", updateProfile);
 router.get("/search/:query", searchUser);

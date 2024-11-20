@@ -20,7 +20,7 @@ import { BASE_URL } from "./Constants/constants";
 function App({ socket }) {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.userAuth);
-  // const [isUpdated,setIsUpdated] = useState(false);
+  const [isUpdated,setIsUpdated] = useState(false);
 
   axios.defaults.withCredentials = true;
   const getAuth = async () => {
@@ -98,16 +98,16 @@ function App({ socket }) {
             />
             <Route
               element={
-                <Layout>
-                  <Notifications socket={socket} />
+                <Layout isUpdated={isUpdated}>
+                  <Notifications socket={socket} setIsUpdated={setIsUpdated} />
                 </Layout>
               }
               path="/notifications"
             />
             <Route
               element={
-                <Layout>
-                  <Profile socket={socket} />
+                <Layout isUpdated={isUpdated}>
+                  <Profile socket={socket} setIsUpdated={setIsUpdated}/>
                 </Layout>
               }
               path="/profile/:id"

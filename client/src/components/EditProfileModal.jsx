@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../Constants/constants";
-const EditProfileModal = ({ setModalType, user }) => {
+const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const initialData = {
     fullName: user?.fullName,
@@ -105,6 +105,7 @@ const EditProfileModal = ({ setModalType, user }) => {
         });
         // Close the edit modal
         setModalType("");
+        setIsUpdated(prev=>!prev);
       }
     } catch (error) {
       console.log(error);

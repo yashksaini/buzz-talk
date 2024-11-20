@@ -7,12 +7,14 @@ import { BsBell, BsBellFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
 import ProfileIcon from "./ProfileIcon";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { axios } from "../Constants/constants";
+import axios from "axios"; // Use this axios otherwise logout will not work properly
 import { useEffect, useState } from "react";
+import { BASE_URL } from "../Constants/constants";
 // eslint-disable-next-line react/prop-types
 const Navbar = ({isUpdated}) => {
-  const { fullName, username, imgUrl,userId } = useSelector((state) => state.userAuth);
+  const {  username,userId } = useSelector((state) => state.userAuth);
   const [unReadCount, setUnReadCount] = useState(0);
+  const [userData,setUserData] = useState({});
   const adminNavs = [
     {
       text: "Home",
@@ -47,14 +49,14 @@ const Navbar = ({isUpdated}) => {
   ];
 
   const logout = async () => {
-    await axios.post(`/logout`);
+    await axios.post(`${BASE_URL}/logout`);
     window.location.href = "/";
   };
   
   useEffect(()=>{
     const getNotificationsCount = async()=>{
       try {
-        const response = await axios.get(`/notifications/getUnreadNotificationsOfUser`,{
+        const response = await axios.get(`${BASE_URL}/notifications/getUnreadNotificationsOfUser`,{
           params: {
             userId: userId,
           },
@@ -66,8 +68,22 @@ const Navbar = ({isUpdated}) => {
         console.error("Error getting notifications count:", error);
       }
     }
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/userImage/${username}`);
+        if (!response.data) {
+          return;
+        }
+
+        setUserData(response.data);
+
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchUserData();
     getNotificationsCount();
-  },[userId,isUpdated]);
+  },[userId,isUpdated,username]);
 
   return (
     <nav className=" h-full p-2 flex flex-col px-3 overflow-y-auto overflow-x-hidden">
@@ -93,7 +109,7 @@ const Navbar = ({isUpdated}) => {
                 <span className="h-12 flex justify-center items-center pb-[2px]">
                   {nav.icon}
                 </span>
-                <div className="leading-[48px]">{nav.text} {nav.text==="Notifications" && unReadCount!==0 && <span className="w-6 h-6 flex justify-center items-center bg-primary text-white absolute top-[-6px] right-[-6px] rounded-full font-normal text-sm">{unReadCount}</span>}</div>
+                <div className="leading-[48px]">{nav.text} {nav.text==="Notifications" && unReadCount>0 && <span className="w-6 h-6 flex justify-center items-center bg-primary text-white absolute top-[-6px] right-[-6px] rounded-full font-normal text-sm">{unReadCount}</span>}</div>
               </div>
             </NavLink>
           );
@@ -106,14 +122,14 @@ const Navbar = ({isUpdated}) => {
         onClick={logout}
       >
         <div className="w-10 h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
-          {imgUrl && (
-            <img src={imgUrl} alt="profile" className="w-9 h-9 rounded-full" />
+          {userData?.imgUrl && (
+            <img src={userData?.imgUrl} alt="profile" className="w-9 h-9 rounded-full" />
           )}
-          {!imgUrl && <ProfileIcon fullName={fullName} />}
+          {!userData?.imgUrl && <ProfileIcon fullName={userData?.fullName} />}
         </div>
         <div className="w-[calc(100%_-_52px)] h-10 flex justify-center items-start flex-col gap-[2px]">
           <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 font-bold">
-            {fullName}
+            {userData?.fullName}
           </p>
           <p className="leading-4  text-mainText">@{username}</p>
         </div>

@@ -17,7 +17,7 @@ import {
 import MiniModal from "../components/UI/MiniModal";
 import NoDataFound from "../components/UI/NoDataFound";
 import { axios } from "../Constants/constants";
-const Profile = ({ socket }) => {
+const Profile = ({ socket,setIsUpdated }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();
   const { fullName, userId } = useSelector((state) => state.userAuth);
@@ -325,7 +325,7 @@ const Profile = ({ socket }) => {
           <TopUsers />
         </div>
         {modalType === "edit" && (
-          <EditProfileModal setModalType={setModalType} user={userData} />
+          <EditProfileModal setModalType={setModalType} user={userData} setIsUpdated={setIsUpdated} />
         )}
       </div>
       {modalType === "withdraw" && isModal && (
