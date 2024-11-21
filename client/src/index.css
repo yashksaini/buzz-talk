@@ -47,6 +47,23 @@
   overflow: hidden;
   border-right: 1px solid var(--line);
 }
+@media only screen and  (max-width: 1280px) {
+  .navbar {
+    width: auto;
+  }
+}
+@media only screen and  (max-width: 768px) {
+  .navbar {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 88px;
+    padding: 8px;
+    overflow: hidden;
+    background-color: var(--background);
+  }
+}
 .content {
   flex: 1;
   height: 100vh;
@@ -70,16 +87,16 @@
 .active-tab:hover {
   background-color: var(--line);
 }
-.defaultNav > div > span:nth-child(1) {
+.defaultNav span:nth-child(1) {
   display: none;
 }
-.defaultNav > div > span:nth-child(2) {
+.defaultNav  span:nth-child(2) {
   display: flex;
 }
-.activeNav > div > span:nth-child(1) {
+.activeNav  span:nth-child(1) {
   display: flex;
 }
-.activeNav > div > span:nth-child(2) {
+.activeNav  span:nth-child(2) {
   display: none;
 }
 .cropper-modal {

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
-// import axios from "axios";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IoCalendarOutline } from "react-icons/io5";
@@ -16,7 +16,7 @@ import {
 } from "../components/commonFunctions";
 import MiniModal from "../components/UI/MiniModal";
 import NoDataFound from "../components/UI/NoDataFound";
-import { axios } from "../Constants/constants";
+import { BASE_URL } from "../Constants/constants";
 const Profile = ({ socket,setIsUpdated }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();
@@ -36,7 +36,7 @@ const Profile = ({ socket,setIsUpdated }) => {
     setIsLoading(true);
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/user/${id}`);
+        const response = await axios.get(`${BASE_URL}/user/${id}`);
         if (!response.data) {
           setUserExists(false);
           setIsLoading(false);
@@ -68,7 +68,7 @@ const Profile = ({ socket,setIsUpdated }) => {
     const fetchFriendshipStatus = async () => {
       try {
         const response = await axios.get(
-          `/friends/friendship-status`,
+          `${BASE_URL}/friends/friendship-status`,
           {
             params: {
               ownerId: userId,
@@ -155,6 +155,10 @@ const Profile = ({ socket,setIsUpdated }) => {
   };
   const closeModal = () => {
     setIsModal(false);
+  };
+  const logout = async () => {
+    await axios.post(`${BASE_URL}/logout`);
+    window.location.href = "/";
   };
   return (
     <>
@@ -254,6 +258,7 @@ const Profile = ({ socket,setIsUpdated }) => {
           )}
 
           {userExists ? (
+            <>
             <div className="px-3 pb-4 border-b border-line">
               <div className="mb-2 min-w-48">
                 {isLoading ? (
@@ -282,7 +287,7 @@ const Profile = ({ socket,setIsUpdated }) => {
                   </p>
                 )}
               </div>
-              <div className="mb-2 ">
+              <div className="mb-2">
                 {isLoading ? (
                   <CustomSkeleton
                     className={
@@ -307,6 +312,13 @@ const Profile = ({ socket,setIsUpdated }) => {
                 )}
               </div>
             </div>
+            <div onClick={()=>{
+              setModalType("logout");
+              setIsModal(true);
+            }} className="w-full py-4 flex justify-center items-center hover:bg-transRed hover:text-red cursor-pointer">
+            Log Out
+          </div>
+          </>
           ) : (
             <>
               {!isLoading && (
@@ -337,6 +349,16 @@ const Profile = ({ socket,setIsUpdated }) => {
           desc="Withdrawing this request will stop its processing. You can resubmit it later, but any previous progress may be lost."
         />
       )}
+      {modalType === "logout" && isModal && (
+        <MiniModal
+          closeModal={closeModal}
+          actionBtnText="Log Out"
+          actionBtnFun={logout}
+          title="Confirm Logout"
+          desc="You’re logging out of your account. We’ll be here whenever you’re ready to log back in. Looking forward to having you back soon!"
+        />
+      )}
+      
       {modalType === "remove" && isModal && (
         <MiniModal
           closeModal={closeModal}
