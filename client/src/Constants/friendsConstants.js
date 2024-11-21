@@ -1,5 +1,5 @@
 export const friendsTabsList = {
-  friends: "My friends",
+  friends: "Friends",
   requests: "Requests",
   sent: "Sent",
   // blocked: "Blocked",

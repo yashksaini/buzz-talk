@@ -82,7 +82,7 @@ const Navbar = ({isUpdated}) => {
 
   return (
     <>
-    <nav className=" h-full p-2 hidden md:flex flex-col px-3 overflow-y-auto overflow-x-hidden">
+    <nav className=" h-full p-2 hidden sm:flex flex-col px-3 overflow-y-auto overflow-x-hidden">
       <div className="w-full gap-1 justify-start items-center px-3 mb-4 mt-2 ml-2 hover:cursor-pointer text-2xl font-black xl:flex hidden">
         BUZZ <span className="text-primary">TALK</span>
       </div>
@@ -132,7 +132,7 @@ const Navbar = ({isUpdated}) => {
         </div>
       </div>
     </nav>
-    <nav className="h-full md:hidden grid grid-cols-5 border-transPrimary border rounded-3xl backdrop-blur-sm bg-white" >
+    <nav className="h-full sm:hidden grid grid-cols-5 border-transPrimary border rounded-3xl backdrop-blur-sm bg-white" >
       {adminNavs.map((nav, index) => {
         return (
           <NavLink

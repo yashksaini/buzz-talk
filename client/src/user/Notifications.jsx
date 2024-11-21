@@ -49,7 +49,7 @@ const Notifications = ({setIsUpdated}) => {
   }, []);
   return (
     <div className="flex justify-center items-center h-full">
-      <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
+      <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden">
         <div className="w-full flex justify-between items-center py-4 px-3 border-b border-line sticky top-0 left-0 bg-white z-50">
           <span className="text-2xl font-bold text-dark1 leading-7 min-w-48">
             Notifications
@@ -91,7 +91,7 @@ const Notifications = ({setIsUpdated}) => {
           <NotificationsList isListUpdate={isListUpdate} setIsUpdated={setIsUpdated}/>
         </div>
       </div>
-      <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">
+      <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden sm:px-3 px-0">
         <TopUsers />
       </div>
     </div>

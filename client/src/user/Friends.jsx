@@ -12,20 +12,23 @@ const Friends = () => {
   const [isUpdated,setIsUpdated] = useState(false);
   return (
     <div className="flex justify-center items-center h-full">
-      <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
-        <div className="w-full px-4  sticky top-0 bg-white h-16 flex justify-center items-start flex-col z-10 ">
+      <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden">
+        <div className="sticky top-0 bg-white z-10">
+        <div className="w-full px-4  bg-white h-16 flex justify-center items-start flex-col ">
           <h1 className="text-2xl font-bold text-dark1 leading-7">Friends</h1>
           <p className="text-mainText leading-4 flex justify-start items-center gap-1 text-sm  overflow-hidden text-ellipsis whitespace-nowrap">
             All your friends list appear below
           </p>
+          </div>
+          <FriendsTabs activeTab={activeTab} setActiveTab={setActiveTab} isUpdated={isUpdated} />
         </div>
-        <FriendsTabs activeTab={activeTab} setActiveTab={setActiveTab} isUpdated={isUpdated} />
+        
         {activeTab === friendsTabsList.friends && <MyFriends setIsUpdated={setIsUpdated} />}
         {activeTab === friendsTabsList.requests && <Requests setIsUpdated={setIsUpdated} />}
         {activeTab === friendsTabsList.sent && <Sent setIsUpdated={setIsUpdated}/>}
         {/* {activeTab === friendsTabsList.blocked && <Blocked />} */}
       </div>
-      <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">
+      <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden sm:px-3 px-0">
         <TopUsers />
       </div>
     </div>

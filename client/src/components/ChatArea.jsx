@@ -205,6 +205,12 @@ const ChatArea = ({ socket }) => {
         <>
           <div className="sticky top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line">
             <div className="flex justify-center items-center gap-2">
+              <button
+                onClick={()=> {navigate("/chats")}}
+                className="w-9 h-9  justify-center items-center rounded-full hover:bg-line transition-all flex md:hidden"
+              >
+                <IoMdArrowBack className="text-2xl" />
+              </button>
               <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
                 {!chatData?.friendsProfile?.imgUrl && (
                   <ProfileIcon fullName={chatData?.friendsProfile?.fullName} />

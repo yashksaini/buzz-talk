@@ -13,13 +13,16 @@ import NoDataFound from "../components/UI/NoDataFound";
 import ChatArea from "../components/ChatArea";
 import { BASE_URL } from "../Constants/constants";
 import { getActiveUsers } from "../Constants/ChatUtils";
+import { useParams } from "react-router-dom";
 const MyChats = ({ socket }) => {
   const { userId } = useSelector((state) => state.userAuth);
+  const { chatId } = useParams();
   const [search, setSearch] = useState("");
   const [isNewChatModal, setIsNewChatModal] = useState(false);
   const [chatsList, setChatsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeUsers, setActiveUsers] = useState([]);
+  const [isDisplayChat,setIsDisplayChat] = useState(false);
   // const handleSearch = () => {};
   const fetchChats = async () => {
     try {
@@ -60,12 +63,19 @@ const MyChats = ({ socket }) => {
       setActiveUsers(data);
     });
   }, [socket]);
+  useEffect(()=>{
+    if(chatId){
+      setIsDisplayChat(true);
+    }else{
+      setIsDisplayChat(false);
+    }
+  },[chatId])
 
   return (
     <>
       <div className="flex justify-center items-center h-full">
         {/* Friends List */}
-        <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden border-r border-line text-dark1">
+        <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden border-r border-line text-dark1 sm:">
           {/* Top Section */}
           <div className="px-3">
             <div className="w-full flex justify-between items-center py-2">
@@ -197,7 +207,7 @@ const MyChats = ({ socket }) => {
           </div>
         </div>
         {/* Chat Area */}
-        <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
+        <div className={`${isDisplayChat?"block":"hidden"} md:block sm:flex-none md:flex-1 xl:flex-none w-full xl:w-[600px] border-r border-line sm:h-full overflow-y-auto overflow-x-hidden sm:relative fixed top-0 left-0 h-[100dvh] z-50 bg-white`}>
           <ChatArea socket={socket} />
         </div>
       </div>

@@ -120,7 +120,7 @@ const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
   };
   return (
     <>
-      <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-20 p-8 flex justify-center items-center">
+      <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-30 sm:p-8 p-2 flex justify-center items-center">
         <div className="max-w-full w-[600px] bg-white rounded-xl h-[650px] max-h-full overflow-hidden ">
           <div className="w-full h-[650px] max-h-full overflow-x-hidden overflow-y-auto">
             <div className="flex justify-between items-center h-14 w-full sticky top-0 left-0 bg-white border-b z-50 px-3">
@@ -193,12 +193,12 @@ const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
                     zIndex: "50",
                   }}
                 />
-                <div className="z-10 absolute bottom-[-64px] left-8 w-32 h-32  border-white border-2 rounded-full bg-slate-300 ">
+                <div className="z-10 absolute sm:bottom-[-64px] bottom-[-48px] left-8 sm:w-32 sm:h-32 w-24 h-24  border-white border-2 rounded-full bg-slate-300 ">
                   {form?.profile && (
                     <img
                       src={form?.profile}
                       alt="Profile"
-                      className="absolute z-20 w-32 h-32 top-0 left-0 rounded-full"
+                      className="absolute z-20 sm:w-32 sm:h-32 w-24 h-24 top-0 left-0 rounded-full"
                     />
                   )}
                   <label

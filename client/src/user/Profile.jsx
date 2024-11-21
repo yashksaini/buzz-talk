@@ -163,8 +163,8 @@ const Profile = ({ socket,setIsUpdated }) => {
   return (
     <>
       <div className="flex justify-center items-center h-full">
-        <div className="w-[600px] border-r border-line h-full overflow-y-auto overflow-x-hidden">
-          <div className="w-full px-4  sticky top-0 bg-white h-16 flex justify-center items-start flex-col z-10">
+        <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden">
+          <div className="w-full px-4  sticky top-0 bg-white h-16 flex justify-center items-start flex-col z-20">
             {isLoading ? (
               <CustomSkeleton className="text-2xl font-bold text-dark1 leading-7 min-w-48" />
             ) : (
@@ -312,12 +312,13 @@ const Profile = ({ socket,setIsUpdated }) => {
                 )}
               </div>
             </div>
-            <div onClick={()=>{
+            {userId === userData?.userId  && <div onClick={()=>{
               setModalType("logout");
               setIsModal(true);
             }} className="w-full py-4 flex justify-center items-center hover:bg-transRed hover:text-red cursor-pointer">
             Log Out
-          </div>
+          </div>}
+            
           </>
           ) : (
             <>
@@ -333,7 +334,7 @@ const Profile = ({ socket,setIsUpdated }) => {
           )}
         </div>
 
-        <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-3">
+        <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden sm:px-3 px-0">
           <TopUsers />
         </div>
         {modalType === "edit" && (
@@ -357,8 +358,7 @@ const Profile = ({ socket,setIsUpdated }) => {
           title="Confirm Logout"
           desc="You’re logging out of your account. We’ll be here whenever you’re ready to log back in. Looking forward to having you back soon!"
         />
-      )}
-      
+      )} 
       {modalType === "remove" && isModal && (
         <MiniModal
           closeModal={closeModal}
