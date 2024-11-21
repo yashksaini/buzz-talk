@@ -64,14 +64,14 @@ const TopUsers = () => {
     findUser();
   };
   return (
-    <div className="lg:block hidden w-full px-4">
-      <div className="w-full sticky top-0 left-0 z-10 py-2 bg-white">
+    <div className=" w-full px-4">
+      <div className="w-full sticky top-0 left-0 z-[2] py-2 bg-white">
         <div className="w-full h-12 bg-backgroundDark rounded-full border border-backgroundDark flex justify-center items-center gap-3 pl-3 pr-2 focus-within:bg-white focus-within:border-primaryBorder ">
           <GoSearch className="text-2xl group:focus-within text-primary xl:inline hidden" />
           <input
             type="text"
             placeholder="Search"
-            className="flex-1 bg-transparent focus:outline-none text-dark1 font-medium"
+            className="flex-1 bg-transparent focus:outline-none text-dark1 font-medium xl:pl-0 pl-2"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);

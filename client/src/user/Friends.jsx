@@ -12,7 +12,7 @@ const Friends = () => {
   const [isUpdated,setIsUpdated] = useState(false);
   return (
     <div className="flex justify-center items-center h-full">
-      <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden">
+      <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden sm:border-l">
         <div className="sticky top-0 bg-white z-10">
         <div className="w-full px-4  bg-white h-16 flex justify-center items-start flex-col ">
           <h1 className="text-2xl font-bold text-dark1 leading-7">Friends</h1>
@@ -28,7 +28,7 @@ const Friends = () => {
         {activeTab === friendsTabsList.sent && <Sent setIsUpdated={setIsUpdated}/>}
         {/* {activeTab === friendsTabsList.blocked && <Blocked />} */}
       </div>
-      <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden sm:px-3 px-0">
+      <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden sm:px-3 px-0 lg:block hidden">
         <TopUsers />
       </div>
     </div>

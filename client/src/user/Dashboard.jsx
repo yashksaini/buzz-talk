@@ -55,7 +55,7 @@ const Dashboard = ({ socket }) => {
   return (
     <>
       <div className="flex justify-center items-center h-full">
-        <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden">
+        <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden sm:border-l">
           <div className="w-full sticky top-0 bg-white z-10">
             <div className="w-full px-4 bg-white min-h-16 flex justify-center items-start flex-col">
               <h1 className="text-2xl font-bold text-dark1 leading-7">
@@ -65,7 +65,7 @@ const Dashboard = ({ socket }) => {
                 Explore the list of users on the platform below.
               </p>
             </div>
-            <div className="grid grid-cols-2 border-b border-line h-14 mt-2 bg-white">
+            <div className="grid grid-cols-3 md:grid-cols-2 border-b border-line h-14 mt-2 bg-white">
               <button
                 onClick={() => {
                   setActiveTab("active");
@@ -74,7 +74,7 @@ const Dashboard = ({ socket }) => {
                   activeTab === "active" ? "active-tab" : ""
                 } hover:bg-line text-mainText`}
               >
-                Active Users
+                Active
               </button>
               <button
                 onClick={() => {
@@ -84,7 +84,17 @@ const Dashboard = ({ socket }) => {
                   activeTab === "all" ? "active-tab" : ""
                 } hover:bg-line text-mainText`}
               >
-                Recent Users
+                Recent 
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("search");
+                }}
+                className={`${
+                  activeTab === "search" ? "active-tab" : ""
+                } hover:bg-line text-mainText md:hidden block`}
+              >
+                Search
               </button>
             </div>
           </div>
@@ -135,9 +145,10 @@ const Dashboard = ({ socket }) => {
               )}
             </div>
           )}
+          {activeTab === "search" && <TopUsers/>}
         </div>
 
-        <div className=" flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-0 lg:px-3">
+        <div className=" flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-0 lg:px-3 lg:block hidden">
           <TopUsers />
         </div>
       </div>
