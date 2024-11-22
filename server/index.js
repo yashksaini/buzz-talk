@@ -7,10 +7,13 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { createServer } from "http";
-import { Server } from "socket.io";
 import Routes from "./routes/routes.js";
 import { getActiveUsers, initializeSocket } from "./socket/socket.js";
+// import { fileURLToPath } from "url";
+// import { dirname, join } from "path";
 
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = dirname(__filename);
 const app = express();
 const httpServer = createServer(app);
 initializeSocket(httpServer);
@@ -40,6 +43,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days in milliseconds
       httpOnly: true,
       secure: false, // For development; set to true in production (requires HTTPS)
+      // sameSite: false, 
     },
   })
 );
@@ -58,7 +62,7 @@ app.use("/", Routes);
 app.get("/active-users", (req, res) => {
   res.json(getActiveUsers());
 });
-
+// app.use(express.static(join(__dirname, "public")));
 httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
