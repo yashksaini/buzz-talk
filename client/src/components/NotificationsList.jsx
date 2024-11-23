@@ -37,9 +37,9 @@ const NotificationsList = ({isListUpdate,setIsUpdated}) => {
                   await markNotificationRead(userId,notification?._id);
                 }
               }}>
-                <p className="leading-4 whitespace-nowrap overflow-hidden text-ellipsis text-dark1 hover:underline ">
+                <p className="leading-4  text-dark1 hover:underline ">
                 <span className="font-semibold">{notification?.senderName}</span> 
-                  <span className="text-grayText ml-1">{notification?.title}</span>
+                  <span className="text-grayText ml-1 text-xs">{notification?.title}</span>
                 </p>
                 <p className="leading-4  text-mainText text-xs">
                   {formatDistanceToNow(notification?.time, { addSuffix: true })}
