@@ -62,7 +62,7 @@ const Profile = ({ socket,setIsUpdated }) => {
     };
 
     fetchUserData();
-  }, [userId, modalType, id, socket, fullName]);
+  }, [userId, id, socket, fullName]);
 
   useEffect(() => {
     const fetchFriendshipStatus = async () => {
