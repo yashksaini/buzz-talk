@@ -32,9 +32,9 @@ const ChatArea = ({ socket }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDetails, setIsDetails] = useState(false); 
-  const [blocked,setBlocked] = useState(false);
-  const [unblock,setUnblock] = useState(false);
+  const [isDetails, setIsDetails] = useState(false);
+  const [blocked, setBlocked] = useState(false);
+  const [unblock, setUnblock] = useState(false);
 
   useEffect(() => {
     if (chatId) {
@@ -49,24 +49,24 @@ const ChatArea = ({ socket }) => {
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  const checkIsBlocked = (usersList)=>{
+  const checkIsBlocked = (usersList) => {
     let isBlocked = false;
     let isUnblock = false;
-    usersList?.forEach((user)=>{
-      if(user?.userId?._id===userId && user?.isBlocked){
-        if(user?.isBlocked){
+    usersList?.forEach((user) => {
+      if (user?.userId?._id === userId && user?.isBlocked) {
+        if (user?.isBlocked) {
           isBlocked = true;
-        }else{
+        } else {
           isBlocked = false;
         }
       }
-      if(user?.isBlocked){
+      if (user?.isBlocked) {
         isUnblock = true;
       }
     });
     setUnblock(isUnblock);
     setBlocked(isBlocked);
-  }
+  };
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -89,7 +89,7 @@ const ChatArea = ({ socket }) => {
       if (isSuccess) {
         setTimeout(() => {
           scrollToBottom();
-        }, 200);
+        }, 1000);
         const { newReadMessages } = await markMessagesAsRead({
           chatId,
           ownerId: userId,
@@ -128,7 +128,7 @@ const ChatArea = ({ socket }) => {
         readBy: [{ userId: userId, readAt: new Date() }],
       };
 
-      await sendMessage(chatId, newMessage,userId);
+      await sendMessage(chatId, newMessage, userId);
       // Emit the sendMessage event to the server
       socket.emit("sendMessage", {
         chatId,
@@ -144,7 +144,7 @@ const ChatArea = ({ socket }) => {
     socket.on("receiveMessage", async (messageData) => {
       setTimeout(() => {
         scrollToBottom();
-      }, 400);
+      }, 1000);
       await markMessagesAsRead({ chatId, ownerId: userId });
       setMessages((prevMessages) => [messageData, ...prevMessages]);
     });
@@ -203,10 +203,12 @@ const ChatArea = ({ socket }) => {
     <div className="h-[100dvh] w-full overflow-hidden">
       {chatId && !isLoading && !isDetails && (
         <>
-          <div className="sticky top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line">
+          <div className="sm:sticky w-full fixed top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line z-30">
             <div className="flex justify-center items-center gap-2">
               <button
-                onClick={()=> {navigate("/chats")}}
+                onClick={() => {
+                  navigate("/chats");
+                }}
                 className="w-9 h-9  justify-center items-center rounded-full hover:bg-line transition-all flex md:hidden"
               >
                 <IoMdArrowBack className="text-2xl" />
@@ -229,12 +231,12 @@ const ChatArea = ({ socket }) => {
                 </h1>
                 <p className="leading-4  text-mainText text-xs ">
                   {chatData?.friendsProfile?.username}
-                  {!(blocked || unblock )&& isActive && !isTyping && (
+                  {!(blocked || unblock) && isActive && !isTyping && (
                     <span className="ml-2 font-medium text-green-600">
                       Active
                     </span>
                   )}
-                  {!(blocked || unblock )&&isTyping && (
+                  {!(blocked || unblock) && isTyping && (
                     <span className="ml-2  font-medium text-green-600">
                       Typing...
                     </span>
@@ -262,59 +264,79 @@ const ChatArea = ({ socket }) => {
               }}
             />
           </div>
-          <div className="w-full h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto">
+          <div className="sm:relative fixed sm:top-0 top-[56px] left-0 w-full h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto bg-white">
             <div className="flex flex-col-reverse gap-2 p-3">
               <div ref={chatEndRef} />
               <Messages
                 messages={messages}
                 friendsProfile={chatData?.friendsProfile}
               />
-              {!(blocked || unblock )&&totalMessages >= messages.length && hasMore && (
-                <div className="w-full flex justify-center items-center py-2">
-                  <button
-                    onClick={loadMore}
-                    className="bg-backgroundDark hover:bg-line rounded-md text-sm hover:cursor-pointer px-4 py-2 text-dark2 font-semibold"
-                  >
-                    Load More
-                  </button>
-                </div>
-              )}
+              {!(blocked || unblock) &&
+                totalMessages >= messages.length &&
+                hasMore && (
+                  <div className="w-full flex justify-center items-center py-2">
+                    <button
+                      onClick={loadMore}
+                      className="bg-backgroundDark hover:bg-line rounded-md text-sm hover:cursor-pointer px-4 py-2 text-dark2 font-semibold"
+                    >
+                      Load More
+                    </button>
+                  </div>
+                )}
             </div>
           </div>
-          <div className="flex justify-start items-center sticky bottom-0 w-full h-14 bg-white border-t border-line px-3 py-2">
-            {!(blocked || unblock )&& <div className="bg-gray-100 w-full h-full rounded-xl flex justify-center items-center">
-              <input
-                type="text"
-                className="bg-transparent flex-1 focus:outline-none px-4"
-                placeholder="Start a new message"
-                value={messageText}
-                onChange={(e) => {
-                  setMessageText(e.target.value);
-                }}
-                onFocus={() => {
-                  socket.emit("startTyping", { chatId, userId });
-                }}
-                onBlur={() => {
-                  socket.emit("stopTyping", { chatId, userId });
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && messageText.trim()) {
+          <div className="flex justify-start items-center fixed sm:sticky bottom-0 w-full h-14 bg-white border-t border-line px-3 py-2">
+            {!(blocked || unblock) && (
+              <div className="bg-gray-100 w-full h-full rounded-xl flex justify-center items-center">
+                <input
+                  type="text"
+                  className="bg-transparent flex-1 focus:outline-none px-4"
+                  placeholder="Start a new message"
+                  value={messageText}
+                  onChange={(e) => {
+                    setMessageText(e.target.value);
+                  }}
+                  onFocus={() => {
+                    socket.emit("startTyping", { chatId, userId });
+                  }}
+                  onBlur={() => {
+                    socket.emit("stopTyping", { chatId, userId });
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && messageText.trim()) {
+                      handleSendMessage();
+                    }
+                  }}
+                />
+                <button
+                  className="px-4 h-full text-gray-600 focus:outline-none"
+                  onClick={async () => {
                     handleSendMessage();
-                  }
-                }}
-              />
-              <button
-                className="px-4 h-full text-gray-600 focus:outline-none"
-                onClick={async () => {
-                  handleSendMessage();
-                }}
-              >
-                <BiSend />
-              </button>
-            </div>}
-            {blocked && <div className="text-dark2">You are no longer allowed to send messages in this chat.</div>}
-            {!blocked && unblock && <div className="text-dark2">Unblock the user to enable messaging. <span className="text-primary cursor-pointer ml-1" onClick={()=>{setIsDetails(true)}}>Allow DMs</span></div>}
-          </div> 
+                  }}
+                >
+                  <BiSend />
+                </button>
+              </div>
+            )}
+            {blocked && (
+              <div className="text-dark2">
+                You are no longer allowed to send messages in this chat.
+              </div>
+            )}
+            {!blocked && unblock && (
+              <div className="text-dark2">
+                Unblock the user to enable messaging.{" "}
+                <span
+                  className="text-primary cursor-pointer ml-1"
+                  onClick={() => {
+                    setIsDetails(true);
+                  }}
+                >
+                  Allow DMs
+                </span>
+              </div>
+            )}
+          </div>
         </>
       )}
       {chatId && !isLoading && isDetails && (
@@ -325,7 +347,7 @@ const ChatArea = ({ socket }) => {
                 setIsDetails(false);
                 setTimeout(() => {
                   scrollToBottom();
-                }, 300);
+                }, 1000);
               }}
               className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-line transition-all"
             >
@@ -358,35 +380,44 @@ const ChatArea = ({ socket }) => {
             </div>
           </div>
           <div className="w-full flex justify-center items-center flex-col">
-            {
-              !blocked && <button className="h-14 flex justify-center items-center hover:bg-transPrimary w-full text-primary" onClick={async()=>{
-                if(!unblock){
-                  const {isSuccess} = await blockUserInChat(chatId,chatData?.friendsProfile?.userId);
-                  if(isSuccess){
-                    setIsDetails(false);
-                    setBlocked(false);
-                    setUnblock(true);
+            {!blocked && (
+              <button
+                className="h-14 flex justify-center items-center hover:bg-transPrimary w-full text-primary"
+                onClick={async () => {
+                  if (!unblock) {
+                    const { isSuccess } = await blockUserInChat(
+                      chatId,
+                      chatData?.friendsProfile?.userId
+                    );
+                    if (isSuccess) {
+                      setIsDetails(false);
+                      setBlocked(false);
+                      setUnblock(true);
+                    }
+                  } else {
+                    const { isSuccess } = await unblockUserInChat(
+                      chatId,
+                      chatData?.friendsProfile?.userId
+                    );
+                    if (isSuccess) {
+                      setIsDetails(false);
+                      setBlocked(false);
+                      setUnblock(false);
+                    }
                   }
-                }else{
-                  const {isSuccess} = await unblockUserInChat(chatId,chatData?.friendsProfile?.userId);
-                  if(isSuccess){
-                    setIsDetails(false);
-                    setBlocked(false);
-                    setUnblock(false);
-                  }
-                }
-              }}>
-                {unblock ? "Allow DMs ": "Block DMs"}
+                }}
+              >
+                {unblock ? "Allow DMs " : "Block DMs"}
               </button>
-            }
+            )}
             {blocked && (
-  <NoDataFound 
-    title={"No actions"} 
-    desc={"You are restricted from performing any actions in this chat at the moment."} 
-  />
-)}
-
-            
+              <NoDataFound
+                title={"No actions"}
+                desc={
+                  "You are restricted from performing any actions in this chat at the moment."
+                }
+              />
+            )}
           </div>
         </>
       )}
