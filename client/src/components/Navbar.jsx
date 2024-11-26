@@ -132,7 +132,7 @@ const Navbar = ({isUpdated}) => {
         </div>
       </div>
     </nav>
-    <nav className="h-full sm:hidden grid grid-cols-5 border-transPrimary border rounded-3xl backdrop-blur-sm bg-white" >
+    <nav className="h-full sm:hidden grid grid-cols-5 border-line border-2 rounded-3xl backdrop-blur-sm bg-white" >
       {adminNavs.map((nav, index) => {
         return (
           <NavLink

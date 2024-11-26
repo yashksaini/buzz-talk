@@ -6,23 +6,27 @@ import { formatDistanceToNow } from "date-fns";
 import NotificationDropdown from "./UI/NotificationDropdown";
 import NotificationIcon from "./UI/NotificationIcon";
 import NoDataFound from "./UI/NoDataFound";
+import Loader from "./UI/Loader";
 // eslint-disable-next-line react/prop-types
 const NotificationsList = ({isListUpdate,setIsUpdated}) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [notifications, setNotifications] = useState([]);
   const [currentNotificationId, setCurrentNotificationId] = useState(null);
+  const [isLoading,setIsLoading] = useState(false);
   const fetchNotifications = async () => {
     const { data } = await getNotifications(userId);
     setNotifications(data);
+    setIsLoading(false);
     setIsUpdated(prev=> !prev);
   };
   useEffect(() => {
+    setIsLoading(true);
     fetchNotifications();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId,isListUpdate]);
   return (
     <div>
-      {notifications.map((notification) => {
+      {!isLoading && notifications.map((notification) => {
 
         return(
         <div
@@ -60,7 +64,9 @@ const NotificationsList = ({isListUpdate,setIsUpdated}) => {
           </div>
         </div>
       )})}
-      {notifications?.length===0 && <NoDataFound desc="No notifications to display." title="No Notifications" /> }
+      {!isLoading && notifications?.length===0 && <NoDataFound desc="No notifications to display." title="No Notifications" /> }
+      {isLoading && <div className="flex justify-center items-center py-8 w-full">
+        <Loader/></div>}
     </div>
   );
 };

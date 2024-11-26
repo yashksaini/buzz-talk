@@ -69,7 +69,7 @@ const MyChats = ({ socket }) => {
     }else{
       setIsDisplayChat(false);
     }
-  },[chatId])
+  },[chatId]);
 
   return (
     <>

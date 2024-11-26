@@ -35,7 +35,7 @@ const ChatArea = ({ socket }) => {
   const [isDetails, setIsDetails] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [unblock, setUnblock] = useState(false);
-
+  // const [keyboardHeight, setKeyboardHeight] = useState(0);
   useEffect(() => {
     if (chatId) {
       socket.emit("joinChatPool", {
@@ -198,12 +198,34 @@ const ChatArea = ({ socket }) => {
       }
     });
   }, [socket]);
+  useEffect(() => {
+    const handleResize = () => {
+      setTimeout(()=>{
+        scrollToBottom();
+      },500);
+      // const viewport = window.visualViewport;
+
+      // if (viewport) {
+      //   const keyboardOpened = viewport.height < window.innerHeight;
+      //   setKeyboardHeight(keyboardOpened ? window.innerHeight - viewport.height : 0);
+      // }
+    };
+
+    // Add event listeners for keyboard events
+    window.visualViewport?.addEventListener("resize", handleResize);
+
+    return () => {
+      window.visualViewport?.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
-    <div className="h-[100dvh] w-full overflow-hidden">
+    <div className={`w-full overflow-hidden`} style ={{
+      height: `100%`
+    }}>
       {chatId && !isLoading && !isDetails && (
         <>
-          <div className="sm:sticky w-full fixed top-0 left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line z-30">
+          <div className="sticky w-full left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line z-10">
             <div className="flex justify-center items-center gap-2">
               <button
                 onClick={() => {
@@ -264,7 +286,9 @@ const ChatArea = ({ socket }) => {
               }}
             />
           </div>
-          <div className="sm:relative fixed sm:top-0 top-[56px] left-0 w-full h-[calc(100dvh_-_112px)]  overflow-x-hidden overflow-y-auto bg-white">
+          <div className={`w-full overflow-x-hidden overflow-y-auto bg-white`} style={{
+            height: `calc(100% - 112px)`
+          }}>
             <div className="flex flex-col-reverse gap-2 p-3">
               <div ref={chatEndRef} />
               <Messages
@@ -285,7 +309,7 @@ const ChatArea = ({ socket }) => {
                 )}
             </div>
           </div>
-          <div className="flex justify-start items-center fixed sm:sticky bottom-0 w-full h-14 bg-white border-t border-line px-3 py-2">
+          <div className="flex justify-start items-center sticky bottom-0  w-full h-14 bg-white border-t border-line px-3 py-2 z-10">
             {!(blocked || unblock) && (
               <div className="bg-gray-100 w-full h-full rounded-xl flex justify-center items-center">
                 <input
