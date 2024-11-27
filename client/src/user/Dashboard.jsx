@@ -5,15 +5,12 @@ import { useSelector } from "react-redux";
 import { BASE_URL } from "../Constants/constants";
 import TopUsers from "../components/TopUsers";
 import LineProfileCard from "../components/UI/LineProfileCard";
-import Loader from "../components/UI/Loader";
 import NoDataFound from "../components/UI/NoDataFound";
 
 const Dashboard = ({ socket }) => {
   const [activeUsers, setActiveUsers] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
   const { userId } = useSelector((state) => state.userAuth);
   const [activeTab, setActiveTab] = useState("active");
-  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
 
   useEffect(() => {
     const fetchInitialActiveUsers = async () => {
@@ -27,24 +24,6 @@ const Dashboard = ({ socket }) => {
     fetchInitialActiveUsers();
   }, [userId]);
 
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      setIsFetchingUsers(true);
-      try {
-        const response = await axios.get(`${BASE_URL}/users/all-users`, {
-          params: {
-            userId: userId,
-          },
-        });
-        setAllUsers(response.data || []);
-        setIsFetchingUsers(false);
-      } catch (error) {
-        console.error("Error fetching initial active users:", error);
-        setIsFetchingUsers(false);
-      }
-    };
-    fetchAllUsers();
-  }, [userId]);
 
   useEffect(() => {
     socket.on("activeUsers", (data) => {
@@ -62,10 +41,10 @@ const Dashboard = ({ socket }) => {
                 Dashboard
               </h1>
               <p className="text-mainText leading-4 flex justify-start items-center gap-1 text-sm">
-                Explore the list of users on the platform below.
+                Explore active users list on the platform .
               </p>
             </div>
-            <div className="grid grid-cols-3 md:grid-cols-2 border-b border-line h-14 mt-2 bg-white">
+            <div className="grid grid-cols-1 border-b border-line h-14 mt-2 bg-white">
               <button
                 onClick={() => {
                   setActiveTab("active");
@@ -75,26 +54,6 @@ const Dashboard = ({ socket }) => {
                 } hover:bg-line text-mainText`}
               >
                 Active
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab("all");
-                }}
-                className={`${
-                  activeTab === "all" ? "active-tab" : ""
-                } hover:bg-line text-mainText`}
-              >
-                Recent 
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab("search");
-                }}
-                className={`${
-                  activeTab === "search" ? "active-tab" : ""
-                } hover:bg-line text-mainText md:hidden block`}
-              >
-                Search
               </button>
             </div>
           </div>
@@ -124,28 +83,6 @@ const Dashboard = ({ socket }) => {
               )}
             </div>
           )}
-          {activeTab === "all" && (
-            <div className="mt-2">
-              {!isFetchingUsers &&
-                allUsers?.map((user) => (
-                  <LineProfileCard key={user.userId} user={user} />
-                ))}
-              {!isFetchingUsers && allUsers?.length < 1 && (
-                <NoDataFound
-                  title={"Invite your friends to this platform"}
-                  desc={
-                    "Spread the word! Invite your friends and colleagues to join this platform and grow your network."
-                  }
-                />
-              )}
-              {isFetchingUsers && (
-                <div className="my-8 flex justify-center items-center">
-                  <Loader />
-                </div>
-              )}
-            </div>
-          )}
-          {activeTab === "search" && <TopUsers/>}
         </div>
 
         <div className=" flex-1 bg-white h-full overflow-y-auto overflow-x-hidden px-0 lg:px-3 lg:block hidden">

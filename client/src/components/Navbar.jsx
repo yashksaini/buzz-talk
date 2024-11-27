@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { IoChatbubblesOutline, IoChatbubbles } from "react-icons/io5";
+import { IoChatbubblesOutline, IoChatbubbles, IoSearch, IoSearchOutline } from "react-icons/io5";
 import { HiOutlineUsers, HiMiniUsers, HiOutlineUser, HiUser } from "react-icons/hi2";
 import { BsBell, BsBellFill } from "react-icons/bs";
 import { GoHome, GoHomeFill } from "react-icons/go";
@@ -21,10 +21,10 @@ const Navbar = ({isUpdated}) => {
       activeIcon: <GoHomeFill />,
     },
     {
-      text: "Profile",
-      link: `/profile/${username}`,
-      icon: <HiOutlineUser />,
-      activeIcon: <HiUser />,
+      text: "Explore",
+      link: "/explore",
+      icon: <IoSearchOutline />,
+      activeIcon: <IoSearch/>,
     },
     {
       text: "Messages",
@@ -37,6 +37,12 @@ const Navbar = ({isUpdated}) => {
       link: "/friends",
       icon: <HiOutlineUsers />,
       activeIcon: <HiMiniUsers />,
+    },
+    {
+      text: "Profile",
+      link: `/profile/${username}`,
+      icon: <HiOutlineUser />,
+      activeIcon: <HiUser />,
     },
     {
       text: "Notifications",
@@ -132,7 +138,7 @@ const Navbar = ({isUpdated}) => {
         </div>
       </div>
     </nav>
-    <nav className="h-full sm:hidden grid grid-cols-5 border-line border-2 rounded-3xl backdrop-blur-sm bg-white" >
+    <nav className="h-full sm:hidden grid grid-cols-6 border-line border-t-2 backdrop-blur-sm bg-white" >
       {adminNavs.map((nav, index) => {
         return (
           <NavLink
@@ -150,7 +156,7 @@ const Navbar = ({isUpdated}) => {
               <span className="flex justify-center items-center pb-[2px]">
                 {nav.icon}
               </span>
-              <div className="text-[10px] leading-[1]">{ nav.text}</div>
+              <div className="text-[8px] leading-[1]">{ nav.text}</div>
               {nav.text==="Notifications" && unReadCount>0 && <span className="w-4 h-4 flex justify-center items-center bg-primary text-white absolute top-[8px] right-[calc(50%_-_16px)] rounded-full font-normal text-[10px] border border-line">{unReadCount}</span>}
           </NavLink>
         );

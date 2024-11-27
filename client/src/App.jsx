@@ -16,6 +16,7 @@ import Friends from "./user/Friends";
 import Signup from "./pages/Signup";
 import Layout from "./pages/Layout";
 import { BASE_URL } from "./Constants/constants";
+import Explore from "./user/Explore";
 
 function App({ socket }) {
   const dispatch = useDispatch();
@@ -111,7 +112,14 @@ function App({ socket }) {
                 </Layout>
               }
               path="/profile/:id"
-            />
+            /><Route
+            element={
+              <Layout >
+                <Explore socket={socket} />
+              </Layout>
+            }
+            path="/explore"
+          />
             <Route element={<Navigate to="/" />} path="*" />
           </>
         )}
