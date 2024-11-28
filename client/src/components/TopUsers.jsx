@@ -66,7 +66,7 @@ const TopUsers = () => {
   return (
     <div className=" w-full px-4">
       <div className="w-full sticky top-0 left-0 z-[2] py-2 bg-white">
-        <div className="w-full h-12 bg-backgroundDark rounded-full border border-backgroundDark flex justify-center items-center gap-3 pl-3 pr-2 focus-within:bg-white focus-within:border-primaryBorder ">
+        <div className="w-full h-12 bg-white  rounded-full border border-line flex justify-center items-center gap-3 pl-3 pr-2 focus-within:bg-white focus-within:border-primaryBorder ">
           <GoSearch className="text-2xl group:focus-within text-primary xl:inline hidden" />
           <input
             type="text"
@@ -91,7 +91,7 @@ const TopUsers = () => {
         </div>
       </div>
       {!isSearching && search.length > 0 && searchResults.length > 0 && (
-        <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80">
+        <div className="my-2 w-full bg-white border-line border rounded-3xl  py-4 min-h-80">
           <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">
             {searchResults.length} result{searchResults.length > 1 ? "s" : ""}{" "}
             found {hasMore && "& more"}
@@ -118,7 +118,7 @@ const TopUsers = () => {
         search.length > 0 &&
         searchResults.length === 0 &&
         isSearched && (
-          <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80">
+          <div className="my-2 w-full bg-white border-line border  rounded-3xl  py-4 min-h-80">
             <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">
               {searchResults.length} result{searchResults.length > 1 ? "s" : ""}{" "}
               found {hasMore && "& more"}
@@ -126,11 +126,11 @@ const TopUsers = () => {
           </div>
         )}
       {isSearching && search.length > 0 && (
-        <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-80 flex justify-center items-center">
+        <div className="my-2 w-full bg-white border-line border  rounded-3xl  py-4 min-h-80 flex justify-center items-center">
           <Loader />
         </div>
       )}
-      <div className="my-2 w-full bg-backgroundDark rounded-3xl  py-4 min-h-[394px]   ">
+      <div className="my-2 w-full bg-white border-line border  rounded-3xl  py-4 min-h-[394px]   ">
         {topUsersList?.length !== 0 && (
           <h1 className="text-2xl text-dark1 font-bold px-4 mb-2">
             New Members

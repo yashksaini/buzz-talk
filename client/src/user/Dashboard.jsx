@@ -6,11 +6,12 @@ import { BASE_URL } from "../Constants/constants";
 import TopUsers from "../components/TopUsers";
 import LineProfileCard from "../components/UI/LineProfileCard";
 import NoDataFound from "../components/UI/NoDataFound";
+import CreatePost from "../components/Posts/CreatePost";
 
 const Dashboard = ({ socket }) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const { userId } = useSelector((state) => state.userAuth);
-  const [activeTab, setActiveTab] = useState("active");
+  const [activeTab, setActiveTab] = useState("posts");
 
   useEffect(() => {
     const fetchInitialActiveUsers = async () => {
@@ -35,16 +36,36 @@ const Dashboard = ({ socket }) => {
     <>
       <div className="flex justify-center items-center h-full">
         <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden sm:border-l">
-          <div className="w-full sticky top-0 bg-white z-10">
+          <div className="w-full bg-white z-10">
             <div className="w-full px-4 bg-white min-h-16 flex justify-center items-start flex-col">
               <h1 className="text-2xl font-bold text-dark1 leading-7">
                 Dashboard
               </h1>
               <p className="text-mainText leading-4 flex justify-start items-center gap-1 text-sm">
-                Explore active users list on the platform .
+              Create your own posts, explore content shared by others, and engage with the community.
               </p>
             </div>
-            <div className="grid grid-cols-1 border-b border-line h-14 mt-2 bg-white">
+            <div className="grid grid-cols-3 border-b border-line h-14 mt-2 bg-white">
+            <button
+                onClick={() => {
+                  setActiveTab("posts");
+                }}
+                className={`${
+                  activeTab === "posts" ? "active-tab" : ""
+                } hover:bg-line text-mainText`}
+              >
+                Posts
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("forYou");
+                }}
+                className={`${
+                  activeTab === "forYou" ? "active-tab" : ""
+                } hover:bg-line text-mainText`}
+              >
+                For You
+              </button>
               <button
                 onClick={() => {
                   setActiveTab("active");
@@ -55,9 +76,14 @@ const Dashboard = ({ socket }) => {
               >
                 Active
               </button>
+
             </div>
           </div>
-
+          {activeTab === "posts" && (
+            <div className="mt-2">
+              <CreatePost/>
+            </div>
+          )}
           {activeTab === "active" && (
             <div className="mt-2">
               {activeUsers

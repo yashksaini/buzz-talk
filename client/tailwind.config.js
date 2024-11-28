@@ -5,8 +5,10 @@ export const theme = {
     colors: {
       backgroundDark: "#f4f6f7",
       background: "#fff",
-      primary: "#165DDD",
-      primaryHover: "#1555cc",
+      // primary: "#165DDD",
+      primary: "#1D9BF0",
+      // primaryHover: "#1555cc",
+      primaryHover:"1A8CD8",
       grayText: "#787F8A",
       mainText: "#3B4560",
       dark1: "#0f1419",

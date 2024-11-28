@@ -7,8 +7,9 @@
 :root {
   --backgroundDark: #f4f6f7;
   --background: #fff;
-  --primary: #165ddd;
-  --primaryHover: #1555cc;
+  /* --primary: #165ddd; */
+  --primary: #1D9BF0;
+  --primaryHover: #1A8CD8;
   --grayText: #787f8a;
   --mainText: #3b4560;
   --dark1: #10100e;
