@@ -290,7 +290,7 @@ export const getFriendsList = async (req, res) => {
         _id: friendUser._id,
         username: friendUser.username,
         fullName: friendUser.fullName,
-        imgUrl: friendUser.imgUrl,
+        imgUrl: friendUser.miniImg,
         about: friendUser.about,
       };
     });
@@ -319,7 +319,7 @@ export const getRequestsList = async (req, res) => {
         _id: friend._id,
         username: requestUserData.username,
         fullName: requestUserData.fullName,
-        imgUrl: requestUserData.imgUrl,
+        imgUrl: requestUserData.miniImg,
         about: requestUserData.about,
       };
     });
@@ -348,7 +348,7 @@ export const getSentRequestsList = async (req, res) => {
         _id: friend._id,
         username: requestUserData.username,
         fullName: requestUserData.fullName,
-        imgUrl: requestUserData.imgUrl,
+        imgUrl: requestUserData.miniImg,
         about: requestUserData.about,
       };
     });

@@ -6,6 +6,7 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: true },
   fullName: { type: String, default: "" },
   imgUrl: { type: String, default: "" },
+  miniImg: { type: String, default: "" },
   banner: { type: String, default: "" },
   about: { type: String, default: "" },
   status: { type: String, default: "Available for a chat" },

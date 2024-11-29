@@ -67,7 +67,7 @@ export const getChatsList = async (req, res) => {
     const chats = await Chat.find({ "users.userId": ownerId })
       .populate({
         path: "users.userId",
-        select: "username imgUrl fullName",
+        select: "username miniImg fullName",
       })
       .sort({ updatedAt: -1 })
       .exec();
@@ -108,7 +108,7 @@ export const getChatsList = async (req, res) => {
             friendProfile: {
               userId: otherUser.userId._id,
               username: otherUser.userId.username,
-              imgUrl: otherUser.userId.imgUrl,
+              imgUrl: otherUser.userId.miniImg,
               fullName: otherUser.userId.fullName,
             },
           };
@@ -129,7 +129,7 @@ export const getChatById = async (req, res) => {
     const chat = await Chat.findOne({ chatId })
       .populate({
         path: "users.userId",
-        select: "username imgUrl fullName",
+        select: "username miniImg fullName",
       })
       .exec();
 
@@ -154,7 +154,7 @@ export const getChatById = async (req, res) => {
       friendsProfile: {
         userId: otherUser.userId._id,
         username: otherUser.userId.username,
-        imgUrl: otherUser.userId.imgUrl,
+        imgUrl: otherUser.userId.miniImg,
         fullName: otherUser.userId.fullName,
       },
     };

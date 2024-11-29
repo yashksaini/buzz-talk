@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../Constants/constants";
+import { resizeImage } from "./utils";
 const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const initialData = {
@@ -19,6 +20,7 @@ const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
     profile: user?.imgUrl,
     banner: user?.banner,
     userId: userId,
+    miniImg: user?.miniImg || "",
   };
   const [form, setForm] = useState(initialData);
   const [isCropper, setIsCropper] = useState(false);
@@ -61,8 +63,15 @@ const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
     handleFileInput(e, "Banner", 3);
   };
   // For updating data from cropper to form
-  const updateImage = (type, image) => {
-    setForm({ ...form, [type]: image });
+  const updateImage = async(type, image) => {
+    if(type === "profile") {
+      const miniImg = await resizeImage(image, 36, 36);
+      const profileImg = await resizeImage(image,136,136);
+      setForm({...form, miniImg: miniImg,profile: profileImg });
+    }else if(type === "banner"){
+      const bannerImg = await resizeImage(image,600,200);
+      setForm({...form, banner: bannerImg });
+    }
   };
   const saveProfie = async () => {
     if (form.fullName.trim().length < 4) {

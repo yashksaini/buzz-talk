@@ -38,7 +38,7 @@ export const getUserNameAndImage = async (req, res) => {
     if (user) {
       const userData = {
         fullName: user.fullName,
-        imgUrl: user.imgUrl,
+        imgUrl: user.miniImg,
       };
 
       res.json(userData);
@@ -51,13 +51,13 @@ export const getUserNameAndImage = async (req, res) => {
   }
 };
 export const getAllUsers = async(req, res) => {
-  const { userId } = req.query;
+  // const { userId } = req.query;
   try {
     // Find all users excluding the specified userId
     const allUsers = await User.find()
       .sort({ dateJoined: -1 })
       .limit(20)
-      .select("fullName username _id imgUrl ") // Specify the fields to retrieve
+      .select("fullName username _id miniImg ") // Specify the fields to retrieve
       .lean();
     res.status(200).json(allUsers);
   } catch (error) {
@@ -72,7 +72,7 @@ export const getRecentUsers = async (req, res) => {
     const recentUsers = await User.find({ _id: { $ne: userId } })
       .sort({ dateJoined: -1 })
       .limit(5)
-      .select("fullName username _id imgUrl ") // Specify the fields to retrieve
+      .select("fullName username _id miniImg ") // Specify the fields to retrieve
       .lean();
     res.status(200).json(recentUsers);
   } catch (error) {
@@ -83,10 +83,10 @@ export const getRecentUsers = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { fullName, about, status, profile, banner, userId } = req.body;
+    const { fullName, about, status, profile, banner, userId,miniImg } = req.body;
     await User.findByIdAndUpdate(
       userId,
-      { fullName, about, status, imgUrl: profile, banner },
+      { fullName, about, status, imgUrl: profile, banner,miniImg: miniImg},
       { new: true, upsert: true }
     );
     res
@@ -110,7 +110,7 @@ export const searchUser = async (req, res) => {
         { fullName: { $regex: query, $options: "i" } }, // Case-insensitive search for fullname
       ],
     })
-      .select("_id username fullName imgUrl")
+      .select("_id username fullName miniImg")
       .skip(skip)
       .limit(parseInt(resultsPerPage)); // Adjust the fields you want to return
 

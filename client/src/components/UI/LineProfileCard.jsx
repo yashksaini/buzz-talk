@@ -10,10 +10,10 @@ const LineProfileCard = ({ user }) => {
       className="w-full py-3 px-6 flex justify-start items-center gap-2 hover:bg-line cursor-pointer"
     >
       <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
-        {!user?.imgUrl && <ProfileIcon fullName={user?.fullName} />}
-        {user?.imgUrl && (
+        {!user?.miniImg && <ProfileIcon fullName={user?.fullName} />}
+        {user?.miniImg && (
           <img
-            src={user?.imgUrl}
+            src={user?.miniImg}
             alt="profile"
             className="w-9 h-9 rounded-full"
           />
@@ -34,7 +34,7 @@ LineProfileCard.propTypes = {
     _id: PropTypes.string.isRequired,
     fullName: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
-    imgUrl: PropTypes.string,
+    miniImg: PropTypes.string,
   }).isRequired,
 };
 export default LineProfileCard;
