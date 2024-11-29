@@ -3,10 +3,11 @@ import { axios } from "../../Constants/constants";
 import { useSelector } from "react-redux";
 import ProfileIcon from "../ProfileIcon";
 import Switch from "../mini/Switch";
+import { toast } from "react-toastify";
 
 const CreatePost = () => {
   const { username, userId } = useSelector((state) => state.userAuth);
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const textareaRef = useRef(null);
 
   const handleInput = () => {
@@ -16,6 +17,28 @@ const CreatePost = () => {
       textarea.style.height = `${textarea.scrollHeight}px`; // Set height to fit content
     }
   };
+  const createPost = async()=>{
+    try {
+        if(textareaRef.current.value.trim() === "") {
+            toast.error("Please enter a content");
+            return;
+        }
+      const response = await axios.post("/posts/createPost", {
+        userId,
+        content: textareaRef.current.value,
+        isPublic,
+      });
+      if (response.status === 200) {
+        // Clear the textarea and reset the height
+        textareaRef.current.value = "";
+        textareaRef.current.style.height = "auto";
+      } else {
+        console.error("Error creating post:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
+  }
   const [userData, setUserData] = useState({});
   useEffect(() => {
     const fetchUserData = async () => {
@@ -52,12 +75,12 @@ const CreatePost = () => {
           style={{ resize: "none", overflow: "hidden" }} // Prevent manual resizing
         />
         <div className="flex justify-between items-center">
-          <div className="flex justify-center items-center gap-1">
+          <div className="flex justify-center items-center gap-2">
+          <span className="text-sm text-grayText">Public</span>
             <Switch isChecked={isPublic} setIsChecked={setIsPublic} />
-            <span className="text-sm text-dark2">Public</span>
           </div>
 
-          <button className="self-end px-6 py-2 bg-primary my-2 text-white rounded-full">
+          <button className="self-end px-6 py-2 bg-primary my-2 text-white rounded-full" onClick={createPost}>
             Post
           </button>
         </div>

@@ -183,3 +183,57 @@ export const Notifications = mongoose.model(
   "notifications",
   notificationsSchema
 );
+
+const postSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User, 
+    required: true,
+  },
+  isPublic: {
+    type: Boolean,
+    default: true, 
+  },
+  createdOn: {
+    type: Date,
+    default: Date.now, 
+  },
+  content: {
+    type: String,
+    required: true,
+    trim: true, // Removes whitespace around the content
+  },
+  likes: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: User,
+      },
+      likedOn: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+  comments: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: User,
+      },
+      comment: {
+        type: String,
+        trim: true,
+      },
+      commentedOn: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+});
+
+export const Posts = mongoose.model(
+  "posts",
+  postSchema
+);

@@ -36,6 +36,7 @@ import {
   unBlockUserInChat,
 } from "../controllers/chatsController.js";
 import { deleteAllReadNotifications, deleteNotificationById, getNotificationsOfUser, getUnreadNotificationsOfUser, markAllNotificationsAsRead, markNotificationAsRead } from "../controllers/notificationsController.js";
+import { createPost } from "../controllers/postsController.js";
 
 const router = express.Router();
 
@@ -82,4 +83,7 @@ router.post("/notifications/deleteNotificationById",deleteNotificationById);
 router.post("/notifications/markNotificationAsRead",markNotificationAsRead);
 router.post("/notifications/markAllNotificationsAsRead",markAllNotificationsAsRead);
 router.post("/notifications/deleteAllReadNotifications",deleteAllReadNotifications);
+
+// Posts Routes
+router.post("/posts/createPost",createPost);
 export default router;
