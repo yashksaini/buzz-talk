@@ -7,6 +7,7 @@ import TopUsers from "../components/TopUsers";
 import LineProfileCard from "../components/UI/LineProfileCard";
 import NoDataFound from "../components/UI/NoDataFound";
 import CreatePost from "../components/Posts/CreatePost";
+import PublicPosts from "../components/PublicPosts";
 
 const Dashboard = ({ socket }) => {
   const [activeUsers, setActiveUsers] = useState([]);
@@ -82,6 +83,7 @@ const Dashboard = ({ socket }) => {
           {activeTab === "posts" && (
             <div className="mt-2">
               <CreatePost/>
+              <PublicPosts/>
             </div>
           )}
           {activeTab === "active" && (
