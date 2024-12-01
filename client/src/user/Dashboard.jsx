@@ -38,12 +38,12 @@ const Dashboard = ({ socket }) => {
       <div className="flex justify-center items-center h-full">
         <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden sm:border-l">
           <div className="w-full bg-white z-10">
-            <div className="w-full px-4 bg-white min-h-16 flex justify-center items-start flex-col">
+            <div className="w-full px-4 bg-white pt-3 flex justify-center items-start flex-col">
               <h1 className="text-2xl font-bold text-dark1 leading-7">
                 Dashboard
               </h1>
-              <p className="text-mainText leading-4 flex justify-start items-center gap-1 text-sm">
-              Create your own posts, explore content shared by others, and engage with the community.
+              <p className="text-grayText leading-4 flex justify-start items-center gap-1 text-sm">
+              Create your own posts, explore content, and engage .
               </p>
             </div>
             <div className="grid grid-cols-3 border-b border-line h-14 mt-2 bg-white">
