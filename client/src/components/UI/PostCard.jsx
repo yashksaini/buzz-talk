@@ -4,10 +4,13 @@ import ProfileIcon from "../ProfileIcon";
 import { Fragment, useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { BsChat } from "react-icons/bs";
+import { axios } from "../../Constants/constants";
+import { useSelector } from "react-redux";
 // import { useEffect, useRef, useState } from "react";
 // import { BiUser } from "react-icons/bi";
 const PostCard = ({ user, post }) => {
   //   const navigate = useNavigate();
+  const {userId} = useSelector(state=> state.userAuth);
   const [liked, setLiked] = useState(post?.isLikedByUser || false);
   const [likeCount, setLikeCount] = useState(post?.likeCount || 0);
   const formatWithLineBreaks = (input) => {
@@ -18,11 +21,16 @@ const PostCard = ({ user, post }) => {
       </Fragment>
     ));
   };
-  const toggleLike = (e) => {
+  const toggleLike = async(e) => {
     e.stopPropagation();
     setLiked((prevLiked) => !prevLiked);
     setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
     // Optional: Call an API to store like status or update global state
+    const response = await axios.post('/posts/toggleLike',{
+      postId: post._id,
+      userId: userId,
+    });
+    console.log(response);
   };
   return (
     <div

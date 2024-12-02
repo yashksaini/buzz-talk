@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Posts } from "../schemas/schemas.js";
 
 export const createPost = async (req, res) => {
@@ -30,51 +31,47 @@ export const createPost = async (req, res) => {
 
 export const getAllPublicPosts = async (req, res) => {
   try {
-    const { page = 1,loggedInUserId } = req.query;
+    const { page = 1, loggedInUserId } = req.query;
     const limit = 5; // Number of posts per page
     const skip = (page - 1) * limit;
+    const userObjectId = new mongoose.Types.ObjectId(loggedInUserId);
 
-    // Find public posts with pagination and populate user details
-    // const publicPosts = await Posts.find({ isPublic: true })
-    //   .sort({ createdOn: -1 }) // Sort by newest first
-    //   .skip(skip) // Skip posts based on the current page
-    //   .limit(limit) // Limit the number of posts to 5
-    //   .populate("userId", "username miniImg fullName");
-      
-      const publicPosts = await Posts.aggregate([
-        { $match: { isPublic: true } }, // Filter public posts
-        { $sort: { createdOn: -1 } }, // Sort by newest first
-        { $skip: skip }, // Skip based on pagination
-        { $limit: limit }, // Limit results
-        {
-          $lookup: {
-            from: "users", // Reference the Users collection
-            localField: "userId",
-            foreignField: "_id",
-            as: "user",
-          },
+    const publicPosts = await Posts.aggregate([
+      { $match: { isPublic: true } }, // Filter public posts
+      { $sort: { createdOn: -1 } }, // Sort by newest first
+      { $skip: skip }, // Skip based on pagination
+      { $limit: limit }, // Limit results
+      {
+        $lookup: {
+          from: "users", // Reference the Users collection
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
         },
-        { $unwind: "$user" }, // Unwind the user details
-        {
-          $addFields: {
-            likeCount: { $size: "$likes" }, // Count the number of likes
-            commentCount: { $size: "$comments" }, // Count the number of comments
-            isLikedByUser: { $in: [loggedInUserId, "$likes"] }, // Check if the user has liked the post
-          },
+      },
+      { $unwind: "$user" }, // Unwind the user details
+      {
+        $addFields: {
+          likeCount: { $size: "$likes" }, // Count the number of likes
+          commentCount: { $size: "$comments" }, // Count the number of comments
+          isLikedByUser: {
+            $in: [userObjectId, { $map: { input: "$likes", as: "like", in: "$$like.userId" } }],
+          }, 
         },
-        {
-          $project: {
-            content: 1,
-            createdOn: 1,
-            "user.username": 1,
-            "user.miniImg": 1,
-            "user.fullName": 1,
-            likeCount: 1,
-            commentCount: 1,
-            isLikedByUser: 1,
-          },
+      },
+      {
+        $project: {
+          content: 1,
+          createdOn: 1,
+          "user.username": 1,
+          "user.miniImg": 1,
+          "user.fullName": 1,
+          likeCount: 1,
+          commentCount: 1,
+          isLikedByUser: 1,
         },
-      ]);
+      },
+    ]);
 
     // Get the total count of public posts
     const totalPosts = await Posts.countDocuments({ isPublic: true });
@@ -89,5 +86,39 @@ export const getAllPublicPosts = async (req, res) => {
   } catch (error) {
     console.error("Error fetching public posts:", error);
     res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const toggleLike = async (req, res) => {
+  const { postId,userId } = req.body; // Get post ID from URL params
+  console.log({ postId, userId });
+  try {
+    // Find the post
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+    const post = await Posts.findById(postObjectId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if the user already liked the post
+    const likeIndex = post.likes.findIndex((like) => like.userId.toString() === userId);
+
+    if (likeIndex > -1) {
+      // User already liked the post, so remove the like
+      post.likes.splice(likeIndex, 1);
+    } else {
+      // Add a new like with userId and likedOn
+      post.likes.push({ userId, likedOn: new Date() });
+    }
+
+    // Save the updated post
+    await post.save();
+
+    // Send response
+    res.status(200).json({
+      message: likeIndex > -1 ? "Like removed" : "Like added",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong", error: error.message });
   }
 };
