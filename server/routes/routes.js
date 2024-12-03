@@ -35,8 +35,20 @@ import {
   markMessagesAsRead,
   unBlockUserInChat,
 } from "../controllers/chatsController.js";
-import { deleteAllReadNotifications, deleteNotificationById, getNotificationsOfUser, getUnreadNotificationsOfUser, markAllNotificationsAsRead, markNotificationAsRead } from "../controllers/notificationsController.js";
-import { createPost, getAllPublicPosts, toggleLike } from "../controllers/postsController.js";
+import {
+  deleteAllReadNotifications,
+  deleteNotificationById,
+  getNotificationsOfUser,
+  getUnreadNotificationsOfUser,
+  markAllNotificationsAsRead,
+  markNotificationAsRead,
+} from "../controllers/notificationsController.js";
+import {
+  createPost,
+  getAllPublicPosts,
+  getPostById,
+  toggleLike,
+} from "../controllers/postsController.js";
 
 const router = express.Router();
 
@@ -48,7 +60,7 @@ router.post("/login", login);
 
 // User Profile Routes
 router.get("/user/:username", getUserProfile);
-router.get("/userImage/:username",getUserNameAndImage)
+router.get("/userImage/:username", getUserNameAndImage);
 router.get("/users/recent-users", getRecentUsers);
 router.get("/users/all-users", getAllUsers);
 router.post("/update-profile", updateProfile);
@@ -64,7 +76,7 @@ router.post("/friends/reject-request", rejectRequest);
 router.get("/friends/getFriendsList", getFriendsList);
 router.get("/friends/getRequestsList", getRequestsList);
 router.get("/friends/getSentRequestsList", getSentRequestsList);
-router.get("/friends/getAllFriendsStatus",getAllFriendsStatus);
+router.get("/friends/getAllFriendsStatus", getAllFriendsStatus);
 
 //Chats Routes
 router.post("/chat/create-new", createNewChat);
@@ -73,19 +85,29 @@ router.get("/chat/getChatData", getChatById);
 router.post("/chat/sendMessage", addMessage);
 router.get("/chat/getChatMessages", getChatMessages);
 router.post("/chat/markMessagesAsRead", markMessagesAsRead);
-router.post("/chat/blockUser",blockUserInChat);
-router.post("/chat/unBlockUser",unBlockUserInChat);
+router.post("/chat/blockUser", blockUserInChat);
+router.post("/chat/unBlockUser", unBlockUserInChat);
 
 // Notifications Routes
 router.get("/notifications/getNotificationsOfUser", getNotificationsOfUser);
-router.get("/notifications/getUnreadNotificationsOfUser", getUnreadNotificationsOfUser);
-router.post("/notifications/deleteNotificationById",deleteNotificationById);
-router.post("/notifications/markNotificationAsRead",markNotificationAsRead);
-router.post("/notifications/markAllNotificationsAsRead",markAllNotificationsAsRead);
-router.post("/notifications/deleteAllReadNotifications",deleteAllReadNotifications);
+router.get(
+  "/notifications/getUnreadNotificationsOfUser",
+  getUnreadNotificationsOfUser
+);
+router.post("/notifications/deleteNotificationById", deleteNotificationById);
+router.post("/notifications/markNotificationAsRead", markNotificationAsRead);
+router.post(
+  "/notifications/markAllNotificationsAsRead",
+  markAllNotificationsAsRead
+);
+router.post(
+  "/notifications/deleteAllReadNotifications",
+  deleteAllReadNotifications
+);
 
 // Posts Routes
-router.post("/posts/createPost",createPost);
-router.get("/posts/publicPosts",getAllPublicPosts);
-router.post("/posts/toggleLike",toggleLike);
+router.post("/posts/createPost", createPost);
+router.get("/posts/publicPosts", getAllPublicPosts);
+router.post("/posts/toggleLike", toggleLike);
+router.get("/posts/getPostById", getPostById);
 export default router;

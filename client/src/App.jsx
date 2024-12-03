@@ -17,11 +17,12 @@ import Signup from "./pages/Signup";
 import Layout from "./pages/Layout";
 import { BASE_URL } from "./Constants/constants";
 import Explore from "./user/Explore";
+import Post from "./user/Post";
 
 function App({ socket }) {
   const dispatch = useDispatch();
   const { isAuth } = useSelector((state) => state.userAuth);
-  const [isUpdated,setIsUpdated] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   axios.defaults.withCredentials = true;
   const getAuth = async () => {
@@ -83,7 +84,7 @@ function App({ socket }) {
             />
             <Route
               element={
-                <Layout >
+                <Layout>
                   <MyChats socket={socket} />
                 </Layout>
               }
@@ -108,18 +109,27 @@ function App({ socket }) {
             <Route
               element={
                 <Layout isUpdated={isUpdated}>
-                  <Profile socket={socket} setIsUpdated={setIsUpdated}/>
+                  <Profile socket={socket} setIsUpdated={setIsUpdated} />
                 </Layout>
               }
               path="/profile/:id"
-            /><Route
-            element={
-              <Layout >
-                <Explore socket={socket} />
-              </Layout>
-            }
-            path="/explore"
-          />
+            />
+            <Route
+              element={
+                <Layout>
+                  <Explore socket={socket} />
+                </Layout>
+              }
+              path="/explore"
+            />
+            <Route
+              element={
+                <Layout>
+                  <Post socket={socket} />
+                </Layout>
+              }
+              path="/post/:id"
+            />
             <Route element={<Navigate to="/" />} path="*" />
           </>
         )}

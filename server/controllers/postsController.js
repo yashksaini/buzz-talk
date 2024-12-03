@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Posts } from "../schemas/schemas.js";
+import { Friend, Posts } from "../schemas/schemas.js";
 
 export const createPost = async (req, res) => {
   try {
@@ -55,8 +55,11 @@ export const getAllPublicPosts = async (req, res) => {
           likeCount: { $size: "$likes" }, // Count the number of likes
           commentCount: { $size: "$comments" }, // Count the number of comments
           isLikedByUser: {
-            $in: [userObjectId, { $map: { input: "$likes", as: "like", in: "$$like.userId" } }],
-          }, 
+            $in: [
+              userObjectId,
+              { $map: { input: "$likes", as: "like", in: "$$like.userId" } },
+            ],
+          },
         },
       },
       {
@@ -90,8 +93,7 @@ export const getAllPublicPosts = async (req, res) => {
 };
 
 export const toggleLike = async (req, res) => {
-  const { postId,userId } = req.body; // Get post ID from URL params
-  console.log({ postId, userId });
+  const { postId, userId } = req.body; // Get post ID from URL params
   try {
     // Find the post
     const postObjectId = new mongoose.Types.ObjectId(postId);
@@ -101,7 +103,9 @@ export const toggleLike = async (req, res) => {
     }
 
     // Check if the user already liked the post
-    const likeIndex = post.likes.findIndex((like) => like.userId.toString() === userId);
+    const likeIndex = post.likes.findIndex(
+      (like) => like.userId.toString() === userId
+    );
 
     if (likeIndex > -1) {
       // User already liked the post, so remove the like
@@ -119,6 +123,51 @@ export const toggleLike = async (req, res) => {
       message: likeIndex > -1 ? "Like removed" : "Like added",
     });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Something went wrong", error: error.message });
+  }
+};
+
+export const getPostById = async (req, res) => {
+  const { postId, userId } = req.query;
+
+  try {
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+
+    // Fetch the post
+    const post = await Posts.findById(postObjectId).populate({
+      path: "userId", // The field in Posts that references the Users collection
+      select: "username miniImg fullName", // Specify the fields to extract
+    });
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // If the requester is the owner, send the post data directly
+    if (post.userId.equals(userObjectId)) {
+      return res.status(200).json({ post, message: "Post found" });
+    }
+
+    // If the post is private, check the friendship status
+    if (!post.isPublic) {
+      const isFriend = await Friend.exists({
+        $or: [
+          { sender: userObjectId, receiver: post.userId, status: "accepted" },
+          { sender: post.userId, receiver: userObjectId, status: "accepted" },
+        ],
+      });
+
+      if (!isFriend) {
+        return res.status(200).json({ message: "Access denied", post: {} });
+      }
+    }
+
+    // If public or friend, send the post data
+    res.status(200).json({ post, message: "Post found" });
+  } catch (error) {
+    console.error("Error getting post by id:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
