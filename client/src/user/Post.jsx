@@ -59,7 +59,7 @@ const Post = () => {
     <>
       <div className="flex justify-center items-center h-full">
         <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden sm:border-l">
-          <div className="sticky top-0 left-0 h-12 gap-3 px-3 bg-white z-10 flex justify-start items-center border-b border-line">
+          <div className="sticky top-0 left-0 h-12 gap-3 px-3 bg-white/80 backdrop-blur-sm z-10 flex justify-start items-center border-b border-line">
             <button
               onClick={() => {
                 navigate("/");
@@ -72,7 +72,7 @@ const Post = () => {
           </div>
           <div
             key={postData?.userId?.username}
-            className={`w-full py-3 px-6 flex justify-start items-start gap-2 border-b border-line `}
+            className={`w-full py-3 px-6 flex justify-start items-start gap-2 `}
           >
             <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
               {!postData?.userId?.miniImg && (
@@ -103,25 +103,27 @@ const Post = () => {
                   </p>
                 </div>
               </div>
-              <p className="text-dark2 mt-1 text-xl font-light">
-                {formatWithLineBreaks(postData?.content || "")}
-              </p>
             </div>
           </div>
           <div className="px-6 border-b border-line py-3">
-            <span className="ml-2 text-dark2 text-xl">
+            <p className="text-dark2 mt-1 text-xl font-light">
+              {formatWithLineBreaks(postData?.content || "")}
+            </p>
+          </div>
+          <div className="px-6 border-b border-line py-3">
+            <span className="text-dark2 text-base">
               {postData?.createdOn
                 ? new Date(postData?.createdOn).toLocaleDateString("en-US", {
+                    hour: "numeric",
+                    minute: "numeric",
                     day: "numeric",
                     month: "short",
                     year: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
                   })
                 : ""}
             </span>
           </div>
-          <div className="flex justify-start items-center gap-2 mt-1 mb-2 select-none px-6 border-b border-line pb-2">
+          <div className="flex justify-start items-center gap-2 mb-2 select-none px-6 border-b border-line py-2">
             <div
               className={`flex justify-center items-center gap-1 group hover:text-pink cursor-pointer  ${
                 liked ? "text-pink" : "text-dark1"
