@@ -8,6 +8,7 @@ import LineProfileCard from "../components/UI/LineProfileCard";
 import NoDataFound from "../components/UI/NoDataFound";
 import CreatePost from "../components/Posts/CreatePost";
 import PublicPosts from "../components/PublicPosts";
+import FriendsPosts from "../components/FriendsPosts";
 
 const Dashboard = ({ socket }) => {
   const [activeUsers, setActiveUsers] = useState([]);
@@ -26,7 +27,6 @@ const Dashboard = ({ socket }) => {
     fetchInitialActiveUsers();
   }, [userId]);
 
-
   useEffect(() => {
     socket.on("activeUsers", (data) => {
       setActiveUsers(data);
@@ -43,11 +43,11 @@ const Dashboard = ({ socket }) => {
                 Dashboard
               </h1>
               <p className="text-grayText leading-4 flex justify-start items-center gap-1 text-sm">
-              Create your own posts, explore content, and engage .
+                Create your own posts, explore content, and engage .
               </p>
             </div>
             <div className="grid grid-cols-3 border-b border-line h-14 mt-2 bg-white">
-            <button
+              <button
                 onClick={() => {
                   setActiveTab("posts");
                 }}
@@ -77,13 +77,17 @@ const Dashboard = ({ socket }) => {
               >
                 Active
               </button>
-
             </div>
           </div>
           {activeTab === "posts" && (
             <div className="mt-2">
-              <CreatePost/>
-              <PublicPosts/>
+              <CreatePost />
+              <PublicPosts />
+            </div>
+          )}
+          {activeTab === "forYou" && (
+            <div className="mt-2">
+              <FriendsPosts />
             </div>
           )}
           {activeTab === "active" && (

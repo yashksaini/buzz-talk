@@ -220,3 +220,85 @@ export const addComment = async (req, res) => {
       .json({ message: "Something went wrong", error: error.message });
   }
 };
+export const getAllFriendsPosts = async (req, res) => {
+  try {
+    const { page = 1, loggedInUserId } = req.query;
+    const limit = 5; // Number of posts per page
+    const skip = (page - 1) * limit;
+    const userObjectId = new mongoose.Types.ObjectId(loggedInUserId);
+
+    // Get the friend list (users with whom the logged-in user is friends)
+    const friends = await Friend.aggregate([
+      {
+        $match: {
+          $or: [
+            { sender: userObjectId, status: "accepted" },
+            { receiver: userObjectId, status: "accepted" },
+          ],
+        },
+      },
+      {
+        $project: {
+          friendId: {
+            $cond: [{ $eq: ["$sender", userObjectId] }, "$receiver", "$sender"],
+          },
+        },
+      },
+    ]).then((results) => results.map((doc) => doc.friendId));
+
+    // Fetch posts from friends, both public and private
+    const friendsPosts = await Posts.aggregate([
+      { $match: { userId: { $in: friends } } }, // Filter posts by friends
+      { $sort: { createdOn: -1 } }, // Sort by newest first
+      { $skip: skip }, // Skip based on pagination
+      { $limit: limit }, // Limit results
+      {
+        $lookup: {
+          from: "users", // Reference the Users collection
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" }, // Unwind the user details
+      {
+        $addFields: {
+          likeCount: { $size: "$likes" }, // Count the number of likes
+          commentCount: { $size: "$comments" }, // Count the number of comments
+          isLikedByUser: {
+            $in: [
+              userObjectId,
+              { $map: { input: "$likes", as: "like", in: "$$like.userId" } },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          content: 1,
+          createdOn: 1,
+          "user.username": 1,
+          "user.miniImg": 1,
+          "user.fullName": 1,
+          likeCount: 1,
+          commentCount: 1,
+          isLikedByUser: 1,
+        },
+      },
+    ]);
+
+    // Get the total count of posts from friends
+    const totalPosts = await Posts.countDocuments({ userId: { $in: friends } });
+
+    res.status(200).json({
+      message: "Friend posts fetched successfully.",
+      posts: friendsPosts,
+      totalPosts,
+      totalPages: Math.ceil(totalPosts / limit),
+      currentPage: parseInt(page),
+    });
+  } catch (error) {
+    console.error("Error fetching friend posts:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};

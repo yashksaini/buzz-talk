@@ -158,7 +158,7 @@ const Comments = ({ comments, setRefresh }) => {
             </div>
           ))}
         {comments?.length === 0 && (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center py-4">
             <NoDataFound
               title="No Comments Yet"
               desc="Be the first to share your thoughts on this post."

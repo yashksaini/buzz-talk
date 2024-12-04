@@ -198,9 +198,22 @@ const Post = () => {
             </div>
           )}
           {loading && (
-            <div className="w-full flex justify-center items-end py-4">
-              <Loader />
-            </div>
+            <>
+              <div className="sticky top-0 left-0 h-12 gap-3 px-3 bg-white/80 backdrop-blur-sm z-10 flex justify-start items-center border-b border-line">
+                <button
+                  onClick={() => {
+                    navigate("/");
+                  }}
+                  className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-line transition-all"
+                >
+                  <IoMdArrowBack className="text-2xl" />
+                </button>
+                <h1 className="font-bold text-[20px] ">Post </h1>
+              </div>
+              <div className="w-full flex justify-center items-end py-4">
+                <Loader />
+              </div>
+            </>
           )}
         </div>
 

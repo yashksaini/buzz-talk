@@ -46,6 +46,7 @@ import {
 import {
   addComment,
   createPost,
+  getAllFriendsPosts,
   getAllPublicPosts,
   getPostById,
   toggleLike,
@@ -112,4 +113,5 @@ router.get("/posts/publicPosts", getAllPublicPosts);
 router.post("/posts/toggleLike", toggleLike);
 router.get("/posts/getPostById", getPostById);
 router.post("/posts/addComment", addComment);
+router.get("/posts/friendsPosts", getAllFriendsPosts);
 export default router;
