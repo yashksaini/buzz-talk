@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ProfileIcon from "../ProfileIcon";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { BsChat } from "react-icons/bs";
 import { axios } from "../../Constants/constants";
@@ -13,14 +13,6 @@ const PostCard = ({ user, post }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [liked, setLiked] = useState(post?.isLikedByUser || false);
   const [likeCount, setLikeCount] = useState(post?.likeCount || 0);
-  const formatWithLineBreaks = (input) => {
-    return input?.split("\n").map((line, index) => (
-      <Fragment key={index}>
-        {line}
-        <br />
-      </Fragment>
-    ));
-  };
   const toggleLike = async (e) => {
     e.stopPropagation();
     setLiked((prevLiked) => !prevLiked);

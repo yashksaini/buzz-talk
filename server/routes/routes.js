@@ -44,6 +44,7 @@ import {
   markNotificationAsRead,
 } from "../controllers/notificationsController.js";
 import {
+  addComment,
   createPost,
   getAllPublicPosts,
   getPostById,
@@ -110,4 +111,5 @@ router.post("/posts/createPost", createPost);
 router.get("/posts/publicPosts", getAllPublicPosts);
 router.post("/posts/toggleLike", toggleLike);
 router.get("/posts/getPostById", getPostById);
+router.post("/posts/addComment", addComment);
 export default router;

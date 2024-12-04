@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { axios } from "../Constants/constants";
 import { useNavigate } from "react-router-dom";
 
-const NewChatModal = ({ setIsNewChatModal,fetchChats }) => {
+const NewChatModal = ({ setIsNewChatModal, fetchChats }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
   const [selectedFriendId, setSelectedFriendId] = useState(null);
@@ -70,7 +70,7 @@ const NewChatModal = ({ setIsNewChatModal,fetchChats }) => {
   }, [selectedFriendId]);
   return (
     <>
-      <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-20 md:p-8 p-2 flex justify-center items-center">
+      <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-[100] md:p-8 p-2 flex justify-center items-center">
         <div className="max-w-full w-[600px] bg-white rounded-xl h-[650px] max-h-full overflow-hidden ">
           <div className="w-full h-[650px] max-h-full overflow-x-hidden overflow-y-auto">
             <div className="flex justify-between items-center h-14 w-full sticky top-0 left-0 bg-white  z-50 px-3">
@@ -112,23 +112,32 @@ const NewChatModal = ({ setIsNewChatModal,fetchChats }) => {
                   </div>
                 )}
                 {!loading &&
-                  friendsList?.filter((friend)=>{
-                    return friend.fullName.toLowerCase().includes(search.toLowerCase()) || friend.username.toLowerCase().includes(search.toLowerCase());
-                  })?.map((friend, index) => {
-                    return (
-                      <FriendsChatCard
-                        user={{
-                          _id: friend._id,
-                          fullName: friend.fullName,
-                          username: friend.username,
-                          imgUrl: friend.imgUrl,
-                        }}
-                        selectedFriendId={selectedFriendId}
-                        key={index}
-                        setSelectedFriendId={setSelectedFriendId}
-                      />
-                    );
-                  })}
+                  friendsList
+                    ?.filter((friend) => {
+                      return (
+                        friend.fullName
+                          .toLowerCase()
+                          .includes(search.toLowerCase()) ||
+                        friend.username
+                          .toLowerCase()
+                          .includes(search.toLowerCase())
+                      );
+                    })
+                    ?.map((friend, index) => {
+                      return (
+                        <FriendsChatCard
+                          user={{
+                            _id: friend._id,
+                            fullName: friend.fullName,
+                            username: friend.username,
+                            imgUrl: friend.imgUrl,
+                          }}
+                          selectedFriendId={selectedFriendId}
+                          key={index}
+                          setSelectedFriendId={setSelectedFriendId}
+                        />
+                      );
+                    })}
                 {!loading && friendsList.length === 0 && (
                   <NoDataFound
                     title="No Friends"

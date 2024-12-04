@@ -137,12 +137,33 @@ export const getPostById = async (req, res) => {
     const postObjectId = new mongoose.Types.ObjectId(postId);
 
     // Fetch the post
-    const post = await Posts.findById(postObjectId).populate({
-      path: "userId", // The field in Posts that references the Users collection
-      select: "username miniImg fullName", // Specify the fields to extract
-    });
+    const post = await Posts.findById(postObjectId)
+      .populate({
+        path: "userId", // The field in Posts that references the Users collection
+        select: "username miniImg fullName", // Specify the fields to extract
+      })
+      .populate({
+        path: "likes.userId", // Populate the userId in likes
+        select: "username miniImg fullName", // Select user data for likes
+      })
+      .populate({
+        path: "comments.userId", // Populate the userId in comments
+        select: "username miniImg fullName", // Select user data for comments
+      });
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
+    }
+    // Order likes and comments in descending order
+    if (post.likes) {
+      post.likes = post.likes.sort(
+        (a, b) => new Date(b.likedOn) - new Date(a.likedOn)
+      );
+    }
+
+    if (post.comments) {
+      post.comments = post.comments.sort(
+        (a, b) => new Date(b.commentedOn) - new Date(a.commentedOn)
+      );
     }
 
     // If the requester is the owner, send the post data directly
@@ -160,7 +181,7 @@ export const getPostById = async (req, res) => {
       });
 
       if (!isFriend) {
-        return res.status(200).json({ message: "Access denied", post: {} });
+        return res.status(200).json({ message: "Access denied", post: null });
       }
     }
 
@@ -169,5 +190,33 @@ export const getPostById = async (req, res) => {
   } catch (error) {
     console.error("Error getting post by id:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const addComment = async (req, res) => {
+  const { postId, userId, content } = req.body; // Get post ID from URL params
+  try {
+    // Find the post
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+    const post = await Posts.findById(postObjectId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    post.comments.push({
+      comment: content,
+      commentedOn: new Date(),
+      userId,
+    });
+
+    // Save the updated post
+    await post.save();
+
+    // Send response
+    res.status(200).json({
+      message: "comment added successfully",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Something went wrong", error: error.message });
   }
 };
