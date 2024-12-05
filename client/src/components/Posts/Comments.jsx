@@ -98,8 +98,8 @@ const Comments = ({ comments, setRefresh }) => {
       </div>
       <div className="w-full mb-4">
         {comments?.length > 0 && (
-          <div className="w-full flex justify-center items-center py-3 bg-transPrimary text-primary mb-4 border-b border-line">
-            {comments?.length} Comments
+          <div className="w-full flex justify-center items-center py-3 bg-backgroundDark text-primary mb-4 border-b border-line">
+            {comments?.length} Comment{comments?.length > 1 && "s"}
           </div>
         )}
         {comments?.length > 0 &&

@@ -162,7 +162,7 @@ const Post = () => {
                     {likeCount}
                   </span>
                 </div>
-                <div className="flex justify-center items-center gap-1 group hover:text-primary cursor-pointer text-dark1">
+                <div className="flex justify-center items-center gap-1 group text-primary cursor-pointer ">
                   <span className="flex justify-center items-center w-9 h-9 rounded-full group-hover:bg-transPrimary ">
                     <BsChat />
                   </span>
