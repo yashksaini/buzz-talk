@@ -4,7 +4,8 @@ import PostCard from "./UI/PostCard";
 import { useSelector } from "react-redux";
 import Loader from "./UI/Loader";
 
-const PublicPosts = () => {
+// eslint-disable-next-line react/prop-types
+const PublicPosts = ({ refresh }) => {
   const [page, setPage] = useState(1);
   const [posts, setPosts] = useState([]);
   const { userId } = useSelector((state) => state.userAuth);
@@ -23,7 +24,7 @@ const PublicPosts = () => {
         });
         if (response.status === 200) {
           const postsList = response?.data?.posts || [];
-          setPosts((prev) => [...prev, ...postsList]);
+          setPosts(postsList);
           setTotalPages(response.data.totalPages);
           setPage(response.data.currentPage);
           setLoading(false);
@@ -35,10 +36,9 @@ const PublicPosts = () => {
     };
     getPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userId, refresh]);
   const fetchNextPage = async () => {
     setIsMoreLoading(true);
-    console.log("CLICKED", page, totalPages);
     try {
       const response = await axios.get("/posts/publicPosts", {
         params: {
@@ -65,18 +65,17 @@ const PublicPosts = () => {
         })}
       {!loading && page < totalPages && !isMoreLoading && (
         <div
-          className="flex justify-center items-center w-full py-4 text-primary bg-backgroundDark cursor-pointer"
+          className="flex justify-center items-center w-full py-4 text-primary bg-transPrimary cursor-pointer"
           onClick={fetchNextPage}
         >
           Load More
         </div>
       )}
-      {loading ||
-        (isMoreLoading && (
-          <div className="flex justify-center items-center my-4">
-            <Loader />
-          </div>
-        ))}
+      {(loading || isMoreLoading) && (
+        <div className="flex justify-center items-center my-4">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 };

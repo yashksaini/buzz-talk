@@ -14,6 +14,7 @@ const Dashboard = ({ socket }) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const { userId } = useSelector((state) => state.userAuth);
   const [activeTab, setActiveTab] = useState("posts");
+  const [refresh, setRefresh] = useState(true);
 
   useEffect(() => {
     const fetchInitialActiveUsers = async () => {
@@ -81,8 +82,8 @@ const Dashboard = ({ socket }) => {
           </div>
           {activeTab === "posts" && (
             <div className="mt-2">
-              <CreatePost />
-              <PublicPosts />
+              <CreatePost setRefresh={setRefresh} />
+              <PublicPosts refresh={refresh} />
             </div>
           )}
           {activeTab === "forYou" && (

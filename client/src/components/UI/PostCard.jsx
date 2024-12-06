@@ -17,12 +17,10 @@ const PostCard = ({ user, post }) => {
     e.stopPropagation();
     setLiked((prevLiked) => !prevLiked);
     setLikeCount((prevCount) => (liked ? prevCount - 1 : prevCount + 1));
-    // Optional: Call an API to store like status or update global state
-    const response = await axios.post("/posts/toggleLike", {
+    await axios.post("/posts/toggleLike", {
       postId: post._id,
       userId: userId,
     });
-    console.log(response);
   };
   return (
     <div

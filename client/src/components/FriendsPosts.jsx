@@ -10,6 +10,8 @@ const FriendsPosts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { userId } = useSelector((state) => state.userAuth);
+  const [isMoreLoading, setIsMoreLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
   useEffect(() => {
     const getPosts = async () => {
       setLoading(true);
@@ -21,13 +23,35 @@ const FriendsPosts = () => {
       });
       if (response.status === 200) {
         const postsList = response?.data?.posts || [];
-        console.log(postsList);
         setPosts((prev) => [...prev, ...postsList]);
+        setTotalPages(response.data.totalPages);
+        setPage(response.data.currentPage);
         setLoading(false);
       }
     };
     getPosts();
-  }, [page, userId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+  const fetchNextPage = async () => {
+    setIsMoreLoading(true);
+    try {
+      const response = await axios.get("/posts/friendsPosts", {
+        params: {
+          page: page + 1,
+          loggedInUserId: userId,
+        },
+      });
+      if (response.status === 200) {
+        const postsList = response?.data?.posts || [];
+        setPosts((prev) => [...prev, ...postsList]);
+        setPage(response.data.currentPage);
+        setIsMoreLoading(false);
+      }
+    } catch (error) {
+      console.error("Error fetching more public posts:", error);
+      setIsMoreLoading(false);
+    }
+  };
   return (
     <div>
       {!loading &&
@@ -42,7 +66,15 @@ const FriendsPosts = () => {
           />
         </div>
       )}
-      {loading && (
+      {!loading && page < totalPages && !isMoreLoading && (
+        <div
+          className="flex justify-center items-center w-full py-4 text-primary bg-backgroundDark cursor-pointer"
+          onClick={fetchNextPage}
+        >
+          Load More
+        </div>
+      )}
+      {(loading || isMoreLoading) && (
         <div className="flex justify-center items-center my-4">
           <Loader />
         </div>
