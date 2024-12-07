@@ -31,7 +31,13 @@ const PostCard = ({ user, post }) => {
         navigate(`/post/${post._id}`);
       }}
     >
-      <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
+      <div
+        className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary"
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate("/profile/" + user?.username);
+        }}
+      >
         {!user?.miniImg && <ProfileIcon fullName={user?.fullName} />}
         {user?.miniImg && (
           <img

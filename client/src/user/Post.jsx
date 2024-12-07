@@ -10,6 +10,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import Comments from "../components/Posts/Comments";
 import Loader from "../components/UI/Loader";
 import NoDataFound from "../components/UI/NoDataFound";
+import LikesList from "../components/Posts/LikesList";
 
 const Post = () => {
   const [postData, setPostData] = useState({});
@@ -20,6 +21,7 @@ const Post = () => {
   const [refresh, setRefresh] = useState(true);
   const [postExists, setPostExists] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showLikes, setShowLikes] = useState(false);
   const isLikedByUser = (post) => {
     const isLiked = post?.likes?.some((like) => like?.userId?._id === userId);
     setLikeCount(post?.likes?.length);
@@ -170,6 +172,13 @@ const Post = () => {
                     {postData?.comments?.length || 0}
                   </span>
                 </div>
+                <div
+                  onClick={() => {
+                    setShowLikes(true);
+                  }}
+                >
+                  Liked By
+                </div>
               </div>
               <Comments comments={postData?.comments} setRefresh={setRefresh} />
             </>
@@ -221,6 +230,9 @@ const Post = () => {
           <TopUsers />
         </div>
       </div>
+      {showLikes && (
+        <LikesList likes={postData.likes} setShowLikes={setShowLikes} />
+      )}
     </>
   );
 };
