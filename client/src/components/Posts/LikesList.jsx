@@ -37,7 +37,7 @@ const LikesList = ({ likes, setShowLikes }) => {
                     <Link
                       to={"/profile/" + user?.username}
                       key={user?.username}
-                      className="w-full py-3 px-6 flex justify-start items-center gap-2 hover:bg-line cursor-pointer"
+                      className="w-full py-3 px-6 flex justify-start items-center gap-2 hover:bg-backgroundDark cursor-pointer"
                     >
                       <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
                         {!user?.miniImg && (

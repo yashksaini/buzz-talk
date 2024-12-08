@@ -302,3 +302,36 @@ export const getAllFriendsPosts = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
+
+export const deletePost = async (req, res) => {
+  try {
+    const { postId, userId } = req.body;
+    if (!postId || !userId) {
+      return res
+        .status(400)
+        .json({ message: "postId and userId are required." });
+    }
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const postObjectId = new mongoose.Types.ObjectId(postId);
+
+    // Find the post to ensure it exists and belongs to the user
+    const post = await Posts.findOne({
+      _id: postObjectId,
+      userId: userObjectId,
+    });
+
+    if (!post) {
+      return res
+        .status(404)
+        .json({ message: "Post not found or unauthorized." });
+    }
+
+    // Delete the post
+    await Posts.deleteOne({ _id: postId });
+
+    res.status(200).json({ message: "Post deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Server error. Please try again later." });
+  }
+};

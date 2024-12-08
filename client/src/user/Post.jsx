@@ -11,17 +11,22 @@ import Comments from "../components/Posts/Comments";
 import Loader from "../components/UI/Loader";
 import NoDataFound from "../components/UI/NoDataFound";
 import LikesList from "../components/Posts/LikesList";
+import { CgLoadbarSound } from "react-icons/cg";
+import { AiOutlineDelete } from "react-icons/ai";
+import MiniModal from "../components/UI/MiniModal";
+import { toast } from "react-toastify";
 
 const Post = () => {
   const [postData, setPostData] = useState({});
   const { id } = useParams();
-  const { userId } = useSelector((state) => state.userAuth);
+  const { userId, username } = useSelector((state) => state.userAuth);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [refresh, setRefresh] = useState(true);
   const [postExists, setPostExists] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showLikes, setShowLikes] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const isLikedByUser = (post) => {
     const isLiked = post?.likes?.some((like) => like?.userId?._id === userId);
     setLikeCount(post?.likes?.length);
@@ -43,6 +48,24 @@ const Post = () => {
         <br />
       </Fragment>
     ));
+  };
+  const deletePost = async () => {
+    try {
+      const response = await axios.post(`/posts/deletePost`, {
+        postId: postData._id,
+        userId: userId,
+      });
+      if (response.status === 200) {
+        toast.success("Post deleted successfully");
+        setIsDelete(false);
+        navigate("/profile/" + username);
+      } else {
+        toast.error("Error deleting post");
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast.error("Error deleting post");
+    }
   };
   useEffect(() => {
     const fetchPost = async () => {
@@ -81,22 +104,38 @@ const Post = () => {
         <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden sm:border-l">
           {!loading && postExists && (
             <>
-              <div className="sticky top-0 left-0 h-12 gap-3 px-3 bg-white/80 backdrop-blur-sm z-10 flex justify-start items-center border-b border-line">
+              <div className="sticky top-0 left-0 h-12 gap-3 px-3 bg-white/80 backdrop-blur-sm z-10 flex justify-between items-center border-b border-line">
+                <div className="flex justify-start items-center gap-3 flex-1">
+                  <button
+                    onClick={() => {
+                      navigate("/");
+                    }}
+                    className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-line transition-all"
+                  >
+                    <IoMdArrowBack className="text-2xl" />
+                  </button>
+                  <h1 className="font-bold text-[20px] ">Post </h1>
+                </div>
                 <button
+                  className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-transRed transition-all text-red"
                   onClick={() => {
-                    navigate("/");
+                    setIsDelete(true);
                   }}
-                  className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-line transition-all"
                 >
-                  <IoMdArrowBack className="text-2xl" />
+                  <AiOutlineDelete />
                 </button>
-                <h1 className="font-bold text-[20px] ">Post </h1>
               </div>
               <div
                 key={postData?.userId?.username}
                 className={`w-full py-3 px-6 flex justify-start items-start gap-2 `}
               >
-                <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
+                <div
+                  className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate("/profile/" + postData?.userId?.username);
+                  }}
+                >
                   {!postData?.userId?.miniImg && (
                     <ProfileIcon fullName={postData?.userId?.fullName} />
                   )}
@@ -172,13 +211,17 @@ const Post = () => {
                     {postData?.comments?.length || 0}
                   </span>
                 </div>
-                <div
-                  onClick={() => {
-                    setShowLikes(true);
-                  }}
-                >
-                  Liked By
-                </div>
+                {postData?.userId?._id === userId && (
+                  <div
+                    onClick={() => {
+                      setShowLikes(true);
+                    }}
+                    className="flex justify-center items-center text-dark2 hover:bg-backgroundDark cursor-pointer h-9 px-4 rounded-full"
+                  >
+                    <CgLoadbarSound className="text-2xl" />
+                    <span>Liked By</span>
+                  </div>
+                )}
               </div>
               <Comments comments={postData?.comments} setRefresh={setRefresh} />
             </>
@@ -232,6 +275,17 @@ const Post = () => {
       </div>
       {showLikes && (
         <LikesList likes={postData.likes} setShowLikes={setShowLikes} />
+      )}
+      {isDelete && (
+        <MiniModal
+          actionBtnText="Delete Post"
+          closeModal={() => {
+            setIsDelete(false);
+          }}
+          title="Confirm Deletion"
+          desc="Are you sure you want to delete this post?"
+          actionBtnFun={deletePost}
+        />
       )}
     </>
   );
