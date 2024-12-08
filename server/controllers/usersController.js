@@ -50,7 +50,7 @@ export const getUserNameAndImage = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-export const getAllUsers = async(req, res) => {
+export const getAllUsers = async (req, res) => {
   // const { userId } = req.query;
   try {
     // Find all users excluding the specified userId
@@ -61,10 +61,10 @@ export const getAllUsers = async(req, res) => {
       .lean();
     res.status(200).json(allUsers);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
-}
+};
 export const getRecentUsers = async (req, res) => {
   const { userId } = req.query;
   try {
@@ -76,17 +76,18 @@ export const getRecentUsers = async (req, res) => {
       .lean();
     res.status(200).json(recentUsers);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 
 export const updateProfile = async (req, res) => {
   try {
-    const { fullName, about, status, profile, banner, userId,miniImg } = req.body;
+    const { fullName, about, status, profile, banner, userId, miniImg } =
+      req.body;
     await User.findByIdAndUpdate(
       userId,
-      { fullName, about, status, imgUrl: profile, banner,miniImg: miniImg},
+      { fullName, about, status, imgUrl: profile, banner, miniImg: miniImg },
       { new: true, upsert: true }
     );
     res

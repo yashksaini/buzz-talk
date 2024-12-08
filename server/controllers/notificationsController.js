@@ -1,7 +1,7 @@
 import { Notifications } from "../schemas/schemas.js";
 
 export const addNotification = async (notificationData) => {
-  const { title, desc, url, type, userId,senderName } = notificationData;
+  const { title, desc, url, type, userId, senderName } = notificationData;
   const LIMIT = 100;
   if (!title || !desc) {
     return res
@@ -22,15 +22,15 @@ export const addNotification = async (notificationData) => {
       title,
       desc,
       url,
-      type,senderName,
+      type,
+      senderName,
       time: new Date(),
     });
-    if(userNotifications.notifications.length>LIMIT){
-      userNotifications.notifications.splice(0,1);
+    if (userNotifications.notifications.length > LIMIT) {
+      userNotifications.notifications.splice(0, 1);
     }
 
     await userNotifications.save();
-    console.log("Notifications saved");
   } catch (error) {
     console.error(error);
   }
@@ -44,7 +44,7 @@ export const getUnreadNotificationsOfUser = async (req, res) => {
     if (!userNotifications) {
       return res.status(200).json({ unReadCount: 0 });
     }
-    
+
     const unreadNotifications = userNotifications.notifications.filter(
       (notification) => !notification.isRead
     );
@@ -58,15 +58,12 @@ export const getUnreadNotificationsOfUser = async (req, res) => {
   }
 };
 
-
 export const getNotificationsOfUser = async (req, res) => {
   const { userId } = req.query;
 
   try {
     // Find notifications for the user and sort by time in descending order
-    const userNotifications = await Notifications.findOne(
-      { userId }
-    );
+    const userNotifications = await Notifications.findOne({ userId });
 
     if (!userNotifications) {
       return res.status(200).json({ notifications: [] });
@@ -83,7 +80,7 @@ export const getNotificationsOfUser = async (req, res) => {
   }
 };
 export const deleteNotificationById = async (req, res) => {
-  const { userId, notificationId } = req.body; 
+  const { userId, notificationId } = req.body;
 
   try {
     // Find the user's notifications
@@ -99,7 +96,9 @@ export const deleteNotificationById = async (req, res) => {
     );
 
     // If no notifications were deleted, return an error
-    if (updatedNotifications.length === userNotifications.notifications.length) {
+    if (
+      updatedNotifications.length === userNotifications.notifications.length
+    ) {
       return res.status(404).json({ error: "Notification not found." });
     }
 
@@ -114,7 +113,7 @@ export const deleteNotificationById = async (req, res) => {
   }
 };
 export const markNotificationAsRead = async (req, res) => {
-  const { userId, notificationId } = req.body;  // Assuming the ID is sent in the request body
+  const { userId, notificationId } = req.body; // Assuming the ID is sent in the request body
 
   try {
     // Find the user's notifications
@@ -147,7 +146,7 @@ export const markNotificationAsRead = async (req, res) => {
 };
 
 export const markAllNotificationsAsRead = async (req, res) => {
-  const { userId } = req.body;  
+  const { userId } = req.body;
 
   try {
     const userNotifications = await Notifications.findOne({ userId });
@@ -166,12 +165,14 @@ export const markAllNotificationsAsRead = async (req, res) => {
     res.status(200).json({ message: "All notifications marked as read." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to mark all notifications as read." });
+    res
+      .status(500)
+      .json({ error: "Failed to mark all notifications as read." });
   }
 };
 
 export const deleteAllReadNotifications = async (req, res) => {
-  const { userId } = req.body;  
+  const { userId } = req.body;
 
   try {
     const userNotifications = await Notifications.findOne({ userId });

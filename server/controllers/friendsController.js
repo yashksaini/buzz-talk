@@ -301,7 +301,7 @@ export const getFriendsList = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Error in getting friends list" });
-    console.log("Error in gettings friends list ", error);
+    console.error("Error in gettings friends list ", error);
   }
 };
 export const getRequestsList = async (req, res) => {
@@ -330,7 +330,7 @@ export const getRequestsList = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Error in getting friends request list" });
-    console.log("Error in gettings friends request list ", error);
+    console.error("Error in gettings friends request list ", error);
   }
 };
 export const getSentRequestsList = async (req, res) => {
@@ -361,11 +361,11 @@ export const getSentRequestsList = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error in getting friends request sent list" });
-    console.log("Error in gettings friends request sent list ", error);
+    console.error("Error in gettings friends request sent list ", error);
   }
 };
-export const getAllFriendsStatus = async(req,res)=>{
-  try{
+export const getAllFriendsStatus = async (req, res) => {
+  try {
     const { ownerId } = req.query;
     const ownerObjectId = new mongoose.Types.ObjectId(ownerId);
     const [friends, sent, requests] = await Promise.all([
@@ -382,10 +382,11 @@ export const getAllFriendsStatus = async(req,res)=>{
         status: friendshipStatuses.pending,
       }),
     ]);
-    res.status(200).json({friends, sent, requests});
-
-  }catch(error){
-    console.log("Error in getting all friends status", error);
-    res.status(500).json({ message: "Error in getting all friends status", error });
+    res.status(200).json({ friends, sent, requests });
+  } catch (error) {
+    console.error("Error in getting all friends status", error);
+    res
+      .status(500)
+      .json({ message: "Error in getting all friends status", error });
   }
-}
+};

@@ -18,7 +18,6 @@ export const addNewMessage = async (chatId, newMessage) => {
 
     // Save the updated chat document
     await chat.save();
-    console.log(`Message added to chat ${chatId}`);
   } catch (error) {
     console.error("Error adding message:", error);
   }
