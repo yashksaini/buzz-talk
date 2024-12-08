@@ -32,7 +32,7 @@ const NewChatModal = ({ setIsNewChatModal, fetchChats }) => {
           setLoading(false);
         }
       } catch (error) {
-        console.log("ERROR in fetching friends", error);
+        console.error("ERROR in fetching friends", error);
         setLoading(false);
       }
     };

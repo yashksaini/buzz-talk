@@ -10,20 +10,23 @@ import { withdrawFriendReq } from "../commonFunctions";
 import { toast } from "react-toastify";
 import MiniModal from "../UI/MiniModal";
 // eslint-disable-next-line react/prop-types
-const Sent = ({setIsUpdated}) => {
+const Sent = ({ setIsUpdated }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [requestList, setRequestList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentCardUsername, setCurrentCardUsername] = useState("");
   const [isModal, setIsModal] = useState(false);
-  const [modalType,setModalType] = useState("");
+  const [modalType, setModalType] = useState("");
   const withdrawRequest = async () => {
-    const {  toastMsg, toastType } = await withdrawFriendReq(userId, currentCardUsername);
+    const { toastMsg, toastType } = await withdrawFriendReq(
+      userId,
+      currentCardUsername
+    );
 
     if (toastType === "success") {
       toast.success(toastMsg);
       fetchFriends();
-      setIsUpdated(prev=>!prev);
+      setIsUpdated((prev) => !prev);
     } else if (toastType === "error") {
       toast.error(toastMsg);
     }
@@ -53,13 +56,13 @@ const Sent = ({setIsUpdated}) => {
         setLoading(false);
       }
     } catch (error) {
-      console.log("ERROR in fetching sent requests", error);
+      console.error("ERROR in fetching sent requests", error);
       setLoading(false);
     }
   };
   useEffect(() => {
     fetchFriends();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
   return (
     <div>
@@ -94,7 +97,7 @@ const Sent = ({setIsUpdated}) => {
       )}
       {modalType === "withdraw" && isModal && (
         <MiniModal
-          closeModal={()=>{
+          closeModal={() => {
             setModalType("");
             setIsModal(false);
           }}

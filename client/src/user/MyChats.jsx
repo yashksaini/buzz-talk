@@ -22,7 +22,7 @@ const MyChats = ({ socket }) => {
   const [chatsList, setChatsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeUsers, setActiveUsers] = useState([]);
-  const [isDisplayChat,setIsDisplayChat] = useState(false);
+  const [isDisplayChat, setIsDisplayChat] = useState(false);
   // const handleSearch = () => {};
   const fetchChats = async () => {
     try {
@@ -36,14 +36,13 @@ const MyChats = ({ socket }) => {
         setIsLoading(false);
       }
     } catch (error) {
-      console.log("ERROR in fetching friends", error);
+      console.error("ERROR in fetching friends", error);
       setIsLoading(false);
     }
   };
   useEffect(() => {
-    
     fetchChats();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const checkUserStatus = (friendId) => {
@@ -63,13 +62,13 @@ const MyChats = ({ socket }) => {
       setActiveUsers(data);
     });
   }, [socket]);
-  useEffect(()=>{
-    if(chatId){
+  useEffect(() => {
+    if (chatId) {
       setIsDisplayChat(true);
-    }else{
+    } else {
       setIsDisplayChat(false);
     }
-  },[chatId]);
+  }, [chatId]);
 
   return (
     <>
@@ -147,57 +146,72 @@ const MyChats = ({ socket }) => {
                 <Loader />
               </div>
             )}
-            {!isLoading && 
-              chatsList?.filter((ch)=> {
-                return ch.friendProfile.fullName.toLowerCase().includes(search.toLowerCase()) || ch.friendProfile.username.toLowerCase().includes(search.toLowerCase());
-              })?.filter((c)=>!c?.isBlocked)?.map((chat, index) => {
-                return (
-                  <ChatCard
-                    user={{
-                      _id: chat?.friendProfile.userId,
-                      fullName: chat?.friendProfile.fullName,
-                      username: chat?.friendProfile.username,
-                      imgUrl: chat?.friendProfile.imgUrl,
-                    }}
-                    chatId_={chat?.chatId}
-                    lastMessage={chat.lastMessage}
-                    updatedAt={chat.updatedAt}
-                    key={index}
-                    isOnline={checkUserStatus(chat?.friendProfile.userId)}
-                    socket={socket}
-                    unreadCount={chat.unreadCount}
-                    isBlocked={false}
-                  />
-                );
-              })}
-              {!isLoading && chatsList?.filter((c)=>c?.isBlocked)?.length>0 && (
+            {!isLoading &&
+              chatsList
+                ?.filter((ch) => {
+                  return (
+                    ch.friendProfile.fullName
+                      .toLowerCase()
+                      .includes(search.toLowerCase()) ||
+                    ch.friendProfile.username
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                  );
+                })
+                ?.filter((c) => !c?.isBlocked)
+                ?.map((chat, index) => {
+                  return (
+                    <ChatCard
+                      user={{
+                        _id: chat?.friendProfile.userId,
+                        fullName: chat?.friendProfile.fullName,
+                        username: chat?.friendProfile.username,
+                        imgUrl: chat?.friendProfile.imgUrl,
+                      }}
+                      chatId_={chat?.chatId}
+                      lastMessage={chat.lastMessage}
+                      updatedAt={chat.updatedAt}
+                      key={index}
+                      isOnline={checkUserStatus(chat?.friendProfile.userId)}
+                      socket={socket}
+                      unreadCount={chat.unreadCount}
+                      isBlocked={false}
+                    />
+                  );
+                })}
+            {!isLoading &&
+              chatsList?.filter((c) => c?.isBlocked)?.length > 0 && (
                 <div className="w-full flex justify-center items-center gap-2 my-4">
                   <span className="w-full h-[1px] bg-line"></span>
-                  <span className="whitespace-nowrap text-sm text-grayText">Blocked Chats</span>
+                  <span className="whitespace-nowrap text-sm text-grayText">
+                    Blocked Chats
+                  </span>
                   <span className="w-full h-[1px] bg-line"></span>
-                </div>)
-              }
-              {!isLoading &&
-              chatsList?.filter((c)=>c?.isBlocked)?.map((chat, index) => {
-                return (
-                  <ChatCard
-                    user={{
-                      _id: chat?.friendProfile.userId,
-                      fullName: chat?.friendProfile.fullName,
-                      username: chat?.friendProfile.username,
-                      imgUrl: chat?.friendProfile.imgUrl,
-                    }}
-                    chatId_={chat?.chatId}
-                    lastMessage={chat.lastMessage}
-                    updatedAt={chat.updatedAt}
-                    key={index}
-                    isOnline={checkUserStatus(chat?.friendProfile.userId)}
-                    socket={socket}
-                    unreadCount={chat.unreadCount}
-                    isBlocked={true}
-                  />
-                );
-              })}
+                </div>
+              )}
+            {!isLoading &&
+              chatsList
+                ?.filter((c) => c?.isBlocked)
+                ?.map((chat, index) => {
+                  return (
+                    <ChatCard
+                      user={{
+                        _id: chat?.friendProfile.userId,
+                        fullName: chat?.friendProfile.fullName,
+                        username: chat?.friendProfile.username,
+                        imgUrl: chat?.friendProfile.imgUrl,
+                      }}
+                      chatId_={chat?.chatId}
+                      lastMessage={chat.lastMessage}
+                      updatedAt={chat.updatedAt}
+                      key={index}
+                      isOnline={checkUserStatus(chat?.friendProfile.userId)}
+                      socket={socket}
+                      unreadCount={chat.unreadCount}
+                      isBlocked={true}
+                    />
+                  );
+                })}
             {!isLoading && chatsList.length === 0 && (
               <NoDataFound
                 title="No Chats Created"
@@ -207,11 +221,20 @@ const MyChats = ({ socket }) => {
           </div>
         </div>
         {/* Chat Area */}
-        <div className={`${isDisplayChat?"block":"hidden"} md:block sm:flex-none md:flex-1 xl:flex-none w-full xl:w-[600px] border-r border-line sm:h-full overflow-y-auto overflow-x-hidden sm:relative fixed top-0 left-0 h-[100dvh] z-50 bg-white`}>
+        <div
+          className={`${
+            isDisplayChat ? "block" : "hidden"
+          } md:block sm:flex-none md:flex-1 xl:flex-none w-full xl:w-[600px] border-r border-line sm:h-full overflow-y-auto overflow-x-hidden sm:relative fixed top-0 left-0 h-[100dvh] z-50 bg-white`}
+        >
           <ChatArea socket={socket} />
         </div>
       </div>
-      {isNewChatModal && <NewChatModal setIsNewChatModal={setIsNewChatModal} fetchChats={fetchChats} />}
+      {isNewChatModal && (
+        <NewChatModal
+          setIsNewChatModal={setIsNewChatModal}
+          fetchChats={fetchChats}
+        />
+      )}
     </>
   );
 };

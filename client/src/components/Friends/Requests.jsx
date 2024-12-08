@@ -10,7 +10,7 @@ import { BASE_URL } from "../../Constants/constants";
 import { acceptFriendship } from "../commonFunctions";
 import { toast } from "react-toastify";
 // eslint-disable-next-line react/prop-types
-const Requests = ({setIsUpdated}) => {
+const Requests = ({ setIsUpdated }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [requestList, setRequestList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ const Requests = ({setIsUpdated}) => {
     if (toastType === "success") {
       toast.success(toastMsg);
       fetchFriends();
-      setIsUpdated(prev=>!prev);
+      setIsUpdated((prev) => !prev);
     } else if (toastType === "error") {
       toast.error(toastMsg);
     }
@@ -36,13 +36,6 @@ const Requests = ({setIsUpdated}) => {
         acceptReq();
       },
     },
-    // {
-    //   title: "Decline Request",
-    //   icon: AiOutlineCloseCircle,
-    //   action: () => {
-    //     console.log("Decline Request");
-    //   },
-    // },
   ];
   const fetchFriends = async () => {
     try {
@@ -56,7 +49,7 @@ const Requests = ({setIsUpdated}) => {
         setLoading(false);
       }
     } catch (error) {
-      console.log("ERROR in fetching friends", error);
+      console.error("ERROR in fetching friends", error);
       setLoading(false);
     }
   };

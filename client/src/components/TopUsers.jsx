@@ -49,7 +49,7 @@ const TopUsers = () => {
         setHasMore(response.data.length === resultsPerPage);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setIsSearching(false);
       setIsLoadingMore(false);
       setIsSearched(true);

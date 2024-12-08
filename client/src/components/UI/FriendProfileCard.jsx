@@ -38,13 +38,6 @@ const FriendProfileCard = ({
         navigate(`/profile/${currentCardUsername}`);
       },
     },
-    // {
-    //   title: "Block this friend",
-    //   icon: MdBlock,
-    //   action: () => {
-    //     console.log("Block Friend");
-    //   },
-    // },
   ];
   return (
     <div

@@ -28,7 +28,6 @@ export const createPost = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
-
 export const getAllPublicPosts = async (req, res) => {
   try {
     const { page = 1, loggedInUserId } = req.query;
@@ -91,7 +90,6 @@ export const getAllPublicPosts = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
-
 export const toggleLike = async (req, res) => {
   const { postId, userId } = req.body; // Get post ID from URL params
   try {
@@ -128,7 +126,6 @@ export const toggleLike = async (req, res) => {
       .json({ message: "Something went wrong", error: error.message });
   }
 };
-
 export const getPostById = async (req, res) => {
   const { postId, userId } = req.query;
 
@@ -302,7 +299,6 @@ export const getAllFriendsPosts = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
-
 export const deletePost = async (req, res) => {
   try {
     const { postId, userId } = req.body;

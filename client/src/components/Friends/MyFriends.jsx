@@ -13,24 +13,26 @@ import { removeFriendship } from "../commonFunctions";
 import { toast } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
-const MyFriends = ({setIsUpdated}) => {
+const MyFriends = ({ setIsUpdated }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const [friendsList, setFriendsList] = useState([]);
   const [currentCardUsername, setCurrentCardUsername] = useState("");
   const [loading, setLoading] = useState(true);
   const [isModal, setIsModal] = useState(false);
-  const [modalType,setModalType] = useState("");
+  const [modalType, setModalType] = useState("");
   const navigate = useNavigate();
-  const removeFriend = async() => {
-    const { toastMsg, toastType } = await removeFriendship(userId, currentCardUsername);
+  const removeFriend = async () => {
+    const { toastMsg, toastType } = await removeFriendship(
+      userId,
+      currentCardUsername
+    );
     if (toastType === "success") {
       toast.success(toastMsg);
       fetchFriends();
-      setIsUpdated(prev=>!prev);
+      setIsUpdated((prev) => !prev);
     } else if (toastType === "error") {
       toast.error(toastMsg);
     }
-    
   };
   const options = [
     {
@@ -61,13 +63,13 @@ const MyFriends = ({setIsUpdated}) => {
         setLoading(false);
       }
     } catch (error) {
-      console.log("ERROR in fetching friends", error);
+      console.error("ERROR in fetching friends", error);
       setLoading(false);
     }
   };
   useEffect(() => {
     fetchFriends();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
   return (
     <div>
@@ -102,7 +104,10 @@ const MyFriends = ({setIsUpdated}) => {
       )}
       {modalType === "remove" && isModal && (
         <MiniModal
-          closeModal={()=>{setModalType(""); setIsModal(false)}}
+          closeModal={() => {
+            setModalType("");
+            setIsModal(false);
+          }}
           actionBtnText="Remove Friend"
           actionBtnFun={removeFriend}
           title={`Remove Friend @${currentCardUsername}`}

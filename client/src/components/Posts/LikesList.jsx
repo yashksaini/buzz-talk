@@ -1,14 +1,10 @@
 /* eslint-disable react/prop-types */
 import { IoCloseOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ProfileIcon from "../ProfileIcon";
 import NoDataFound from "../UI/NoDataFound";
 
 const LikesList = ({ likes, setShowLikes }) => {
-  const { userId } = useSelector((state) => state.userAuth);
-  const navigate = useNavigate();
-
   return (
     <>
       <div className="w-full h-full bg-[rgba(0,0,0,0.40)] fixed top-0 left-0 z-[100] md:p-8 p-2 flex justify-center items-center">

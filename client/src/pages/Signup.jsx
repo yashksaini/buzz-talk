@@ -53,7 +53,6 @@ const Signup = () => {
           },
           { withCredentials: true, credentials: "include" }
         );
-        console.log(response);
         if (response.data === true) {
           toast.success("Sign up successful. Please log in", {
             autoClose: 1000,

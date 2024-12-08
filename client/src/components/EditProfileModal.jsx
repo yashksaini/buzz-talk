@@ -11,7 +11,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../Constants/constants";
 import { resizeImage } from "./utils";
-const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
+const EditProfileModal = ({ setModalType, user, setIsUpdated }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const initialData = {
     fullName: user?.fullName,
@@ -63,14 +63,14 @@ const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
     handleFileInput(e, "Banner", 3);
   };
   // For updating data from cropper to form
-  const updateImage = async(type, image) => {
-    if(type === "profile") {
+  const updateImage = async (type, image) => {
+    if (type === "profile") {
       const miniImg = await resizeImage(image, 36, 36);
-      const profileImg = await resizeImage(image,136,136);
-      setForm({...form, miniImg: miniImg,profile: profileImg });
-    }else if(type === "banner"){
-      const bannerImg = await resizeImage(image,600,200);
-      setForm({...form, banner: bannerImg });
+      const profileImg = await resizeImage(image, 136, 136);
+      setForm({ ...form, miniImg: miniImg, profile: profileImg });
+    } else if (type === "banner") {
+      const bannerImg = await resizeImage(image, 600, 200);
+      setForm({ ...form, banner: bannerImg });
     }
   };
   const saveProfie = async () => {
@@ -114,10 +114,10 @@ const EditProfileModal = ({ setModalType, user,setIsUpdated }) => {
         });
         // Close the edit modal
         setModalType("");
-        setIsUpdated(prev=>!prev);
+        setIsUpdated((prev) => !prev);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.update("update-process", {
         autoClose: 1000,
         toastId: "update-process",
