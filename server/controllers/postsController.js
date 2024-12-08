@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { Friend, Posts } from "../schemas/schemas.js";
-
+import { Friend, Posts, User } from "../schemas/schemas.js";
+import { addNotification } from "./notificationsController.js";
 export const createPost = async (req, res) => {
   try {
     const { content, isPublic, userId } = req.body;
@@ -195,6 +195,11 @@ export const addComment = async (req, res) => {
     // Find the post
     const postObjectId = new mongoose.Types.ObjectId(postId);
     const post = await Posts.findById(postObjectId);
+    const ownerObjectId = new mongoose.Types.ObjectId(userId);
+    const owner = await User.findOne(
+      { _id: ownerObjectId },
+      { fullName: 1 } // Projection to include only the 'fullName' field
+    ).lean();
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -206,7 +211,14 @@ export const addComment = async (req, res) => {
 
     // Save the updated post
     await post.save();
-
+    await addNotification({
+      userId: post.userId,
+      senderName: owner.fullName,
+      title: ` commented on your post.`,
+      desc: content,
+      url: `/post/${postId}`,
+      type: "COMMENT",
+    });
     // Send response
     res.status(200).json({
       message: "comment added successfully",
