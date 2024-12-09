@@ -48,6 +48,7 @@ import {
   createPost,
   deletePost,
   getAllFriendsPosts,
+  getAllPostsOfUser,
   getAllPublicPosts,
   getPostById,
   toggleLike,
@@ -116,4 +117,5 @@ router.get("/posts/getPostById", getPostById);
 router.post("/posts/addComment", addComment);
 router.get("/posts/friendsPosts", getAllFriendsPosts);
 router.post("/posts/deletePost", deletePost);
+router.get("/posts/getAllPostsOfUser", getAllPostsOfUser);
 export default router;

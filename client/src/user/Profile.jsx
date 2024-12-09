@@ -9,15 +9,19 @@ import EditProfileModal from "../components/EditProfileModal";
 import CustomSkeleton from "../components/UI/CustomSkeleton";
 import { friendshipStatuses } from "../Constants/friendsConstants";
 import { toast } from "react-toastify";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import {
   acceptFriendship,
   sendRequest,
-  withdrawFriendReq,removeFriendship
+  withdrawFriendReq,
+  removeFriendship,
 } from "../components/commonFunctions";
 import MiniModal from "../components/UI/MiniModal";
 import NoDataFound from "../components/UI/NoDataFound";
 import { BASE_URL } from "../Constants/constants";
-const Profile = ({ socket,setIsUpdated }) => {
+import { FiLogOut } from "react-icons/fi";
+import UserPosts from "../components/UserPosts";
+const Profile = ({ socket, setIsUpdated }) => {
   const [userData, setUserData] = useState({});
   const { id } = useParams();
   const { fullName, userId } = useSelector((state) => state.userAuth);
@@ -108,7 +112,7 @@ const Profile = ({ socket,setIsUpdated }) => {
       toast.error(toastMsg);
     }
   };
-  const removeFriend = async() => {
+  const removeFriend = async () => {
     const { status, toastMsg, toastType } = await removeFriendship(userId, id);
     if (status !== "NA") {
       setFriendshipStatus(friendshipStatuses[status]);
@@ -118,7 +122,6 @@ const Profile = ({ socket,setIsUpdated }) => {
     } else if (toastType === "error") {
       toast.error(toastMsg);
     }
-    
   };
   const handleFriendStatusChange = async () => {
     const statuses = friendshipStatuses;
@@ -164,24 +167,49 @@ const Profile = ({ socket,setIsUpdated }) => {
     <>
       <div className="flex justify-center items-center h-full">
         <div className="sm:w-[600px] w-full max-w-full sm:border-r border-r-none sm:border-line h-full overflow-y-auto overflow-x-hidden sm:border-l">
-          <div className="w-full px-4  sticky top-0 bg-white h-16 flex justify-center items-start flex-col z-20">
-            {isLoading ? (
-              <CustomSkeleton className="text-2xl font-bold text-dark1 leading-7 min-w-48" />
-            ) : (
-              <h1 className="text-2xl font-bold text-dark1 leading-7 min-w-48">
-                {userData?.fullName || "Profile"}
-              </h1>
-            )}
-            {isLoading ? (
-              <CustomSkeleton className="text-mainText leading-4  text-sm  overflow-hidden text-ellipsis whitespace-nowrap min-w-72" />
-            ) : (
-              <p
-                className={`text-mainText leading-4  text-sm  overflow-hidden text-ellipsis whitespace-nowrap min-w-72`}
-              >
-                {userData?.status}
-              </p>
-            )}
+          <div className="w-full px-4  sticky top-0 bg-white/80 backdrop-blur-sm h-16 z-20 flex justify-between items-center">
+            <div className="flex justify-center items-start flex-col">
+              {isLoading ? (
+                <CustomSkeleton className="text-2xl font-bold text-dark1 leading-7 min-w-48" />
+              ) : (
+                <h1 className="text-2xl font-bold text-dark1 leading-7 min-w-48">
+                  {userData?.fullName || "Profile"}
+                </h1>
+              )}
+              {isLoading ? (
+                <CustomSkeleton className="text-mainText leading-4  text-sm  overflow-hidden text-ellipsis whitespace-nowrap min-w-72" />
+              ) : (
+                <p
+                  className={`text-mainText leading-4  text-sm  overflow-hidden text-ellipsis whitespace-nowrap min-w-72`}
+                >
+                  {userData?.status}
+                </p>
+              )}
+            </div>
+            {userId === userData?.userId &&
+              (!isLoading ? (
+                <button
+                  className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-transRed transition-all text-dark1 hover:text-red"
+                  onClick={() => {
+                    setModalType("logout");
+                    setIsModal(true);
+                  }}
+                  data-tooltip-id="logout-tip"
+                >
+                  <FiLogOut />
+                </button>
+              ) : (
+                <CustomSkeleton className="w-9 h-9 rounded-full" />
+              ))}
           </div>
+          <ReactTooltip
+            id="logout-tip"
+            place="bottom"
+            content="Log Out"
+            style={{
+              zIndex: "50",
+            }}
+          />
           <div className="h-[200px] w-full bg-slate-200 relative z-10">
             {isLoading ? (
               <CustomSkeleton className="w-full h-full absolute top-0 left-0 z-20 bg-slate-200" />
@@ -259,67 +287,64 @@ const Profile = ({ socket,setIsUpdated }) => {
 
           {userExists ? (
             <>
-            <div className="px-3 pb-4 border-b border-line">
-              <div className="mb-2 min-w-48">
-                {isLoading ? (
-                  <CustomSkeleton className="text-2xl font-bold text-dark1 leading-6 w-48" />
-                ) : (
-                  <h2 className="text-2xl font-bold text-dark1 leading-6 ">
-                    {userData?.fullName}
-                  </h2>
-                )}
-                {isLoading ? (
-                  <CustomSkeleton className={"w-24"} />
-                ) : (
-                  <p className="text-mainText">@{userData?.username}</p>
-                )}
+              <div className="px-3 pb-4 border-b border-line">
+                <div className="mb-2 min-w-48">
+                  {isLoading ? (
+                    <CustomSkeleton className="text-2xl font-bold text-dark1 leading-6 w-48" />
+                  ) : (
+                    <h2 className="text-2xl font-bold text-dark1 leading-6 ">
+                      {userData?.fullName}
+                    </h2>
+                  )}
+                  {isLoading ? (
+                    <CustomSkeleton className={"w-24"} />
+                  ) : (
+                    <p className="text-mainText">@{userData?.username}</p>
+                  )}
+                </div>
+                <div className="mb-2 ">
+                  {isLoading ? (
+                    <>
+                      <CustomSkeleton className={"w-full"} />{" "}
+                      <CustomSkeleton className={"w-[60%]"} />
+                      <CustomSkeleton className={"w-[80%]"} />
+                    </>
+                  ) : (
+                    <p className="text-mainText">
+                      {formatWithLineBreaks(userData?.about || "")}
+                    </p>
+                  )}
+                </div>
+                <div className="mb-2">
+                  {isLoading ? (
+                    <CustomSkeleton
+                      className={
+                        "text-mainText flex justify-start items-center gap-2 w-36"
+                      }
+                    />
+                  ) : (
+                    <p className="text-mainText flex justify-start items-center gap-2">
+                      <IoCalendarOutline />
+                      <b>Joined</b>
+                      {userData?.dateJoined
+                        ? new Date(userData.dateJoined).toLocaleDateString(
+                            "en-US",
+                            {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            }
+                          )
+                        : ""}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="mb-2 ">
-                {isLoading ? (
-                  <>
-                    <CustomSkeleton className={"w-full"} />{" "}
-                    <CustomSkeleton className={"w-[60%]"} />
-                    <CustomSkeleton className={"w-[80%]"} />
-                  </>
-                ) : (
-                  <p className="text-mainText">
-                    {formatWithLineBreaks(userData?.about || "")}
-                  </p>
-                )}
+              <div>
+                <UserPosts />
               </div>
-              <div className="mb-2">
-                {isLoading ? (
-                  <CustomSkeleton
-                    className={
-                      "text-mainText flex justify-start items-center gap-2 w-36"
-                    }
-                  />
-                ) : (
-                  <p className="text-mainText flex justify-start items-center gap-2">
-                    <IoCalendarOutline />
-                    <b>Joined</b>
-                    {userData?.dateJoined
-                      ? new Date(userData.dateJoined).toLocaleDateString(
-                          "en-US",
-                          {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          }
-                        )
-                      : ""}
-                  </p>
-                )}
-              </div>
-            </div>
-            {userId === userData?.userId  && <div onClick={()=>{
-              setModalType("logout");
-              setIsModal(true);
-            }} className="w-full py-4 flex justify-center items-center hover:bg-transRed hover:text-red cursor-pointer">
-            Log Out
-          </div>}
-            
-          </>
+              <div className="w-full pb-4 border-t border-line"></div>
+            </>
           ) : (
             <>
               {!isLoading && (
@@ -333,12 +358,15 @@ const Profile = ({ socket,setIsUpdated }) => {
             </>
           )}
         </div>
-
         <div className="flex-1 bg-white h-full overflow-y-auto overflow-x-hidden sm:px-3 px-0 lg:block hidden">
           <TopUsers />
         </div>
         {modalType === "edit" && (
-          <EditProfileModal setModalType={setModalType} user={userData} setIsUpdated={setIsUpdated} />
+          <EditProfileModal
+            setModalType={setModalType}
+            user={userData}
+            setIsUpdated={setIsUpdated}
+          />
         )}
       </div>
       {modalType === "withdraw" && isModal && (
@@ -358,7 +386,7 @@ const Profile = ({ socket,setIsUpdated }) => {
           title="Confirm Logout"
           desc="You’re logging out of your account. We’ll be here whenever you’re ready to log back in. Looking forward to having you back soon!"
         />
-      )} 
+      )}
       {modalType === "remove" && isModal && (
         <MiniModal
           closeModal={closeModal}

@@ -343,3 +343,102 @@ export const deletePost = async (req, res) => {
     res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
+export const getAllPostsOfUser = async (req, res) => {
+  try {
+    const { page = 1, loggedInUserId, username } = req.query;
+    const limit = 5; // Number of posts per page
+    const skip = (page - 1) * limit;
+
+    const profileUser = await User.findOne({ username }).lean();
+    if (!profileUser) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const profileUserId = profileUser._id;
+    const loggedInUserObjectId = new mongoose.Types.ObjectId(loggedInUserId);
+
+    let filterCondition = { userId: profileUserId };
+
+    if (!loggedInUserObjectId.equals(profileUserId)) {
+      // Check if logged-in user is a friend
+      const isFriend = await Friend.exists({
+        $or: [
+          {
+            sender: loggedInUserObjectId,
+            receiver: profileUserId,
+            status: "accepted",
+          },
+          {
+            sender: profileUserId,
+            receiver: loggedInUserObjectId,
+            status: "accepted",
+          },
+        ],
+      });
+
+      if (isFriend) {
+        // Show all posts if friends
+        filterCondition = { userId: profileUserId };
+      } else {
+        // Show only public posts if not friends
+        filterCondition = { userId: profileUserId, isPublic: true };
+      }
+    }
+
+    // Fetch posts with pagination
+    const userPosts = await Posts.aggregate([
+      { $match: filterCondition },
+      { $sort: { createdOn: -1 } }, // Sort by newest first
+      { $skip: skip }, // Skip based on pagination
+      { $limit: limit }, // Limit results
+      {
+        $lookup: {
+          from: "users", // Reference the Users collection
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" }, // Unwind the user details
+      {
+        $addFields: {
+          likeCount: { $size: "$likes" }, // Count the number of likes
+          commentCount: { $size: "$comments" }, // Count the number of comments
+          isLikedByUser: {
+            $in: [
+              loggedInUserObjectId,
+              { $map: { input: "$likes", as: "like", in: "$$like.userId" } },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          content: 1,
+          createdOn: 1,
+          visibility: 1,
+          "user.username": 1,
+          "user.miniImg": 1,
+          "user.fullName": 1,
+          likeCount: 1,
+          commentCount: 1,
+          isLikedByUser: 1,
+        },
+      },
+    ]);
+
+    // Get the total count of posts
+    const totalPosts = await Posts.countDocuments(filterCondition);
+
+    res.status(200).json({
+      message: "User posts fetched successfully.",
+      posts: userPosts,
+      totalPosts,
+      totalPages: Math.ceil(totalPosts / limit),
+      currentPage: parseInt(page),
+    });
+  } catch (error) {
+    console.error("Error fetching user posts:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
