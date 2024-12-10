@@ -116,14 +116,16 @@ const Post = () => {
                   </button>
                   <h1 className="font-bold text-[20px] ">Post </h1>
                 </div>
-                <button
-                  className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-transRed transition-all text-red"
-                  onClick={() => {
-                    setIsDelete(true);
-                  }}
-                >
-                  <AiOutlineDelete />
-                </button>
+                {postData?.userId?._id === userId && (
+                  <button
+                    className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-transRed transition-all text-red"
+                    onClick={() => {
+                      setIsDelete(true);
+                    }}
+                  >
+                    <AiOutlineDelete />
+                  </button>
+                )}
               </div>
               <div
                 key={postData?.userId?.username}
