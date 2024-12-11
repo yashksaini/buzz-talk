@@ -191,7 +191,7 @@ const EditProfileModal = ({ setModalType, user, setIsUpdated }) => {
                   place="bottom"
                   content="Add Banner"
                   style={{
-                    zIndex: "50",
+                    zIndex: "500",
                   }}
                 />
                 <ReactTooltip
@@ -199,7 +199,7 @@ const EditProfileModal = ({ setModalType, user, setIsUpdated }) => {
                   place="bottom"
                   content="Remove Banner"
                   style={{
-                    zIndex: "50",
+                    zIndex: "500",
                   }}
                 />
                 <div className="z-10 absolute sm:bottom-[-64px] bottom-[-48px] left-8 sm:w-32 sm:h-32 w-24 h-24  border-white border-2 rounded-full bg-slate-300 ">
@@ -229,7 +229,7 @@ const EditProfileModal = ({ setModalType, user, setIsUpdated }) => {
                     place="bottom"
                     content="Add Photo"
                     style={{
-                      zIndex: "50",
+                      zIndex: "500",
                     }}
                   />
                 </div>

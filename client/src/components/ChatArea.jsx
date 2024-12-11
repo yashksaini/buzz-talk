@@ -200,9 +200,9 @@ const ChatArea = ({ socket }) => {
   }, [socket]);
   useEffect(() => {
     const handleResize = () => {
-      setTimeout(()=>{
+      setTimeout(() => {
         scrollToBottom();
-      },500);
+      }, 500);
       // const viewport = window.visualViewport;
 
       // if (viewport) {
@@ -220,9 +220,12 @@ const ChatArea = ({ socket }) => {
   }, []);
 
   return (
-    <div className={`w-full overflow-hidden`} style ={{
-      height: `100%`
-    }}>
+    <div
+      className={`w-full overflow-hidden`}
+      style={{
+        height: `100%`,
+      }}
+    >
       {chatId && !isLoading && !isDetails && (
         <>
           <div className="sticky w-full left-0 h-14 bg-white flex justify-between items-center px-3 border-b border-line z-10">
@@ -282,13 +285,16 @@ const ChatArea = ({ socket }) => {
               content="Details"
               delayShow={500}
               style={{
-                zIndex: "50",
+                zIndex: "500",
               }}
             />
           </div>
-          <div className={`w-full overflow-x-hidden overflow-y-auto bg-white`} style={{
-            height: `calc(100% - 112px)`
-          }}>
+          <div
+            className={`w-full overflow-x-hidden overflow-y-auto bg-white`}
+            style={{
+              height: `calc(100% - 112px)`,
+            }}
+          >
             <div className="flex flex-col-reverse gap-2 p-3">
               <div ref={chatEndRef} />
               <Messages

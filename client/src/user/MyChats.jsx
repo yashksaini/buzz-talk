@@ -114,7 +114,7 @@ const MyChats = ({ socket }) => {
                 content="New Message"
                 delayShow={500}
                 style={{
-                  zIndex: "50",
+                  zIndex: "500",
                 }}
               />
             </div>

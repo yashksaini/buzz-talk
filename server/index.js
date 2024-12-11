@@ -33,6 +33,14 @@ app.use(cookieParser());
 
 // Trust the first proxy in the chain
 app.set("trust proxy", 1);
+// To initialize CORS
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "OPTIONS", "HEAD"],
+    credentials: true,
+  })
+);
 app.use(
   session({
     secret: "asdfefna",
@@ -43,17 +51,8 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days in milliseconds
       httpOnly: true,
       secure: false, // For development; set to true in production (requires HTTPS)
-      // sameSite: false, 
+      // sameSite: false,
     },
-  })
-);
-
-// To initialize CORS
-app.use(
-  cors({
-    origin: true,
-    methods: ["GET", "POST", "PUT", "OPTIONS", "HEAD"],
-    credentials: true,
   })
 );
 

@@ -207,7 +207,7 @@ const Profile = ({ socket, setIsUpdated }) => {
             place="bottom"
             content="Log Out"
             style={{
-              zIndex: "50",
+              zIndex: "500",
             }}
           />
           <div className="h-[200px] w-full bg-slate-200 relative z-10">
