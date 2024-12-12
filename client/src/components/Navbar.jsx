@@ -158,34 +158,41 @@ const Navbar = ({ isUpdated }) => {
           </div>
         </div>
       </nav>
-      <nav className="h-full sm:hidden grid grid-cols-6 border-line border-t-2 backdrop-blur-sm bg-white">
-        {adminNavs.map((nav, index) => {
-          return (
-            <NavLink
-              to={nav.link}
-              key={index}
-              className={({ isActive }) =>
-                isActive
-                  ? "group text-primary text-2xl relative h-full  flex justify-center items-center flex-col gap-1 activeNav"
-                  : "group text-mainText text-2xl relative h-full  flex justify-center items-center flex-col gap-1 defaultNav"
-              }
-            >
-              <span className="flex justify-center items-center pb-[2px]">
-                {nav.activeIcon}
-              </span>
-              <span className="flex justify-center items-center pb-[2px]">
-                {nav.icon}
-              </span>
-              <div className="text-[8px] leading-[1]">{nav.text}</div>
-              {nav.text === "Notifications" && unReadCount > 0 && (
-                <span className="w-4 h-4 flex justify-center items-center bg-primary text-white absolute top-[8px] right-[calc(50%_-_16px)] rounded-full font-normal text-[10px] border border-line">
-                  {unReadCount}
+      <div className="h-full sm:hidden border-line border-t-2 ">
+        <nav className="grid grid-cols-6 backdrop-blur-sm  h-[64px]">
+          {adminNavs.map((nav, index) => {
+            return (
+              <NavLink
+                to={nav.link}
+                key={index}
+                className={({ isActive }) =>
+                  isActive
+                    ? "group text-primary text-2xl relative h-full  flex justify-center items-center flex-col gap-1 activeNav"
+                    : "group text-mainText text-2xl relative h-full  flex justify-center items-center flex-col gap-1 defaultNav"
+                }
+              >
+                <span className="flex justify-center items-center pb-[2px]">
+                  {nav.activeIcon}
                 </span>
-              )}
-            </NavLink>
-          );
-        })}
-      </nav>
+                <span className="flex justify-center items-center pb-[2px]">
+                  {nav.icon}
+                </span>
+                <div className="text-[8px] leading-[1]">{nav.text}</div>
+                {nav.text === "Notifications" && unReadCount > 0 && (
+                  <span className="w-4 h-4 flex justify-center items-center bg-primary text-white absolute top-[8px] right-[calc(50%_-_16px)] rounded-full font-normal text-[10px] border border-line">
+                    {unReadCount}
+                  </span>
+                )}
+              </NavLink>
+            );
+          })}
+        </nav>
+        <div className="w-full flex justify-center items-center h-[24px]  pb-2">
+          <div className=" rounded-full bg-backgroundDark py-[2px]  px-3 flex justify-center items-center text-[10px] text-primary font-semibold ">
+            BUZZ TALK
+          </div>
+        </div>
+      </div>
     </>
   );
 };
