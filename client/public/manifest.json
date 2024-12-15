@@ -1,7 +1,7 @@
 {
   "name": "Buzz Talk",
   "short_name": "Buzz Talk",
-  "theme_color": "#7a9df2",
+  "theme_color": "#fff",
   "background_color": "#fff",
   "display": "standalone",
   "orientation": "portrait",
