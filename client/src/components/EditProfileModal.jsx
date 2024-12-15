@@ -11,7 +11,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../Constants/constants";
 import { resizeImage } from "./utils";
-const EditProfileModal = ({ setModalType, user, setIsUpdated }) => {
+const EditProfileModal = ({ setModalType, user, setIsUpdated, setRefresh }) => {
   const { userId } = useSelector((state) => state.userAuth);
   const initialData = {
     fullName: user?.fullName,
@@ -113,6 +113,7 @@ const EditProfileModal = ({ setModalType, user, setIsUpdated }) => {
           hideProgressBar: true,
         });
         // Close the edit modal
+        setRefresh((prev) => !prev);
         setModalType("");
         setIsUpdated((prev) => !prev);
       }

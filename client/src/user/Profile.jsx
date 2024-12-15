@@ -33,6 +33,7 @@ const Profile = ({ socket, setIsUpdated }) => {
     friendshipStatuses.default
   );
   const [isModal, setIsModal] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     setUserExists(true);
@@ -66,7 +67,7 @@ const Profile = ({ socket, setIsUpdated }) => {
     };
 
     fetchUserData();
-  }, [userId, id, socket, fullName]);
+  }, [userId, id, socket, fullName, refresh]);
 
   useEffect(() => {
     const fetchFriendshipStatus = async () => {
@@ -366,6 +367,7 @@ const Profile = ({ socket, setIsUpdated }) => {
             setModalType={setModalType}
             user={userData}
             setIsUpdated={setIsUpdated}
+            setRefresh={setRefresh}
           />
         )}
       </div>
