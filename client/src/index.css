@@ -63,7 +63,7 @@
 }
 @media only screen and (max-width: 640px) {
   .content {
-    height: calc(100dvh - 88px);
+    height: calc(100dvh - 72px);
     position: fixed;
     width: 100%;
     top: 0;
@@ -74,7 +74,7 @@
     position: fixed;
     bottom: 0;
     left: 0;
-    height: 88px;
+    height: 72px;
     overflow: hidden;
     background-color: var(--background);
   }

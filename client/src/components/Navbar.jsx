@@ -159,7 +159,7 @@ const Navbar = ({ isUpdated }) => {
         </div>
       </nav>
       <div className="h-full sm:hidden border-line border-t-2 ">
-        <nav className="grid grid-cols-6 backdrop-blur-sm  h-[64px]">
+        <nav className="grid grid-cols-6 backdrop-blur-sm  h-full">
           {adminNavs.map((nav, index) => {
             return (
               <NavLink
@@ -187,11 +187,6 @@ const Navbar = ({ isUpdated }) => {
             );
           })}
         </nav>
-        <div className="w-full flex justify-center items-center h-[24px]  pb-2">
-          <div className=" rounded-full bg-backgroundDark py-[2px]  px-3 flex justify-center items-center text-[10px] text-primary font-semibold ">
-            BUZZ TALK
-          </div>
-        </div>
       </div>
     </>
   );
