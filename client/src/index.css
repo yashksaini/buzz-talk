@@ -8,16 +8,17 @@
   --backgroundDark: #f4f6f7;
   --background: #fff;
   /* --primary: #165ddd; */
-  --primary: #1d9bf0;
-  --primaryHover: #1a8cd8;
+  /* --primary: #1d9bf0; */
+  --primary: #7a9df2;
+  --primaryHover: #5e86e8;
   --grayText: #787f8a;
   --mainText: #3b4560;
   --dark1: #10100e;
   --dark2: #3b4560;
   --borderColor: #c7d0d8;
   --line: #eff3f4;
-  --transPrimary: #f2f7ff;
-  --primaryBorder: #a9c8fd;
+  --transPrimary: #f2f5fe;
+  --primaryBorder: #b4caff;
   --red: #f4212e;
   --transRed: #fee8ea;
 }

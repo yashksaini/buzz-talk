@@ -5,8 +5,8 @@ const Loader = () => {
       visible={true}
       height="40"
       width="40"
-      color="#1D9BF0"
-      secondaryColor="#1D9BF0"
+      color="#7a9df2"
+      secondaryColor="#B4CAFF"
       strokeWidth={4}
     />
   );
