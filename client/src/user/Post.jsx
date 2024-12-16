@@ -108,7 +108,7 @@ const Post = () => {
                 <div className="flex justify-start items-center gap-3 flex-1">
                   <button
                     onClick={() => {
-                      navigate("/");
+                      navigate(-1);
                     }}
                     className="w-9 h-9 flex justify-center items-center rounded-full hover:bg-line transition-all"
                   >
