@@ -211,7 +211,7 @@ const Profile = ({ socket, setIsUpdated }) => {
               zIndex: "500",
             }}
           />
-          <div className="h-[200px] w-full bg-slate-200 relative z-10">
+          <div className="aspect-[3/1] max-h-[200px] w-full bg-slate-200 relative z-10">
             {isLoading ? (
               <CustomSkeleton className="w-full h-full absolute top-0 left-0 z-20 bg-slate-200" />
             ) : (
@@ -223,7 +223,7 @@ const Profile = ({ socket, setIsUpdated }) => {
                 />
               )
             )}
-            <div className="absolute bottom-[-72px] left-5 w-36 h-36  border-white border-4 rounded-full bg-slate-300 z-30">
+            <div className="absolute bottom-[-64px] md:bottom-[-72px] left-5 md:w-36 md:h-36 h-32 w-32  border-white border-4 rounded-full bg-slate-300 z-30">
               {isLoading ? (
                 <CustomSkeleton
                   className={
