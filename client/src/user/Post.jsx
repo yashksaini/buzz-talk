@@ -169,7 +169,7 @@ const Post = () => {
                 </div>
               </div>
               <div className="px-6 border-b border-line py-3">
-                <p className="text-dark2 mt-1 text-xl font-light">
+                <p className="text-dark2 mt-1 text-xl">
                   {formatWithLineBreaks(postData?.content || "")}
                 </p>
               </div>

@@ -83,7 +83,7 @@ const CreatePost = ({ setRefresh }) => {
       <div className="flex-1 ">
         <textarea
           ref={textareaRef}
-          className="w-full text-xl font-light px-3 py-1 outline-none"
+          className="w-full text-xl px-3 py-1 outline-none text-dark1"
           placeholder="What's on your mind"
           onInput={handleInput}
           style={{ resize: "none", overflow: "hidden" }} // Prevent manual resizing

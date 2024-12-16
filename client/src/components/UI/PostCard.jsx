@@ -75,7 +75,7 @@ const PostCard = ({ user, post }) => {
             </p>
           </div>
         </div>
-        <p className="text-dark2 mt-1 text-xl font-light">
+        <p className="text-dark2 mt-1 text-xl">
           {post?.content?.slice(0, 100)}
           {post?.content?.length > 100 && (
             <span className="ml-1 text-dark1 font-medium hover:underline underline-offset-2">
