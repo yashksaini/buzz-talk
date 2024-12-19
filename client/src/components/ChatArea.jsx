@@ -238,7 +238,9 @@ const ChatArea = ({ socket }) => {
               >
                 <IoMdArrowBack className="text-2xl" />
               </button>
-              <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary">
+              <div className="min-w-10 min-h-10 rounded-full flex justify-center items-center border border-primaryBorder bg-transPrimary hover:cursor-pointer" onClick={()=>{
+                navigate("/profile/" + chatData?.friendsProfile?.username);
+              }}>
                 {!chatData?.friendsProfile?.imgUrl && (
                   <ProfileIcon fullName={chatData?.friendsProfile?.fullName} />
                 )}
@@ -250,7 +252,9 @@ const ChatArea = ({ socket }) => {
                   />
                 )}
               </div>
-              <div>
+              <div className="hover:cursor-pointer" onClick={()=>{
+                navigate("/profile/" + chatData?.friendsProfile?.username);
+              }}>
                 <h1 className="text-dark1 font-bold">
                   {chatData?.friendsProfile?.fullName}
                 </h1>
