@@ -8,7 +8,8 @@ import { axios } from "../../Constants/constants";
 import { useSelector } from "react-redux";
 // import { useEffect, useRef, useState } from "react";
 // import { BiUser } from "react-icons/bi";
-const PostCard = ({ user, post }) => {
+const PostCard = ({ post }) => {
+  const user = post?.user;
   const navigate = useNavigate();
   const { userId } = useSelector((state) => state.userAuth);
   const [liked, setLiked] = useState(post?.isLikedByUser || false);
@@ -107,6 +108,15 @@ const PostCard = ({ user, post }) => {
             </span>
             <span className=" flex justify-center items-center h-9 min-w-9 ml-[-12px]">
               {post?.commentCount || 0}
+            </span>
+          </div>
+          <div className="text-sm text-grayText flex-1 flex justify-end items-center">
+            <span>
+              {post?.isPublic ? (
+                <span className="text-primary">Public</span>
+              ) : (
+                <span>Friends Only</span>
+              )}
             </span>
           </div>
         </div>

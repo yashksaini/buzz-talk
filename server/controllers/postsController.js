@@ -71,6 +71,7 @@ export const getAllPublicPosts = async (req, res) => {
           likeCount: 1,
           commentCount: 1,
           isLikedByUser: 1,
+          isPublic: 1,
         },
       },
     ]);
@@ -292,6 +293,7 @@ export const getAllFriendsPosts = async (req, res) => {
           likeCount: 1,
           commentCount: 1,
           isLikedByUser: 1,
+          isPublic: 1,
         },
       },
     ]);
@@ -423,6 +425,7 @@ export const getAllPostsOfUser = async (req, res) => {
           likeCount: 1,
           commentCount: 1,
           isLikedByUser: 1,
+          isPublic: 1,
         },
       },
     ]);

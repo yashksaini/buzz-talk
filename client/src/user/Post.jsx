@@ -224,6 +224,15 @@ const Post = () => {
                     <span>Liked By</span>
                   </div>
                 )}
+                <div className="text-sm text-grayText flex-1 flex justify-end items-center">
+                  <span>
+                    {postData?.isPublic ? (
+                      <span className="text-primary">Public</span>
+                    ) : (
+                      <span>Friends Only</span>
+                    )}
+                  </span>
+                </div>
               </div>
               <Comments comments={postData?.comments} setRefresh={setRefresh} />
             </>

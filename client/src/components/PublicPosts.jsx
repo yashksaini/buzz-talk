@@ -61,7 +61,7 @@ const PublicPosts = ({ refresh }) => {
     <div>
       {!loading &&
         posts.map((post, index) => {
-          return <PostCard post={post} user={post?.user} key={index} />;
+          return <PostCard post={post} key={index} />;
         })}
       {!loading && page < totalPages && !isMoreLoading && (
         <div

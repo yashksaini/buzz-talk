@@ -70,7 +70,7 @@ const UserPosts = () => {
       )}
       {!loading &&
         posts.map((post, index) => {
-          return <PostCard post={post} user={post?.user} key={index} />;
+          return <PostCard post={post} key={index} />;
         })}
       {!loading && posts?.length === 0 && (
         <div className="w-full flex justify-center items-center my-4 mb-8">
