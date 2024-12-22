@@ -5,7 +5,6 @@ const allowedOrigins = [
 
 const validateOrigin = (req, res, next) => {
   const origin = req.headers.origin || req.headers.referer; // Check both `Origin` and `Referer` headers
-  console.log(req.headers);
 
   if (origin && allowedOrigins.some((allowed) => origin.startsWith(allowed))) {
     next(); // Allow the request
