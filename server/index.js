@@ -50,8 +50,9 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days in milliseconds
       httpOnly: true,
-      secure: false, // For development; set to true in production (requires HTTPS)
-      // sameSite: false,
+      secure: false, // For Development;
+      // secure: true, // For Production
+      // sameSite: "none",
     },
   })
 );
