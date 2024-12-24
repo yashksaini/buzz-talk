@@ -137,7 +137,7 @@ const Login = () => {
           </Link>
           <div className="flex items-center justify-center mt-4 gap-2">
             <div className="flex-grow border-t border-gray-300"></div>
-            <span className="px-2 text-gray-400 text-xs">Version Rx.1.7</span>
+            <span className="px-2 text-gray-400 text-xs">Version Rx.2.1</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
         </div>
