@@ -9,6 +9,7 @@ const ProfileIcon = ({ fullName }) => {
       return name
         .split(" ")
         .map((word) => word[0])
+        .slice(0, 2) // Limit to the first two initials
         .join("");
     } else return "A";
   };
