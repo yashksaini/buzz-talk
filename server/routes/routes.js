@@ -53,85 +53,249 @@ import {
   getPostById,
   toggleLike,
 } from "../controllers/postsController.js";
-import validateOrigin from "../controllers/middleware.js";
+import {
+  validateOrigin,
+  ensureAuthenticated,
+} from "../controllers/middleware.js";
 
 const router = express.Router();
 
 // Authentication Routes
 router.get("/auth", validateOrigin, checkAuth);
-router.post("/logout", validateOrigin, logout);
+router.post("/logout", validateOrigin, ensureAuthenticated, logout);
 router.post("/signup", validateOrigin, signup);
 router.post("/login", validateOrigin, login);
 
 // User Profile Routes
-router.get("/user/:username", validateOrigin, getUserProfile);
-router.get("/userImage/:username", validateOrigin, getUserNameAndImage);
-router.get("/users/recent-users", validateOrigin, getRecentUsers);
-router.get("/users/all-users", validateOrigin, getAllUsers);
-router.post("/update-profile", validateOrigin, updateProfile);
-router.get("/search/:query", validateOrigin, searchUser);
+router.get(
+  "/user/:username",
+  validateOrigin,
+  ensureAuthenticated,
+  getUserProfile
+);
+router.get(
+  "/userImage/:username",
+  validateOrigin,
+  ensureAuthenticated,
+  getUserNameAndImage
+);
+router.get(
+  "/users/recent-users",
+  validateOrigin,
+  ensureAuthenticated,
+  getRecentUsers
+);
+router.get(
+  "/users/all-users",
+  validateOrigin,
+  ensureAuthenticated,
+  getAllUsers
+);
+router.post(
+  "/update-profile",
+  validateOrigin,
+  ensureAuthenticated,
+  updateProfile
+);
+router.get("/search/:query", validateOrigin, ensureAuthenticated, searchUser);
 
 //Friends Routes
-router.get("/friends/friendship-status", validateOrigin, getFriendshipStatus);
-router.post("/friends/add-friend-request", validateOrigin, addFriendRequest);
-router.post("/friends/accept-request", validateOrigin, acceptRequest);
-router.post("/friends/withdraw-request", validateOrigin, withdrawFriendRequest);
-router.post("/friends/remove-friend", validateOrigin, removeFriend);
-router.post("/friends/reject-request", validateOrigin, rejectRequest);
-router.get("/friends/getFriendsList", validateOrigin, getFriendsList);
-router.get("/friends/getRequestsList", validateOrigin, getRequestsList);
-router.get("/friends/getSentRequestsList", validateOrigin, getSentRequestsList);
-router.get("/friends/getAllFriendsStatus", validateOrigin, getAllFriendsStatus);
+router.get(
+  "/friends/friendship-status",
+  validateOrigin,
+  ensureAuthenticated,
+  getFriendshipStatus
+);
+router.post(
+  "/friends/add-friend-request",
+  validateOrigin,
+  ensureAuthenticated,
+  addFriendRequest
+);
+router.post(
+  "/friends/accept-request",
+  validateOrigin,
+  ensureAuthenticated,
+  acceptRequest
+);
+router.post(
+  "/friends/withdraw-request",
+  validateOrigin,
+  ensureAuthenticated,
+  withdrawFriendRequest
+);
+router.post(
+  "/friends/remove-friend",
+  validateOrigin,
+  ensureAuthenticated,
+  removeFriend
+);
+router.post(
+  "/friends/reject-request",
+  validateOrigin,
+  ensureAuthenticated,
+  rejectRequest
+);
+router.get(
+  "/friends/getFriendsList",
+  validateOrigin,
+  ensureAuthenticated,
+  getFriendsList
+);
+router.get(
+  "/friends/getRequestsList",
+  validateOrigin,
+  ensureAuthenticated,
+  getRequestsList
+);
+router.get(
+  "/friends/getSentRequestsList",
+  validateOrigin,
+  ensureAuthenticated,
+  getSentRequestsList
+);
+router.get(
+  "/friends/getAllFriendsStatus",
+  validateOrigin,
+  ensureAuthenticated,
+  getAllFriendsStatus
+);
 
 //Chats Routes
-router.post("/chat/create-new", validateOrigin, createNewChat);
-router.get("/chat/getChatsList", validateOrigin, getChatsList);
-router.get("/chat/getChatData", validateOrigin, getChatById);
-router.post("/chat/sendMessage", validateOrigin, addMessage);
-router.get("/chat/getChatMessages", validateOrigin, getChatMessages);
-router.post("/chat/markMessagesAsRead", validateOrigin, markMessagesAsRead);
-router.post("/chat/blockUser", validateOrigin, blockUserInChat);
-router.post("/chat/unBlockUser", validateOrigin, unBlockUserInChat);
+router.post(
+  "/chat/create-new",
+  validateOrigin,
+  ensureAuthenticated,
+  createNewChat
+);
+router.get(
+  "/chat/getChatsList",
+  validateOrigin,
+  ensureAuthenticated,
+  getChatsList
+);
+router.get(
+  "/chat/getChatData",
+  validateOrigin,
+  ensureAuthenticated,
+  getChatById
+);
+router.post(
+  "/chat/sendMessage",
+  validateOrigin,
+  ensureAuthenticated,
+  addMessage
+);
+router.get(
+  "/chat/getChatMessages",
+  validateOrigin,
+  ensureAuthenticated,
+  getChatMessages
+);
+router.post(
+  "/chat/markMessagesAsRead",
+  validateOrigin,
+  ensureAuthenticated,
+  markMessagesAsRead
+);
+router.post(
+  "/chat/blockUser",
+  validateOrigin,
+  ensureAuthenticated,
+  blockUserInChat
+);
+router.post(
+  "/chat/unBlockUser",
+  validateOrigin,
+  ensureAuthenticated,
+  unBlockUserInChat
+);
 
 // Notifications Routes
 router.get(
   "/notifications/getNotificationsOfUser",
   validateOrigin,
+  ensureAuthenticated,
   getNotificationsOfUser
 );
 router.get(
   "/notifications/getUnreadNotificationsOfUser",
   validateOrigin,
+  ensureAuthenticated,
   getUnreadNotificationsOfUser
 );
 router.post(
   "/notifications/deleteNotificationById",
   validateOrigin,
+  ensureAuthenticated,
   deleteNotificationById
 );
 router.post(
   "/notifications/markNotificationAsRead",
   validateOrigin,
+  ensureAuthenticated,
   markNotificationAsRead
 );
 router.post(
   "/notifications/markAllNotificationsAsRead",
   validateOrigin,
+  ensureAuthenticated,
   markAllNotificationsAsRead
 );
 router.post(
   "/notifications/deleteAllReadNotifications",
   validateOrigin,
+  ensureAuthenticated,
   deleteAllReadNotifications
 );
 
 // Posts Routes
-router.post("/posts/createPost", validateOrigin, createPost);
-router.get("/posts/publicPosts", validateOrigin, getAllPublicPosts);
-router.post("/posts/toggleLike", validateOrigin, toggleLike);
-router.get("/posts/getPostById", validateOrigin, getPostById);
-router.post("/posts/addComment", validateOrigin, addComment);
-router.get("/posts/friendsPosts", validateOrigin, getAllFriendsPosts);
-router.post("/posts/deletePost", validateOrigin, deletePost);
-router.get("/posts/getAllPostsOfUser", validateOrigin, getAllPostsOfUser);
+router.post(
+  "/posts/createPost",
+  validateOrigin,
+  ensureAuthenticated,
+  createPost
+);
+router.get(
+  "/posts/publicPosts",
+  validateOrigin,
+  ensureAuthenticated,
+  getAllPublicPosts
+);
+router.post(
+  "/posts/toggleLike",
+  validateOrigin,
+  ensureAuthenticated,
+  toggleLike
+);
+router.get(
+  "/posts/getPostById",
+  validateOrigin,
+  ensureAuthenticated,
+  getPostById
+);
+router.post(
+  "/posts/addComment",
+  validateOrigin,
+  ensureAuthenticated,
+  addComment
+);
+router.get(
+  "/posts/friendsPosts",
+  validateOrigin,
+  ensureAuthenticated,
+  getAllFriendsPosts
+);
+router.post(
+  "/posts/deletePost",
+  validateOrigin,
+  ensureAuthenticated,
+  deletePost
+);
+router.get(
+  "/posts/getAllPostsOfUser",
+  validateOrigin,
+  ensureAuthenticated,
+  getAllPostsOfUser
+);
 export default router;
